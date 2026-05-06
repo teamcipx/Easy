@@ -1,0 +1,186 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    /* Premium Entry Animations */
+    .fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Advanced Task Card */
+    .admin-task-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 24px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .admin-task-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.1);
+        border-color: #BFDBFE;
+    }
+
+    /* Image Lightbox Hover Effect */
+    .img-zoom-container {
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid #F1F5F9;
+        height: 200px;
+        background: #F8FAFC;
+    }
+    .img-zoom-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .img-zoom-container:hover img {
+        transform: scale(1.08);
+    }
+    .img-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(2px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .img-zoom-container:hover .img-overlay { opacity: 1; }
+
+    /* Floating Quick Actions */
+    .action-btn {
+        transition: all 0.2s ease;
+    }
+    .action-btn:active { transform: scale(0.95); }
+</style>
+
+<div class="max-w-7xl mx-auto space-y-6 fade-in-up pb-8 px-2">
+
+    <!-- ==========================================
+         1. ADVANCED HEADER DASHBOARD
+    ========================================== -->
+    <div class="bg-gradient-to-r from-slate-900 via-[#1E293B] to-slate-900 rounded-[32px] p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Background Orbs -->
+        <div class="absolute top-0 right-0 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
+
+        <!-- Title Area -->
+        <div class="flex items-center gap-4 relative z-10 w-full md:w-auto">
+            <div class="h-14 w-14 bg-blue-500/20 text-blue-400 rounded-[16px] flex items-center justify-center text-2xl shadow-inner border border-blue-500/30 flex-shrink-0">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <h1 class="text-2xl font-black tracking-tight">Review Queue</h1>
+                    <span class="bg-amber-500 text-slate-900 text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest shadow-sm">Pending</span>
+                </div>
+                <p class="text-xs text-slate-400 font-medium">Batch Limit: 20 Items | Loaded: {{ submissions|length }}</p>
+            </div>
+        </div>
+        
+        <!-- Action Area (Bulk Approve & Counter) -->
+        <div class="flex flex-col sm:flex-row items-center gap-4 relative z-10 w-full md:w-auto">
+            
+            <div class="bg-white/5 border border-white/10 px-5 py-2.5 rounded-xl backdrop-blur-sm text-center flex-grow sm:flex-grow-0 min-w-[120px]">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Pending</p>
+                <p class="text-xl font-black text-white font-mono">{{ total_pending }}</p>
+            </div>
+
+            {% if submissions|length > 0 %}
+            <a href="/admin/submissions/bulk-approve" onclick="return confirm('⚠️ ALERT: You are about to Bulk Approve all {{ submissions|length }} tasks in this view. This will instantly credit funds to the users. Proceed?')" 
+               class="bg-blue-600 text-white px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(37,99,235,0.3)] hover:bg-blue-500 transition-colors w-full sm:w-auto flex items-center justify-center gap-2 active:scale-95">
+                <i class="fa-solid fa-check-double text-lg"></i> Bulk Approve All
+            </a>
+            {% else %}
+            <a href="/admin" class="bg-white/10 text-white px-6 py-3.5 rounded-xl font-bold text-xs hover:bg-white/20 transition w-full sm:w-auto text-center">
+                Back to Portal
+            </a>
+            {% endif %}
+            
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. TASK REVIEW GRID
+    ========================================== -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        {% for sub in submissions %}
+        <div class="admin-task-card">
+            
+            <!-- A. Top Badge -->
+            <div class="absolute top-3 left-3 z-10">
+                <span class="bg-white/90 backdrop-blur-sm text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm border border-slate-200/50 font-mono">
+                    ID: #{{ sub.id }}
+                </span>
+            </div>
+
+            <!-- B. Screenshot Area (Lightbox enabled) -->
+            <div class="img-zoom-container">
+                <img src="{{ sub.proof_link }}" alt="Proof Screenshot">
+                <a href="{{ sub.proof_link }}" target="_blank" class="img-overlay">
+                    <span class="bg-white/20 border border-white/30 text-white px-4 py-2 rounded-xl text-xs font-bold backdrop-blur-md flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i> View Full Image
+                    </span>
+                </a>
+            </div>
+
+            <!-- C. Details Area -->
+            <div class="p-4 flex-grow flex flex-col">
+                <div class="mb-3">
+                    <h3 class="font-bold text-slate-800 text-sm line-clamp-1 leading-tight mb-1" title="{{ sub.task_title }}">
+                        {{ sub.task_title }}
+                    </h3>
+                    <p class="text-[10px] text-slate-500 flex items-center gap-1.5 font-medium truncate">
+                        <i class="fa-regular fa-envelope text-blue-400"></i> {{ sub.user_email }}
+                    </p>
+                </div>
+                
+                <!-- Payout Badge -->
+                <div class="mt-auto">
+                    <div class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg border border-blue-100">
+                        <i class="fa-solid fa-coins text-blue-500 text-[10px]"></i>
+                        <span class="text-[11px] font-black font-mono">Payout: ৳{{ sub.reward }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- D. Action Area (Approve / Reject) -->
+            <div class="p-3 bg-slate-50 border-t border-slate-100 flex gap-2">
+                <a href="/admin/submission/reject/{{ sub.id }}" onclick="return confirm('Reject this submission?')" 
+                   class="action-btn flex-1 bg-white border border-red-200 text-red-600 py-2.5 rounded-[12px] text-[11px] font-bold text-center hover:bg-red-50 transition shadow-sm">
+                   <i class="fa-solid fa-xmark mr-1"></i> Reject
+                </a>
+                
+                <a href="/admin/submission/approve/{{ sub.id }}" 
+                   class="action-btn flex-1 bg-blue-600 text-white py-2.5 rounded-[12px] text-[11px] font-bold text-center shadow-md hover:bg-blue-700 transition">
+                   <i class="fa-solid fa-check mr-1"></i> Approve
+                </a>
+            </div>
+
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="col-span-full text-center py-24 bg-white rounded-[32px] border border-dashed border-slate-300 shadow-sm mt-4">
+            <div class="h-20 w-20 bg-slate-50 rounded-[20px] flex items-center justify-center mx-auto mb-4 text-4xl text-slate-300 border border-slate-100 shadow-sm">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Queue is Clear!</h3>
+            <p class="text-xs text-slate-500 mt-1 font-medium">বর্তমানে কোনো পেন্ডিং কাজ নেই।</p>
+            <a href="/admin" class="mt-6 inline-flex items-center gap-2 bg-white border border-slate-200 text-blue-600 px-6 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:bg-blue-50 transition">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

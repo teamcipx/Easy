@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto space-y-6 pt-4 pb-20">
+    
+    <!-- Header & Add User Form -->
+    <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-6 rounded-[24px] text-white shadow-lg relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl"></div>
+        <h2 class="text-2xl font-black mb-1">Support Inbox</h2>
+        <p class="text-xs text-slate-400 mb-6">Active conversations</p>
+
+        <!-- Find User by Email -->
+        <form method="POST" class="flex gap-2 relative z-10">
+            <input type="email" name="email" required placeholder="Find user by email to start chat..." class="flex-grow bg-white/10 border border-white/20 p-3 rounded-xl text-sm focus:outline-none focus:bg-white/20 text-white">
+            <button type="submit" class="bg-blue-600 px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition">Start Chat</button>
+        </form>
+    </div>
+
+    <!-- Active Chats List -->
+    <div class="bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 space-y-2">
+        {% for thread in threads %}
+        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:border-blue-200 transition group">
+            
+            <a href="/admin/inbox/{{ thread.user_id }}" class="flex items-center gap-4 flex-grow">
+                <div class="h-10 w-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+                    {{ thread.profiles.email[0] | upper }}
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-800">{{ thread.profiles.email }}</h4>
+                    <p class="text-xs text-slate-500 truncate max-w-xs">{{ thread.last_message }}</p>
+                </div>
+            </a>
+            
+            <div class="flex items-center gap-2">
+                <!-- Mark as Read (Hide) -->
+                <a href="/admin/inbox/action/hide/{{ thread.user_id }}" title="Mark Read / Hide" class="h-8 w-8 bg-white border border-slate-200 text-slate-400 rounded-lg flex items-center justify-center hover:text-blue-600 hover:border-blue-200 transition">
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+                <!-- Archive -->
+                <a href="/admin/inbox/action/archive/{{ thread.user_id }}" onclick="return confirm('Archive permanently?')" title="Archive" class="h-8 w-8 bg-white border border-slate-200 text-slate-400 rounded-lg flex items-center justify-center hover:text-red-500 hover:bg-red-50 transition">
+                    <i class="fa-solid fa-box-archive"></i>
+                </a>
+            </div>
+
+        </div>
+        {% else %}
+        <div class="text-center py-10">
+            <i class="fa-regular fa-comments text-4xl text-slate-300 mb-3"></i>
+            <p class="text-sm font-bold text-slate-500">Inbox is empty</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

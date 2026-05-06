@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .clean-card {
+        background: #ffffff;
+        border-radius: 32px;
+        border: 1px solid rgba(15, 23, 42, 0.05);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Radio Button Custom Styling */
+    input:checked + .method-card {
+        border-color: #10B981; /* Emerald */
+        background-color: #F0FDF4; /* Emerald 50 */
+    }
+    input:checked + .bkash-card { border-color: #E2136E; background-color: #FDF2F8; color: #E2136E; }
+    input:checked + .nagad-card { border-color: #F7931A; background-color: #FFF7ED; color: #F7931A; }
+    input:checked + .rocket-card { border-color: #8C3494; background-color: #FDF4FF; color: #8C3494; }
+</style>
+
+<div class="max-w-xl mx-auto space-y-6 fade-up pb-32 pt-4 px-2">
+
+    <!-- 1. HEADER SECTION -->
+    <div class="flex items-center justify-between mb-2">
+        <a href="/dashboard" class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-slate-600 shadow-sm border border-slate-100 hover:text-[#4F46E5] hover:border-indigo-100 transition">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div class="bg-rose-50 text-rose-600 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-rose-100 shadow-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-lock"></i> Account Locked
+        </div>
+    </div>
+
+    <!-- 2. HERO BANNER -->
+    <div class="relative bg-gradient-to-br from-[#0A2540] to-[#4F46E5] rounded-[32px] p-8 text-white shadow-2xl shadow-indigo-500/20 overflow-hidden text-center">
+        <!-- Decor -->
+        <div class="absolute top-[-20%] right-[-10%] w-48 h-48 bg-emerald-500/20 rounded-full blur-[50px]"></div>
+        <div class="absolute bottom-[-20%] left-[-10%] w-32 h-32 bg-rose-500/20 rounded-full blur-[40px]"></div>
+        
+        <div class="relative z-10">
+            <div class="h-16 w-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 border border-white/20 shadow-inner">
+                <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-black mb-2 tracking-tight">একাউন্ট অ্যাক্টিভেশন</h2>
+            <p class="text-indigo-100 text-sm font-medium px-4 mb-6">
+                Pay-R প্ল্যাটফর্মে কাজ শুরু করতে এবং পেমেন্ট নিতে আপনার একাউন্টটি ভেরিফাই করুন।
+            </p>
+            
+            <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/20 shadow-lg">
+                <span class="text-xs text-indigo-200 font-bold uppercase tracking-widest">এককালীন ফি:</span>
+                <span class="text-2xl font-black text-emerald-400 font-mono tracking-tight">৳ ৪০</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. WHY ACTIVATION? (Trust Box) -->
+    <div class="clean-card p-6 md:p-8">
+        <h3 class="font-black text-slate-800 mb-5 flex items-center gap-2 text-sm border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-circle-info text-[#4F46E5]"></i> অ্যাক্টিভেশন কেন প্রয়োজন?
+        </h3>
+        <div class="space-y-4">
+            <div class="flex items-start gap-4">
+                <div class="h-10 w-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <h4 class="font-bold text-slate-700 text-sm">স্প্যাম প্রতিরোধ</h4>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">স্বয়ংক্রিয় বট এবং ফেইক ইউজারদের দূরে রাখতে এটি সাহায্য করে।</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="h-10 w-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-gem"></i></div>
+                <div>
+                    <h4 class="font-bold text-slate-700 text-sm">ফুল এক্সেস</h4>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">হাই-পেইং জিমেইল টাস্ক এবং অন্যান্য সকল কাজ আনলক হবে।</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5 bg-amber-50 border border-amber-200/60 p-3 rounded-xl flex items-center gap-3">
+            <i class="fa-solid fa-check-double text-amber-600 text-lg"></i>
+            <p class="text-[10px] text-amber-800 font-bold leading-tight">এটি সম্পূর্ণ এককালীন (One-time) পেমেন্ট। পরবর্তীতে আর কোনো চার্জ কাটা হবে না।</p>
+        </div>
+    </div>
+
+    <!-- 4. PAYMENT INSTRUCTIONS -->
+    <div class="bg-gradient-to-r from-emerald-500 to-teal-500 p-1 rounded-[32px] shadow-lg shadow-emerald-200">
+        <div class="bg-white rounded-[28px] p-6 md:p-8 h-full">
+            <h3 class="font-black text-slate-800 mb-4 flex items-center gap-2 text-sm">
+                <i class="fa-solid fa-paper-plane text-emerald-500"></i> পেমেন্ট নির্দেশনা
+            </h3>
+            <p class="text-xs text-slate-600 mb-5 leading-relaxed font-medium">
+                নিচের নাম্বারে <b>৪০ টাকা সেন্ড মানি (Send Money)</b> করুন এবং ট্রানজেকশন আইডি (TrxID) নিচের ফর্মে জমা দিন।
+            </p>
+
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl flex items-center justify-between group">
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">অফিসিয়াল নাম্বার</p>
+                    <p class="text-2xl font-black text-[#0A2540] font-mono tracking-wider select-all" id="payNumber">01912107604</p>
+                </div>
+                <button onclick="copyNumber()" class="h-12 w-12 bg-white border border-slate-200 text-slate-500 rounded-xl shadow-sm hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-600 transition flex items-center justify-center text-lg active:scale-95">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. SUBMISSION FORM -->
+    <div class="clean-card p-6 md:p-8 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-[#4F46E5]"></div>
+        
+        <h3 class="font-black text-slate-800 mb-6 text-sm">পেমেন্ট ভেরিফিকেশন ফর্ম</h3>
+
+        <form method="POST" action="/activate/submit" class="space-y-5" onsubmit="return disableSubmitBtn(this)">
+            
+            <!-- Method Selection -->
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 mb-2 ml-1 uppercase tracking-widest">পেমেন্ট মেথড</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="method" value="bKash" class="peer sr-only" checked>
+                        <div class="method-card bkash-card py-3 border-2 border-slate-100 rounded-xl text-center bg-slate-50 text-slate-500 transition font-bold text-xs uppercase tracking-wider">
+                            bKash
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="method" value="Nagad" class="peer sr-only">
+                        <div class="method-card nagad-card py-3 border-2 border-slate-100 rounded-xl text-center bg-slate-50 text-slate-500 transition font-bold text-xs uppercase tracking-wider">
+                            Nagad
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="method" value="Rocket" class="peer sr-only">
+                        <div class="method-card rocket-card py-3 border-2 border-slate-100 rounded-xl text-center bg-slate-50 text-slate-500 transition font-bold text-xs uppercase tracking-wider">
+                            Rocket
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Sender Number -->
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 mb-1.5 ml-1 uppercase tracking-widest">আপনার সেন্ডার নাম্বার</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-phone text-xs"></i>
+                    </div>
+                    <input type="number" name="sender_number" required placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন" 
+                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] focus:ring-4 focus:ring-indigo-500/10 transition text-sm font-bold text-slate-800 bg-slate-50 focus:bg-white font-mono">
+                </div>
+            </div>
+
+            <!-- TrxID -->
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 mb-1.5 ml-1 uppercase tracking-widest">ট্রানজেকশন আইডি (TrxID)</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-hashtag text-xs"></i>
+                    </div>
+                    <input type="text" name="trx_id" required placeholder="Example: 9A5K..." 
+                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] focus:ring-4 focus:ring-indigo-500/10 transition text-sm font-bold text-slate-800 bg-slate-50 focus:bg-white uppercase tracking-widest font-mono">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="activateBtn" class="btn-emerald w-full text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 mt-4">
+                <span>ভেরিফাই করুন</span>
+                <i class="fa-solid fa-shield-check"></i>
+            </button>
+
+        </form>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script>
+    function copyNumber() {
+        const numberText = document.getElementById("payNumber").innerText;
+        navigator.clipboard.writeText(numberText).then(() => {
+            const btn = event.currentTarget;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-600"></i>';
+            btn.classList.add('border-emerald-300', 'bg-emerald-50');
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('border-emerald-300', 'bg-emerald-50');
+            }, 2000);
+        }).catch(err => {
+            console.error('Copy failed', err);
+        });
+    }
+
+    function disableSubmitBtn(form) {
+        const btn = document.getElementById('activateBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i>';
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+        return true;
+    }
+</script>
+
+{% endblock %}

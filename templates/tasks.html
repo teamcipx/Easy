@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Smooth Entry */
+    .fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(10px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Compact Task Card */
+    .compact-task {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s ease;
+    }
+    .compact-task:hover {
+        background: #F8FAFC;
+        border-color: #BFDBFE;
+    }
+    .compact-task:active { transform: scale(0.98); }
+
+    /* Compact Ad Wrapper */
+    .compact-ad {
+        background: #F8FAFC;
+        border: 1px dashed #CBD5E1;
+        border-radius: 16px;
+        padding: 8px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    .ad-tag {
+        position: absolute; top: 0; right: 8px;
+        background: #E2E8F0; color: #64748B;
+        font-size: 8px; font-weight: 800; text-transform: uppercase;
+        padding: 2px 6px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
+    }
+</style>
+
+<div class="max-w-2xl mx-auto space-y-4 fade-in-up pb-8 px-1">
+
+    <!-- ==========================================
+         1. PAGE HEADER (Minimalist)
+    ========================================== -->
+    <div class="flex items-center justify-between mb-2 px-1">
+        <div>
+            <h2 class="text-xl font-black text-slate-800 tracking-tight">Available Tasks</h2>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Complete to earn</p>
+        </div>
+        <div class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-[10px] font-bold border border-blue-100 flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-list-ul"></i> {{ tasks|length }} Tasks
+        </div>
+    </div>
+    
+    <!-- ==========================================
+         2. GMAIL TASK PROMO (Sleek Strip Design)
+    ========================================== -->
+    <a href="/gmail-tasks" class="flex items-center justify-between bg-gradient-to-r from-red-50 to-rose-50 border border-red-100 p-3 rounded-[16px] group hover:border-red-200 hover:shadow-sm transition">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-xl flex items-center justify-center text-lg shadow-md flex-shrink-0 group-hover:scale-105 transition">
+                <i class="fa-brands fa-google"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-slate-800 text-sm leading-tight flex items-center gap-1.5">
+                    Gmail Work <span class="bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Hot</span>
+                </h3>
+                <p class="text-[10px] text-slate-500 font-medium mt-0.5">Earn ৳25 - ৳100 per ID</p>
+            </div>
+        </div>
+        <div class="bg-white text-red-600 border border-red-100 h-8 w-8 rounded-lg flex items-center justify-center shadow-sm group-hover:bg-red-600 group-hover:text-white transition flex-shrink-0">
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+        </div>
+    </a>
+
+    <!-- ==========================================
+         3. COMPACT TASK LIST
+    ========================================== -->
+    <div class="space-y-3 relative">
+        
+        {% for task in tasks %}
+        
+        <!-- Category Logic -->
+        {% set icon_bg = 'bg-slate-100 text-slate-500' %}
+        {% set icon_class = 'fa-solid fa-globe' %}
+        
+        {% if 'YouTube' in task.category %}
+            {% set icon_bg = 'bg-red-50 text-red-500' %}
+            {% set icon_class = 'fa-brands fa-youtube' %}
+        {% elif 'Facebook' in task.category %}
+            {% set icon_bg = 'bg-blue-50 text-blue-600' %}
+            {% set icon_class = 'fa-brands fa-facebook' %}
+        {% elif 'TikTok' in task.category %}
+            {% set icon_bg = 'bg-slate-800 text-white' %}
+            {% set icon_class = 'fa-brands fa-tiktok' %}
+        {% elif 'Telegram' in task.category %}
+            {% set icon_bg = 'bg-sky-50 text-sky-500' %}
+            {% set icon_class = 'fa-brands fa-telegram' %}
+        {% endif %}
+
+        <!-- COMPACT TASK CARD -->
+        <div class="compact-task {{ 'border-red-200 bg-red-50/30' if task.is_rejected else '' }}">
+            
+            <!-- Icon -->
+            <div class="h-10 w-10 rounded-xl flex items-center justify-center text-lg {{ icon_bg }} flex-shrink-0">
+                <i class="{{ icon_class }}"></i>
+            </div>
+            
+            <!-- Details -->
+            <div class="flex-grow min-w-0">
+                <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-slate-800 text-sm truncate">{{ task.title }}</h3>
+                    {% if task.is_rejected %}
+                        <i class="fa-solid fa-circle-exclamation text-red-500 text-[10px] animate-pulse"></i>
+                    {% endif %}
+                </div>
+                
+                <div class="flex items-center gap-1.5 mt-1">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ task.category }}</span>
+                    <span class="text-slate-300 text-[8px]">•</span>
+                    {% if task.task_type == 'screenshot' %}
+                        <span class="text-[9px] text-slate-500 font-medium"><i class="fa-solid fa-camera mr-0.5"></i> Proof</span>
+                    {% elif task.task_type == 'fb_post' %}
+                        <span class="text-[9px] text-slate-500 font-medium"><i class="fa-solid fa-share-nodes mr-0.5"></i> Post</span>
+                    {% else %}
+                        <span class="text-[9px] text-slate-500 font-medium"><i class="fa-solid fa-link mr-0.5"></i> Link</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reward & Action -->
+            <div class="flex flex-col items-end flex-shrink-0">
+                <span class="text-sm font-black text-slate-800 font-mono leading-none mb-1.5">
+                    ৳{{ task.reward }}
+                </span>
+                
+                {% if task.task_type in ['screenshot', 'fb_post'] %}
+                    <a href="/task/submit/{{ task.id }}" class="px-3 py-1.5 rounded-lg text-[10px] font-bold transition shadow-sm
+                        {{ 'bg-red-500 text-white hover:bg-red-600' if task.is_rejected else 'bg-blue-600 text-white hover:bg-blue-700' }}">
+                        {{ 'RETRY' if task.is_rejected else 'START' }}
+                    </a>
+                {% else %}
+                    <a href="{{ task.link }}" target="_blank" class="px-3 py-1.5 rounded-lg text-[10px] font-bold bg-slate-800 text-white hover:bg-slate-900 transition shadow-sm">
+                        VISIT
+                    </a>
+                {% endif %}
+            </div>
+            
+        </div>
+
+        <!-- ==========================================
+             AD INJECTION (Compact Style, Every 5 Tasks)
+        ========================================== -->
+        {% if loop.index % 5 == 0 %}
+        <div class="compact-ad">
+            <span class="ad-tag">Ad</span>
+            <!-- Ad Script -->
+            <script>
+              atOptions = {
+                'key' : '4a72be96f78b75e42afea5ee99005d34',
+                'format' : 'iframe',
+                'height' : 60,
+                'width' : 468,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16 bg-white rounded-[20px] border border-slate-100">
+            <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-slate-300">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-700">All Tasks Completed!</h3>
+            <p class="text-[10px] text-slate-400 mt-1">Please check back later.</p>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}

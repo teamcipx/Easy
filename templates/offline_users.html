@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-50 mb-6 flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden">
+        <!-- Decor -->
+        <div class="absolute right-0 top-0 w-24 h-24 bg-red-50 rounded-bl-full opacity-50"></div>
+
+        <div class="flex items-center gap-4 z-10">
+            <div class="h-14 w-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
+                <i class="fa-solid fa-user-clock"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-[#0A2540]">ইনএক্টিভ ইউজার (Offline)</h2>
+                <p class="text-xs text-gray-500 mt-1 flex gap-2">
+                    <span class="bg-gray-100 px-2 py-0.5 rounded">7 Days+ Offline</span>
+                    <span class="bg-gray-100 px-2 py-0.5 rounded">Bal: 15-150</span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="bg-red-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-red-200 z-10">
+            Found: {{ count }} / 290
+        </div>
+    </div>
+
+    <!-- CSV Data Display -->
+    <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100">
+        
+        <div class="flex justify-between items-center mb-3">
+            <label class="block text-sm font-bold text-gray-700">
+                <i class="fa-solid fa-envelope text-blue-500"></i> ইমেইল লিস্ট (CSV)
+            </label>
+            <span class="text-[10px] text-gray-400 bg-gray-50 px-2 py-1 rounded border">Only @gmail.com</span>
+        </div>
+
+        <div class="relative group">
+            <!-- Text Area -->
+            <textarea id="offlineEmails" readonly rows="12" 
+                class="w-full p-4 border border-gray-200 rounded-2xl bg-[#F8FAFC] text-xs font-mono text-[#0A2540] focus:outline-[#E2136E] resize-y shadow-inner leading-loose"
+                placeholder="কোনো ইনএক্টিভ ইউজার পাওয়া যায়নি...">{{ csv_data }}</textarea>
+            
+            <!-- Copy Button (Floating) -->
+            <button onclick="copyOfflineEmails()" 
+                class="absolute bottom-4 right-4 bg-[#0A2540] text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-xl hover:bg-[#E2136E] active:scale-95 transition flex items-center gap-2 group-hover:translate-y-0 translate-y-2 opacity-0 group-hover:opacity-100 duration-300">
+                <i class="fa-solid fa-copy"></i> কপি করুন
+            </button>
+        </div>
+
+        <!-- Info Box -->
+        <div class="mt-5 flex items-start gap-3 text-xs text-gray-500 bg-red-50 p-4 rounded-xl border border-red-100">
+            <i class="fa-solid fa-triangle-exclamation text-red-500 text-lg"></i>
+            <div>
+                <p class="font-bold text-red-700 mb-1">ফিল্টার লজিক:</p>
+                <ul class="list-disc pl-4 space-y-1">
+                    <li>গত ৭ দিন বা তার বেশি সময় ড্যাশবোর্ডে আসেনি।</li>
+                    <li>যাদের ব্যালেন্স ১৫ থেকে ১৫০ টাকার মধ্যে।</li>
+                    <li>শুধুমাত্র জিমেইল একাউন্ট।</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Copy Script -->
+<script>
+    function copyOfflineEmails() {
+        const textArea = document.getElementById("offlineEmails");
+        
+        if (!textArea.value) {
+            alert("কপি করার মতো কোনো ডাটা নেই!");
+            return;
+        }
+
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); 
+
+        navigator.clipboard.writeText(textArea.value).then(() => {
+            // Button Feedback
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> কপি হয়েছে!';
+            btn.classList.add('bg-green-600');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('bg-green-600');
+            }, 2000);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .danger-card {
+        background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        box-shadow: 0 10px 40px -10px rgba(185, 28, 28, 0.4);
+    }
+</style>
+
+<div class="max-w-3xl mx-auto space-y-6 fade-up pb-32 pt-4 px-2">
+
+    <!-- 1. HEADER (DANGER THEME) -->
+    <div class="danger-card p-6 md:p-8 rounded-[32px] text-white relative overflow-hidden">
+        <div class="absolute top-[-20%] right-[-10%] w-48 h-48 bg-red-500 opacity-20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-[-20%] left-[-10%] w-32 h-32 bg-orange-500 opacity-20 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="h-16 w-16 bg-red-900/50 backdrop-blur-md rounded-2xl flex items-center justify-center text-4xl shadow-inner border border-red-500/30 animate-pulse text-red-400">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black tracking-tight">Danger Zone</h1>
+                    <p class="text-red-200 text-sm mt-1 font-medium tracking-wide">Factory Reset System</p>
+                </div>
+            </div>
+            <a href="/admin" class="bg-white/10 hover:bg-white/20 backdrop-blur-md px-5 py-2.5 rounded-xl text-sm font-bold transition border border-white/20 flex items-center gap-2 w-full md:w-auto justify-center">
+                <i class="fa-solid fa-arrow-left"></i> Back to Admin
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. INFORMATION BOX -->
+    <div class="grid md:grid-cols-2 gap-4">
+        <!-- What will stay -->
+        <div class="bg-white p-6 rounded-[24px] shadow-sm border border-emerald-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-5 text-6xl text-emerald-500"><i class="fa-solid fa-shield-check"></i></div>
+            <h3 class="font-black text-slate-800 text-sm mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-check-circle text-emerald-500"></i> যা ডিলিট হবে না (Safe)
+            </h3>
+            <ul class="space-y-2 text-xs text-slate-600 font-medium">
+                <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400"></i> এডমিন একাউন্ট (Admin Profile)</li>
+                <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400"></i> সকল টাস্ক (Tasks)</li>
+                <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400"></i> সাইট সেটিংস (Settings)</li>
+                <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400"></i> নোটিশ ও প্রুফ (Notices, Proofs)</li>
+                <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400"></i> ImgBB API Keys</li>
+            </ul>
+        </div>
+
+        <!-- What will be deleted -->
+        <div class="bg-white p-6 rounded-[24px] shadow-sm border border-red-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-5 text-6xl text-red-500"><i class="fa-solid fa-skull"></i></div>
+            <h3 class="font-black text-slate-800 text-sm mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-trash-can text-red-500"></i> যা ডিলিট হয়ে যাবে (Wiped)
+            </h3>
+            <ul class="space-y-2 text-xs text-slate-600 font-medium">
+                <li class="flex gap-2"><i class="fa-solid fa-xmark text-red-400"></i> সকল সাধারণ ইউজার (All Users)</li>
+                <li class="flex gap-2"><i class="fa-solid fa-xmark text-red-400"></i> সকল টাস্ক সাবমিশন (Submissions)</li>
+                <li class="flex gap-2"><i class="fa-solid fa-xmark text-red-400"></i> উইথড্র রিকোয়েস্ট (Withdrawals)</li>
+                <li class="flex gap-2"><i class="fa-solid fa-xmark text-red-400"></i> VIP ও পেমেন্ট রিকোয়েস্ট</li>
+                <li class="flex gap-2"><i class="fa-solid fa-xmark text-red-400"></i> ইউজার ব্যালেন্স ও হিস্টোরি</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3. ACTION SECTION -->
+    <div class="bg-red-50/50 p-8 rounded-[32px] shadow-sm border border-red-200 text-center relative">
+        <div class="inline-flex items-center justify-center h-20 w-20 bg-red-100 text-red-600 rounded-[20px] text-4xl mb-4 shadow-sm transform rotate-3">
+            <i class="fa-solid fa-power-off"></i>
+        </div>
+        <h2 class="text-3xl font-black text-slate-800 mb-2">Total: {{ user_count }} Users</h2>
+        <p class="text-slate-500 text-sm mb-8 font-medium max-w-md mx-auto leading-relaxed">
+            এক ক্লিকে সমস্ত ইউজারের ডাটাবেস সম্পূর্ণ ক্লিয়ার হয়ে যাবে। এই কাজ একবার করলে কোনোভাবেই ডাটা রিকভার করা সম্ভব নয়। 
+        </p>
+
+        {% if user_count > 0 %}
+        <form method="POST" action="/admin/danger-zone" onsubmit="return confirm('🚨 চূড়ান্ত সতর্কতা! আপনি কি নিশ্চিত যে আপনি সিস্টেম ফ্যাক্টরি রিসেট করতে চান? সব ইউজারের ডাটা মুছে যাবে!')">
+            <input type="hidden" name="action" value="factory_reset">
+            <button type="submit" class="w-full md:w-auto bg-gradient-to-r from-red-600 to-red-700 text-white px-10 py-4 rounded-2xl font-black text-lg shadow-xl shadow-red-500/30 hover:scale-[1.02] active:scale-95 transition flex items-center justify-center gap-3 mx-auto">
+                <i class="fa-solid fa-burst"></i> 
+                <span>Factory Reset (Wipe All)</span>
+            </button>
+        </form>
+        {% else %}
+        <button disabled class="w-full md:w-auto bg-slate-200 text-slate-400 px-10 py-4 rounded-2xl font-black text-lg cursor-not-allowed mx-auto flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check-double"></i> ডাটাবেস সম্পূর্ণ ক্লিন আছে
+        </button>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

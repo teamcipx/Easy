@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<!-- Create Pack -->
+<div class="bg-white p-5 rounded-3xl shadow-sm mb-8 border-l-4 border-indigo-500">
+    <h3 class="font-bold text-[#0A2540] mb-4">নতুন ড্রাইভ প্যাক যুক্ত করুন</h3>
+    <form method="POST" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+            <select name="operator" class="p-2 border rounded-lg">
+                <option>Grameenphone</option><option>Robi</option><option>Airtel</option><option>Banglalink</option>
+            </select>
+            <select name="category" class="p-2 border rounded-lg">
+                <option>Internet</option><option>Minute</option><option>Combo</option>
+            </select>
+        </div>
+        <input type="text" name="title" placeholder="Pack Title (e.g. 50GB)" class="w-full p-2 border rounded-lg" required>
+        <div class="grid grid-cols-3 gap-3">
+            <input type="number" name="regular_price" placeholder="Reg Price" class="p-2 border rounded-lg" required>
+            <input type="number" name="offer_price" placeholder="Offer Price" class="p-2 border rounded-lg" required>
+            <input type="text" name="validity" placeholder="Validity" class="p-2 border rounded-lg" required>
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-bold">Add Pack</button>
+    </form>
+</div>
+
+<!-- Order List -->
+<h3 class="font-bold text-[#0A2540] mb-3">ড্রাইভ অর্ডার লিস্ট</h3>
+<div class="space-y-3">
+    {% for order in orders %}
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 relative">
+        <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-1 rounded bg-gray-100 {{ 'text-green-600' if order.status=='success' else 'text-orange-500' }}">
+            {{ order.status | upper }}
+        </span>
+        
+        <h4 class="font-bold text-sm">{{ order.pack_title }}</h4>
+        <p class="text-xs text-gray-500 mb-2">{{ order.operator }} | {{ order.mobile_number }}</p>
+        
+        <div class="bg-gray-50 p-2 rounded text-xs text-gray-600 mb-2">
+            Trx: {{ order.trx_id }} ({{ order.payment_method }})
+        </div>
+
+        {% if order.status == 'pending' %}
+        <div class="flex gap-2">
+            <a href="/admin/drive/action/approve/{{ order.id }}" class="flex-1 bg-green-500 text-white text-center py-1.5 rounded text-xs font-bold">Approve</a>
+            <a href="/admin/drive/action/cancel/{{ order.id }}" class="flex-1 bg-red-500 text-white text-center py-1.5 rounded text-xs font-bold">Cancel</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

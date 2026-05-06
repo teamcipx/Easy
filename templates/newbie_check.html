@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6 fade-up pb-24 pt-4">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-[#0A2540] to-[#4F46E5] p-6 rounded-[30px] text-white shadow-xl relative overflow-hidden flex justify-between items-center">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="h-14 w-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl shadow-inner border border-white/20">
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold">Newbie Check Panel</h1>
+                <p class="text-indigo-200 text-xs mt-1">শুধুমাত্র ১ম ও ২য় সাবমিশন</p>
+            </div>
+        </div>
+        <div class="relative z-10 bg-white/20 px-4 py-2 rounded-xl text-sm font-bold border border-white/10 backdrop-blur-md">
+            Pending: {{ submissions|length }}
+        </div>
+    </div>
+
+    <!-- Grid List -->
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {% for sub in submissions %}
+        <div class="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden flex flex-col group hover:shadow-xl transition duration-300">
+            
+            <!-- Dynamic Badge -->
+            <div class="absolute top-3 right-3 z-10">
+                {% if sub.is_newbie %}
+                    <span class="bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md animate-pulse border border-white">
+                        Newbie Task
+                    </span>
+                {% else %}
+                    <span class="bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md border border-white">
+                        Regular Task
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Screenshot Preview -->
+            <div class="h-48 bg-slate-100 relative overflow-hidden border-b border-slate-50">
+                <img src="{{ sub.proof_link }}" alt="Proof" class="w-full h-full object-cover transition transform group-hover:scale-110 duration-500">
+                <a href="{{ sub.proof_link }}" target="_blank" class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white font-bold backdrop-blur-sm">
+                    <i class="fa-solid fa-expand mr-2"></i> বড় করে দেখুন
+                </a>
+            </div>
+
+            <!-- Details -->
+            <div class="p-5 flex-grow bg-slate-50/30">
+                <h3 class="font-bold text-slate-800 text-sm mb-1 leading-tight line-clamp-1" title="{{ sub.task_title }}">
+                    {{ sub.task_title }}
+                </h3>
+                <p class="text-[10px] text-slate-500 mb-3"><i class="fa-regular fa-envelope"></i> {{ sub.user_email }}</p>
+                
+                <div class="inline-block bg-indigo-50 text-[#4F46E5] text-[10px] font-bold px-2 py-1 rounded-lg border border-indigo-100">
+                    রিওওার্ড: ৳ {{ sub.reward }}
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="p-3 bg-white border-t border-slate-100 flex gap-2">
+                <a href="/aw/newbie-action/reject/{{ sub.id }}" onclick="return confirm('এটি রিজেক্ট করবেন?')" 
+                   class="flex-1 bg-red-50 border border-red-100 text-red-600 py-2.5 rounded-xl text-xs font-bold text-center hover:bg-red-500 hover:text-white transition">
+                   <i class="fa-solid fa-xmark"></i> রিজেক্ট
+                </a>
+                <a href="/aw/newbie-action/approve/{{ sub.id }}" 
+                   class="flex-1 bg-green-500 text-white py-2.5 rounded-xl text-xs font-bold text-center shadow-lg hover:bg-green-600 transition">
+                   <i class="fa-solid fa-check"></i> অ্যাপ্রুভ
+                </a>
+            </div>
+
+        </div>
+        {% else %}
+        <div class="col-span-full text-center py-20 bg-white rounded-[30px] border-2 border-dashed border-slate-200">
+            <div class="h-20 w-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl text-indigo-300">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <h3 class="text-slate-700 font-bold">কোনো নতুন টাস্ক নেই</h3>
+            <p class="text-xs text-slate-400 mt-1">সব ইউজারদের ১ম ও ২য় টাস্ক ক্লিয়ার!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="max-w-2xl mx-auto space-y-6 fade-up pb-32 pt-4">
+
+    <!-- 1. HEADER -->
+    <div class="text-center space-y-2 px-4">
+        <div class="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-50 text-[#4F46E5] text-2xl shadow-sm mb-1 transform -rotate-3">
+            <i class="fa-brands fa-facebook"></i>
+        </div>
+        <h2 class="text-xl font-bold text-slate-800">স্পেশাল ভিডিও টিউটোরিয়াল</h2>
+        <p class="text-slate-500 text-xs max-w-sm mx-auto">নিচের ভিডিওটি সম্পূর্ণ দেখুন এবং নিয়মগুলো বুঝুন</p>
+    </div>
+
+    <!-- 2. RESPONSIVE VIDEO CONTAINER -->
+    <div class="flex justify-center px-2">
+        <!-- 
+           Width: max-w-[450px] (একটু চওড়া রাখা হয়েছে যাতে টেক্সট কেটে না যায়)
+           Height: h-[800px] (যেহেতু show_text=true, তাই লম্বা জায়গা লাগবে)
+        -->
+        <div class="relative w-full max-w-[450px] h-[800px] bg-white rounded-[20px] overflow-hidden shadow-2xl shadow-indigo-200 border border-slate-200">
+            
+            <!-- Loading Animation -->
+            <div class="absolute inset-0 flex items-center justify-center bg-slate-50 z-0">
+                <div class="flex flex-col items-center gap-2">
+                    <i class="fa-solid fa-circle-notch fa-spin text-[#4F46E5] text-3xl"></i>
+                    <span class="text-xs text-slate-400">Loading Video...</span>
+                </div>
+            </div>
+
+            <!-- Facebook Iframe -->
+            <iframe 
+                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1674428190396188%2F%3Fapp%3Dfbl&show_text=true&width=500" 
+                class="absolute top-0 left-0 w-full h-full z-10" 
+                style="border:none;overflow:hidden" 
+                scrolling="yes" 
+                frameborder="0" 
+                allowfullscreen="true" 
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+                allowFullScreen="true">
+            </iframe>
+
+        </div>
+    </div>
+
+    <!-- 3. ACTION BUTTONS -->
+    <div class="text-center pb-6 px-6">
+        <p class="text-[10px] text-slate-400 mb-4 bg-white px-3 py-1 rounded-full inline-block shadow-sm border border-slate-100">
+            <i class="fa-solid fa-volume-high text-[#4F46E5]"></i> ভিডিওতে সাউন্ড না থাকলে ট্যাপ করুন
+        </p>
+        
+        <div class="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+            <a href="/" class="flex items-center justify-center gap-2 bg-white text-slate-700 px-4 py-3 rounded-xl text-sm font-bold border border-slate-200 hover:bg-slate-50 transition">
+                <i class="fa-solid fa-house"></i> হোম
+            </a>
+            
+            {% if session.get('user_id') %}
+            <a href="/tasks" class="flex items-center justify-center gap-2 bg-[#4F46E5] text-white px-4 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-600 transition">
+                <span>কাজ করুন</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            {% else %}
+            <a href="/register" class="flex items-center justify-center gap-2 bg-[#4F46E5] text-white px-4 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-600 transition">
+                <span>জয়েন করুন</span> <i class="fa-solid fa-user-plus"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

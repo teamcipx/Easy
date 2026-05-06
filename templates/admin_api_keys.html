@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 fade-up pb-24 pt-4">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-slate-800 to-[#0A2540] p-6 rounded-[30px] text-white shadow-xl flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-key text-yellow-400"></i> ImgBB API Manager</h1>
+            <p class="text-slate-300 text-xs mt-1">Smart Rotation & Bulk Add System</p>
+        </div>
+        <div class="bg-white/20 px-4 py-2 rounded-xl text-sm font-bold backdrop-blur-md">
+            Total Keys: {{ keys|length }}
+        </div>
+    </div>
+
+    <!-- Bulk Add Form -->
+    <div class="bg-white p-6 rounded-[30px] shadow-sm border border-slate-50">
+        <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-[#4F46E5]"></i> একসাথে অনেকগুলো Key দিন
+        </h3>
+        <form method="POST" action="/admin/api-keys">
+            <label class="text-xs text-slate-500 mb-2 block">প্রতি লাইনে একটি করে Key দিন অথবা কমা (,) দিয়ে আলাদা করুন</label>
+            <textarea name="bulk_keys" rows="5" required placeholder="example_key_1\nexample_key_2\nexample_key_3" 
+                      class="w-full p-4 border border-slate-200 rounded-2xl bg-slate-50 focus:bg-white focus:outline-[#4F46E5] text-sm font-mono"></textarea>
+            
+            <button type="submit" class="mt-4 w-full bg-[#4F46E5] text-white py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-600 transition">
+                Save API Keys
+            </button>
+        </form>
+    </div>
+
+    <!-- Keys List Table -->
+    <div class="bg-white rounded-[30px] shadow-sm border border-slate-50 overflow-hidden">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 uppercase text-xs">
+                <tr>
+                    <th class="p-5">API Key</th>
+                    <th class="p-5 text-center">Status</th>
+                    <th class="p-5 text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for k in keys %}
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-5 font-mono text-xs text-slate-600">
+                        {{ k.api_key[:8] }}****************{{ k.api_key[-4:] }}
+                    </td>
+                    <td class="p-5 text-center">
+                        {% if k.is_active %}
+                            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold"><i class="fa-solid fa-circle-check"></i> Active</span>
+                        {% else %}
+                            <span class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-[10px] font-bold"><i class="fa-solid fa-ban"></i> Failed/Limit</span>
+                        {% endif %}
+                    </td>
+                    <td class="p-5 text-right">
+                        <a href="/admin/api-keys/delete/{{ k.id }}" onclick="return confirm('Delete this key?')" 
+                           class="text-red-400 hover:text-red-600 bg-red-50 p-2 rounded-lg transition">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="p-10 text-center text-slate-400">কোনো API Key সেভ করা নেই।</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

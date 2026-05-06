@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- 1. FILTER FORM -->
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
+        <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-3">
+            <div class="h-10 w-10 bg-[#0A2540] text-white rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-[#0A2540]">কাস্টম ফিল্টার</h2>
+                <p class="text-xs text-gray-500">আপনার প্রয়োজন অনুযায়ী ইউজার খুঁজুন</p>
+            </div>
+        </div>
+
+        <form method="POST" action="/admin/custom-filter" class="space-y-6">
+            
+            <!-- Balance Range -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">মিনিমাম ব্যালেন্স</label>
+                    <input type="number" step="0.01" name="min_balance" value="{{ f.min }}" placeholder="Ex: 10" 
+                           class="w-full p-3 border border-gray-200 rounded-xl focus:outline-blue-500 bg-gray-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">ম্যাক্সিমাম ব্যালেন্স</label>
+                    <input type="number" step="0.01" name="max_balance" value="{{ f.max }}" placeholder="Ex: 500" 
+                           class="w-full p-3 border border-gray-200 rounded-xl focus:outline-blue-500 bg-gray-50">
+                </div>
+            </div>
+
+            <!-- Time & Domain -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">কত দিন অফলাইন?</label>
+                    <input type="number" name="days_offline" value="{{ f.days }}" placeholder="Ex: 7 (দিন)" 
+                           class="w-full p-3 border border-gray-200 rounded-xl focus:outline-blue-500 bg-gray-50">
+                    <p class="text-[10px] text-gray-400 mt-1">*ফাঁকা রাখলে সব ইউজার খুঁজবে</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">ইমেইল ডোমেইন</label>
+                    <select name="email_domain" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-blue-500 bg-gray-50">
+                        <option value="@gmail.com" {{ 'selected' if f.domain == '@gmail.com' }}>@gmail.com</option>
+                        <option value="@yahoo.com" {{ 'selected' if f.domain == '@yahoo.com' }}>@yahoo.com</option>
+                        <option value="" {{ 'selected' if not f.domain }}>All Emails</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Limit -->
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">রেজাল্ট লিমিট</label>
+                <input type="number" name="limit" value="{{ f.limit or 290 }}" placeholder="Max results" 
+                       class="w-full p-3 border border-gray-200 rounded-xl focus:outline-blue-500 bg-gray-50">
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="w-full bg-[#0A2540] text-white py-3 rounded-xl font-bold shadow-lg hover:bg-opacity-90 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-search"></i> ডাটা ফিল্টার করুন
+            </button>
+        </form>
+    </div>
+
+    <!-- 2. RESULTS AREA -->
+    {% if csv_data or count > 0 %}
+    <div class="bg-white p-6 rounded-3xl shadow-lg border border-blue-50 relative animate-fade-in">
+        
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-[#0A2540] flex items-center gap-2">
+                <i class="fa-solid fa-file-csv text-green-600"></i> রেজাল্ট
+            </h3>
+            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-xs font-bold">
+                Found: {{ count }}
+            </span>
+        </div>
+
+        <div class="relative group">
+            <textarea id="resultBox" readonly rows="8" 
+                class="w-full p-4 border border-gray-200 rounded-2xl bg-[#F8FAFC] text-xs font-mono text-gray-700 focus:outline-none resize-y leading-loose"
+                >{{ csv_data }}</textarea>
+            
+            <button onclick="copyData()" 
+                class="absolute bottom-4 right-4 bg-[#E2136E] text-white px-6 py-2 rounded-xl text-xs font-bold shadow-xl hover:bg-[#c2105e] active:scale-95 transition flex items-center gap-2">
+                <i class="fa-regular fa-copy"></i> কপি
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    function copyData() {
+        const textBox = document.getElementById("resultBox");
+        if(!textBox.value) return;
+        
+        textBox.select();
+        textBox.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(textBox.value).then(() => {
+            alert("✅ ইমেইল লিস্ট কপি হয়েছে!");
+        });
+    }
+</script>
+{% endblock %}

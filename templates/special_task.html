@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="max-w-xl mx-auto space-y-6 fade-up pb-32 pt-4">
+
+    <!-- 1. TASK HEADER -->
+    <div class="bg-gradient-to-r from-[#0A2540] to-[#4F46E5] rounded-[30px] p-6 text-white text-center shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+        <div class="relative z-10">
+            <h2 class="text-xl font-bold">{{ task.title }}</h2>
+            <div class="mt-3 inline-block bg-white text-[#0A2540] px-4 py-1 rounded-full text-sm font-bold shadow-md">
+                রিওওার্ড: ৳ {{ task.reward }}
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. INSTRUCTIONS (STEPS) -->
+    <div class="bg-white p-6 rounded-[30px] shadow-sm border border-slate-50">
+        <h3 class="font-bold text-slate-700 mb-5 border-b border-gray-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-list-ol text-[#4F46E5]"></i> কাজের ধাপসমূহ
+        </h3>
+
+        <div class="space-y-6">
+            
+            <!-- Step 1: Video -->
+            <div class="flex gap-4">
+                <div class="flex-shrink-0 h-8 w-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                <div class="w-full">
+                    <h4 class="text-sm font-bold text-slate-700">ভিডিও দেখুন</h4>
+                    <p class="text-xs text-slate-500 mt-1 mb-2">কিভাবে কাজ করতে হবে তা জানতে ভিডিওটি দেখুন।</p>
+                    {% if task.tutorial and task.tutorial != '#' %}
+                    <a href="{{ task.tutorial }}" target="_blank" class="block w-full bg-red-50 text-red-600 text-center py-2 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition">
+                        <i class="fa-brands fa-youtube"></i> টিউটোরিয়াল ভিডিও দেখুন
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Step 2: Bot Start -->
+            <div class="flex gap-4">
+                <div class="flex-shrink-0 h-8 w-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                <div class="w-full">
+                    <h4 class="text-sm font-bold text-slate-700">বট স্টার্ট ও রেজিস্ট্রেশন</h4>
+                    <p class="text-xs text-slate-500 mt-1 mb-2">নিচের লিংকে গিয়ে টেলিগ্রাম বট Start করুন এবং রেজিস্ট্রেশন সম্পন্ন করুন।</p>
+                    <a href="{{ task.link }}" target="_blank" class="block w-full bg-blue-50 text-blue-600 text-center py-2 rounded-xl text-xs font-bold border border-blue-100 hover:bg-blue-100 transition">
+                        <i class="fa-brands fa-telegram"></i> লিংকে যান
+                    </a>
+                </div>
+            </div>
+
+            <!-- Step 3: Transfer (Highlighted) -->
+            <div class="flex gap-4">
+                <div class="flex-shrink-0 h-8 w-8 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold text-sm">3</div>
+                <div class="w-full">
+                    <h4 class="text-sm font-bold text-slate-700">এয়ারড্রপ ট্রান্সফার করুন</h4>
+                    <p class="text-xs text-slate-500 mt-1">আপনার ব্যালেন্স থেকে নিচের আইডিতে এয়ারড্রপ ট্রান্সফার করুন।</p>
+                    
+                    <!-- Copy ID Box -->
+                    <div class="mt-2 bg-yellow-50 border border-yellow-200 p-3 rounded-xl flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">Transfer ID</p>
+                            <p class="text-lg font-mono font-bold text-slate-800" id="transferID">84714</p>
+                        </div>
+                        <button onclick="copyID()" class="bg-yellow-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-yellow-600 active:scale-95 transition">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Proof -->
+            <div class="flex gap-4">
+                <div class="flex-shrink-0 h-8 w-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-sm">4</div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-700">প্রুফ সংগ্রহ করুন</h4>
+                    <p class="text-xs text-slate-500 mt-1">সফল ট্রান্সফারের একটি <b>স্ক্রিনশট</b> নিন এবং আপনার প্রোফাইল থেকে <b>রেফারেল লিংকটি</b> কপি করুন।</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3. SUBMISSION FORM -->
+    <form method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-[30px] shadow-xl border border-indigo-50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#4F46E5] to-[#E2136E]"></div>
+        
+        <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-up text-[#4F46E5]"></i> প্রুফ জমা দিন
+        </h3>
+
+        <!-- Ref Link Input -->
+        <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-500 mb-1.5">আপনার রেফারেল লিংক দিন</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-link"></i>
+                </div>
+                <input type="text" name="code" required placeholder="https://t.me/Bot?start=..." 
+                       class="w-full pl-9 p-3 border border-slate-200 rounded-xl focus:outline-[#4F46E5] text-sm font-bold text-slate-700">
+            </div>
+        </div>
+
+        <!-- Screenshot Upload -->
+        <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-500 mb-1.5">ট্রান্সফারের স্ক্রিনশট</label>
+            <div class="relative w-full group">
+                <input type="file" name="screenshot" accept="image/*" required 
+                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                       onchange="updateFileName(this)">
+                <div id="uploadBox" class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center group-hover:border-[#4F46E5] transition">
+                    <i id="uploadIcon" class="fa-solid fa-image text-2xl text-slate-400 mb-2 group-hover:text-[#4F46E5]"></i>
+                    <p id="uploadText" class="text-xs text-slate-500">Tap to Upload Image</p>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full bg-[#0A2540] text-white py-3.5 rounded-xl font-bold shadow-lg hover:bg-opacity-90 transition flex items-center justify-center gap-2">
+            <span>জমা দিন</span>
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </form>
+
+</div>
+
+<script>
+    // Copy Function for ID
+    function copyID() {
+        const idText = document.getElementById("transferID").innerText;
+        navigator.clipboard.writeText(idText).then(() => {
+            alert("ID কপি হয়েছে: " + idText);
+        });
+    }
+
+    // File Upload UX
+    function updateFileName(input) {
+        if (input.files && input.files[0]) {
+            document.getElementById('uploadBox').classList.add('border-green-500', 'bg-green-50');
+            document.getElementById('uploadIcon').className = 'fa-solid fa-check text-2xl text-green-500 mb-2';
+            document.getElementById('uploadText').innerText = input.files[0].name;
+            document.getElementById('uploadText').className = 'text-xs text-green-700 font-bold';
+        }
+    }
+</script>
+
+{% endblock %}

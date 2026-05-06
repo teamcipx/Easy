@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Premium Entry Animations */
+    .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    
+    /* Timeline Glow Dot */
+    .timeline-dot { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .notice-card:hover .timeline-dot {
+        border-color: #2563EB; /* Blue 600 */
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+    }
+
+    /* Notice Content Text Formatting */
+    .notice-content { white-space: pre-wrap; line-height: 1.7; transition: all 0.3s ease; }
+    
+    /* Image Lightbox Hover */
+    .notice-img-wrap { overflow: hidden; border-radius: 16px; margin-bottom: 16px; border: 1px solid #E2E8F0; }
+    .notice-img-wrap img { width: 100%; max-height: 300px; object-fit: cover; transition: transform 0.5s ease; }
+    .notice-img-wrap:hover img { transform: scale(1.05); }
+</style>
+
+<div class="max-w-2xl mx-auto space-y-8 fade-in-up pb-8 px-1">
+
+    <!-- ==========================================
+         1. PREMIUM HEADER SECTION
+    ========================================== -->
+    <div class="bg-gradient-to-br from-slate-900 to-[#1E293B] rounded-[32px] p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-blue-500/20 rounded-full blur-[50px] -mr-10 -mt-10 pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+                <div class="inline-flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border border-blue-500/30 mb-4 backdrop-blur-sm shadow-sm">
+                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span>
+                    Live Updates
+                </div>
+                <h2 class="text-3xl font-black tracking-tight mb-2">Notice Board</h2>
+                <p class="text-slate-400 text-xs font-medium leading-relaxed max-w-sm">সিস্টেম আপডেট এবং পেমেন্ট সংক্রান্ত যাবতীয় খবর।</p>
+            </div>
+            
+            <div class="flex flex-col items-center justify-center bg-white/10 p-4 rounded-[20px] backdrop-blur-md border border-white/10 shadow-inner flex-shrink-0 text-center min-w-[110px]">
+                <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1">Page Traffic</p>
+                <h3 class="text-2xl font-black text-emerald-400 font-mono flex items-center gap-1.5"><i class="fa-solid fa-users text-sm"></i> {{ views }}</h3>
+                <p class="text-[8px] text-slate-500 mt-1">Last 72 Hours</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. ADMIN POST FORM (With ImgBB & Telegram Sync)
+    ========================================== -->
+    {% if user and user.role == 'admin' %}
+    <div class="bg-white p-6 sm:p-8 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-100 border-l-[6px] border-l-blue-600 relative overflow-hidden">
+        <h3 class="font-bold text-slate-800 text-sm mb-5 flex items-center justify-between uppercase tracking-widest">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib text-blue-600"></i> Compose Notice</span>
+            <span class="text-[9px] bg-sky-50 text-sky-600 px-2 py-1 rounded-md border border-sky-100"><i class="fa-brands fa-telegram"></i> Auto Sync Active</span>
+        </h3>
+
+        <!-- Image Preview Box -->
+        <div id="imagePreviewBox" class="hidden mb-4 bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3">
+                <img id="previewImg" src="" class="h-12 w-12 object-cover rounded-xl border border-slate-200 shadow-sm">
+                <span class="text-xs font-bold text-emerald-600"><i class="fa-solid fa-check"></i> Image Attached</span>
+            </div>
+            <button type="button" onclick="removeImage()" class="h-8 w-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form method="POST" action="/notice" enctype="multipart/form-data" class="space-y-4" onsubmit="showPublishLoader()">
+            <div>
+                <input type="text" name="title" required placeholder="Notice Title..." class="w-full p-4 border border-slate-200 rounded-[16px] focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-800 shadow-sm">
+            </div>
+            <div>
+                <textarea name="content" required rows="4" placeholder="Write full details..." class="w-full p-4 border border-slate-200 rounded-[16px] focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-slate-50 focus:bg-white transition text-sm font-medium text-slate-700 shadow-sm resize-y"></textarea>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+                <label class="bg-slate-100 text-slate-600 px-5 py-3.5 rounded-[14px] text-xs font-bold cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition flex items-center gap-2 border border-slate-200">
+                    <i class="fa-solid fa-image"></i> Attach Image
+                    <input type="file" name="image" id="imageInput" class="hidden" accept="image/*" onchange="previewImage(this)">
+                </label>
+                <button type="submit" id="publishBtn" class="bg-blue-600 text-white px-8 py-3.5 rounded-[14px] text-xs font-black uppercase tracking-widest shadow-[0_8px_20px_rgba(37,99,235,0.25)] hover:bg-blue-700 active:scale-95 transition-all flex items-center gap-2">
+                    Publish to Network <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- ==========================================
+         3. TIMELINE NOTICE LIST
+    ========================================== -->
+    <div class="relative pl-4 sm:pl-6 space-y-6 mt-8">
+        <!-- Vertical Timeline Line -->
+        <div class="absolute left-4 sm:left-6 top-3 bottom-0 w-0.5 bg-slate-200 rounded-full"></div>
+
+        {% for notice in notices %}
+        <div class="relative pl-6 sm:pl-8 notice-card">
+            
+            <!-- Timeline Dot -->
+            <div class="timeline-dot absolute left-[-6.5px] top-6 h-4 w-4 bg-white border-[4px] border-slate-300 rounded-full z-10 shadow-sm"></div>
+
+            <div class="bg-white p-5 sm:p-6 rounded-[24px] shadow-[0_2px_15px_rgba(0,0,0,0.02)] border border-slate-100 hover:border-blue-200 transition-colors">
+                
+                <!-- Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg shadow-sm border border-blue-100">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.1em]">Posted On</p>
+                            <p class="text-xs font-bold text-slate-700 font-mono flex items-center gap-1.5 mt-0.5"><i class="fa-regular fa-clock text-blue-500"></i> {{ notice.created_at[:10] }}</p>
+                        </div>
+                    </div>
+
+                    {% if user and user.role == 'admin' %}
+                    <a href="/notice/delete/{{ notice.id }}" onclick="return confirm('ডিলিট করবেন?')" class="h-8 w-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Content Area -->
+                <h3 class="text-lg font-black text-slate-900 mb-3 leading-snug tracking-tight">{{ notice.title }}</h3>
+                
+                <!-- Notice Image (If available) -->
+                {% if notice.image_url %}
+                <div class="notice-img-wrap cursor-pointer" onclick="openImageModal('{{ notice.image_url }}')">
+                    <img src="{{ notice.image_url }}" alt="Notice Image">
+                </div>
+                {% endif %}
+
+                <!-- Notice Text (With Read More Logic) -->
+                <div class="bg-slate-50 p-4 rounded-[16px] border border-slate-100">
+                    <div class="text-[13px] text-slate-600 notice-content font-medium line-clamp-3" id="text-{{ notice.id }}">
+{{ notice.content }}
+                    </div>
+                    {% if notice.content|length > 150 %}
+                    <button onclick="toggleText('text-{{ notice.id }}', this)" class="text-[11px] font-bold text-blue-600 mt-2 hover:underline focus:outline-none">
+                        Read more <i class="fa-solid fa-chevron-down text-[9px] ml-0.5"></i>
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Footer Social Actions -->
+                <div class="mt-4 flex gap-3">
+                    <a href="https://t.me/pay_easy_earn" target="_blank" class="text-[10px] font-bold text-sky-600 bg-sky-50 border border-sky-100 px-4 py-2 rounded-xl hover:bg-sky-100 transition shadow-sm flex items-center gap-1.5 active:scale-95">
+                        <i class="fa-brands fa-telegram text-sm"></i> Telegram View
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-20 bg-white rounded-[32px] border border-slate-100 shadow-sm ml-6 sm:ml-8">
+            <div class="h-16 w-16 bg-slate-50 rounded-[16px] flex items-center justify-center mx-auto mb-4 text-3xl text-slate-300 border border-slate-100"><i class="fa-regular fa-bell-slash"></i></div>
+            <h3 class="text-sm font-bold text-slate-800">কোনো নোটিশ নেই</h3>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    // Read More Logic
+    function toggleText(id, btn) {
+        const el = document.getElementById(id);
+        if (el.classList.contains('line-clamp-3')) {
+            el.classList.remove('line-clamp-3');
+            btn.innerHTML = 'Show less <i class="fa-solid fa-chevron-up text-[9px] ml-0.5"></i>';
+        } else {
+            el.classList.add('line-clamp-3');
+            btn.innerHTML = 'Read more <i class="fa-solid fa-chevron-down text-[9px] ml-0.5"></i>';
+        }
+    }
+
+    // Image Preview (Admin)
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreviewBox').classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    function removeImage() {
+        document.getElementById('imageInput').value = "";
+        document.getElementById('imagePreviewBox').classList.add('hidden');
+    }
+
+    // Loading State for Publish
+    function showPublishLoader() {
+        const btn = document.getElementById('publishBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Broadcasting...';
+        btn.classList.add('opacity-90', 'cursor-not-allowed');
+    }
+
+    // Full Screen Image Modal
+    function openImageModal(url) {
+        // You can use existing lightbox modal from proofs.html if present in layout, 
+        // or redirect to the image directly for simple viewing.
+        window.open(url, '_blank');
+    }
+</script>
+
+{% endblock %}

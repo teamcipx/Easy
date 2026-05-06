@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto space-y-6 pb-24 pt-4 fade-up">
+
+    <!-- Header -->
+    <div class="bg-[#0A2540] p-6 rounded-[24px] text-white flex justify-between items-center shadow-lg">
+        <div>
+            <h2 class="text-xl font-bold">Special Task Panel</h2>
+            <p class="text-xs text-gray-300">Access: Sub-Admin Only</p>
+        </div>
+        <div class="bg-white/10 px-4 py-1.5 rounded-lg text-xs font-bold border border-white/20">
+            Pending: {{ submissions|length }}
+        </div>
+    </div>
+
+    <!-- Submissions List -->
+    <div class="grid md:grid-cols-2 gap-4">
+        {% for sub in submissions %}
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative group">
+            
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <h3 class="font-bold text-sm text-[#0A2540]">{{ sub.user_email }}</h3>
+                    <p class="text-[10px] text-gray-400 font-mono">{{ sub.created_at[:10] }}</p>
+                </div>
+                <span class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded">Pending</span>
+            </div>
+
+            <!-- Code Display -->
+            <div class="bg-slate-50 p-3 rounded-xl mb-3 border border-slate-200">
+                <p class="text-[10px] text-gray-500 uppercase font-bold">Submitted Code</p>
+                <p class="text-lg font-mono font-bold text-[#4F46E5] select-all">{{ sub.code }}</p>
+            </div>
+
+            <!-- Screenshot -->
+            <div class="mb-4">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Proof</p>
+                <a href="{{ sub.proof_link }}" target="_blank">
+                    <img src="{{ sub.proof_link }}" class="w-full h-32 object-cover rounded-xl hover:opacity-90 transition border border-slate-200">
+                </a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+                <a href="/aw/action/reject/{{ sub.id }}" onclick="return confirm('রিজেক্ট করবেন? ইউজার আবার সাবমিট করতে পারবে।')" 
+                   class="flex-1 bg-red-50 text-red-600 py-2 rounded-lg text-xs font-bold text-center hover:bg-red-100 transition">
+                   ❌ Reject (Retry)
+                </a>
+                <a href="/aw/action/approve/{{ sub.id }}" onclick="return confirm('অ্যাপ্রুভ করবেন? টাকা যোগ হবে।')" 
+                   class="flex-1 bg-green-600 text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-green-700 shadow-md transition">
+                   ✅ Approve & Pay
+                </a>
+            </div>
+
+        </div>
+        {% else %}
+        <div class="col-span-full text-center py-20 text-gray-400 bg-white rounded-2xl border-2 border-dashed">
+            <i class="fa-solid fa-check-double text-4xl mb-2"></i>
+            <p>কোনো পেন্ডিং স্পেশাল টাস্ক নেই।</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

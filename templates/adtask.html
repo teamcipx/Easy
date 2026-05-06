@@ -1,0 +1,175 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .fade-up { animation: fadeUp 0.5s ease-out forwards; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="max-w-4xl mx-auto space-y-8 fade-up pb-24 pt-4">
+
+    <!-- 1. CREATE TASK FORM -->
+    <div class="clean-card p-6 md:p-8 relative overflow-hidden border-t-4 border-t-emerald-500">
+        <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
+            <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-sm">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-black text-slate-800">নতুন টাস্ক তৈরি করুন</h2>
+                <p class="text-xs text-slate-500 font-medium">ইউজারদের জন্য কাজ সেট করুন</p>
+            </div>
+        </div>
+        
+        <form method="POST" action="/adtask" enctype="multipart/form-data" class="space-y-5">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Category -->
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">ক্যাটাগরি</label>
+                    <select name="category" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-sm font-bold text-slate-700 transition">
+                        <option value="Facebook">Facebook</option>
+                        <option value="YouTube">YouTube</option>
+                        <option value="TikTok">TikTok</option>
+                        <option value="Telegram">Telegram</option>
+                        <option value="Web">Website</option>
+                    </select>
+                </div>
+                
+                <!-- Task Type (Triggers JS) -->
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">কাজের ধরন</label>
+                    <select name="task_type" id="taskTypeSelect" onchange="toggleFBFields()" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-sm font-bold text-slate-700 transition">
+                        <option value="screenshot">Screenshot (Proof Req)</option>
+                        <option value="link">Link Click (No Proof)</option>
+                        <option value="fb_post">Facebook Post (Copy & Post)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">টাস্ক টাইটেল</label>
+                <input type="text" name="title" required placeholder="Ex: Watch YouTube Video" class="w-full p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-800">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">কাজের লিংক</label>
+                    <input type="url" name="link" placeholder="https://..." class="w-full p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 focus:bg-white transition text-sm font-mono text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">টাকা (Reward)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400">৳</span>
+                        <input type="number" step="0.01" name="reward" value="5.00" class="w-full pl-8 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-800">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">বিবরণ</label>
+                <textarea name="description" rows="2" class="w-full p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 focus:bg-white transition text-sm font-medium text-slate-700" placeholder="বিস্তারিত লিখুন..."></textarea>
+            </div>
+
+            <!-- ================= FB POST DYNAMIC FIELDS ================= -->
+            <div id="fbPostFields" class="hidden bg-blue-50/50 border border-blue-200 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-brands fa-facebook text-blue-600 text-lg"></i>
+                    <h4 class="font-bold text-slate-800 text-sm">Facebook Post Setup</h4>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">পোস্টের ছবি আপলোড করুন</label>
+                    <input type="file" name="task_image" accept="image/*" class="w-full p-3 border border-blue-200 rounded-xl bg-white text-xs font-bold text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 ml-1 uppercase tracking-widest">পোস্টের ক্যাপশন (Text)</label>
+                    <textarea name="caption" rows="3" class="w-full p-3 border border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 bg-white transition text-sm font-medium text-slate-700" placeholder="ইউজার এই লেখাটি কপি করে ফেসবুকে পোস্ট করবে..."></textarea>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-emerald w-full text-white py-4 rounded-xl font-black text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 mt-4">
+                <i class="fa-solid fa-plus"></i> টাস্ক পাবলিশ করুন
+            </button>
+        </form>
+    </div>
+
+    <!-- 2. ALL TASK LIST -->
+    <div>
+        <h3 class="font-black text-slate-800 text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-emerald-500"></i> সকল টাস্ক লিস্ট ({{ tasks|length }})
+        </h3>
+
+        <div class="clean-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
+                        <tr>
+                            <th class="p-4">Title & Link</th>
+                            <th class="p-4">Reward</th>
+                            <th class="p-4">Type</th>
+                            <th class="p-4 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        {% for task in tasks %}
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="p-4">
+                                <div class="font-bold text-slate-800">{{ task.title }}</div>
+                                <a href="{{ task.link }}" target="_blank" class="text-[10px] text-blue-500 hover:underline font-mono mt-0.5 truncate w-32 block">
+                                    {{ task.link }}
+                                </a>
+                            </td>
+                            <td class="p-4">
+                                <span class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md font-bold text-xs font-mono border border-emerald-100">
+                                    ৳ {{ task.reward }}
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <span class="text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border 
+                                    {% if task.task_type == 'screenshot' %} bg-purple-50 text-purple-600 border-purple-100
+                                    {% elif task.task_type == 'fb_post' %} bg-blue-50 text-blue-600 border-blue-100
+                                    {% else %} bg-slate-100 text-slate-600 border-slate-200 {% endif %}">
+                                    {{ task.task_type | replace('_', ' ') }}
+                                </span>
+                            </td>
+                            <td class="p-4 text-center">
+                                <a href="/admin/task/delete/{{ task.id }}" onclick="return confirm('এই টাস্ক ডিলিট করবেন?')" 
+                                   class="inline-flex h-8 w-8 bg-red-50 text-red-500 rounded-lg items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm" title="Delete Task">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="p-10 text-center text-slate-400">
+                                <i class="fa-solid fa-folder-open text-3xl mb-2 opacity-50"></i>
+                                <p class="text-xs font-bold">কোনো টাস্ক তৈরি করা হয়নি</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- JS to toggle Facebook Post fields -->
+<script>
+    function toggleFBFields() {
+        const type = document.getElementById('taskTypeSelect').value;
+        const fbFields = document.getElementById('fbPostFields');
+        if (type === 'fb_post') {
+            fbFields.classList.remove('hidden');
+        } else {
+            fbFields.classList.add('hidden');
+        }
+    }
+</script>
+
+{% endblock %}

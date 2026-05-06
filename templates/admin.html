@@ -1,0 +1,229 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+<style>
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .admin-tile {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(15, 23, 42, 0.05);
+    }
+    .admin-tile:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 30px -10px rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.2);
+    }
+</style>
+
+<div class="max-w-6xl mx-auto space-y-10 pb-32 pt-4 fade-up">
+
+    <!-- ================= 1. ADMIN HERO (Command Center) ================= -->
+    <div class="relative bg-slate-900 rounded-[32px] p-8 md:p-10 text-white shadow-2xl overflow-hidden">
+        <!-- Decor Blobs -->
+        <div class="absolute top-[-20%] right-[-5%] w-64 h-64 bg-emerald-500/20 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="absolute bottom-[-50%] left-[-10%] w-48 h-48 bg-teal-500/20 rounded-full blur-[60px] pointer-events-none"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="flex items-center gap-5">
+                <div class="h-16 w-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white/10 text-emerald-400">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-1">এডমিন পোর্টাল</h1>
+                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
+                        <i class="fa-solid fa-server mr-1"></i> Command Center
+                    </p>
+                </div>
+            </div>
+            <div class="bg-white/5 backdrop-blur px-6 py-3 rounded-2xl border border-white/10 text-center min-w-[120px]">
+                <p class="text-[9px] text-slate-400 uppercase font-black tracking-widest mb-1">Total Users</p>
+                <p class="text-2xl font-black text-white font-mono">{{ user_count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 2. FINANCIAL & VIP MANAGEMENT ================= -->
+    <div>
+        <h3 class="font-black text-slate-800 text-sm mb-4 uppercase tracking-widest flex items-center gap-2 px-2">
+            <i class="fa-solid fa-sack-dollar text-emerald-500"></i> Finance & VIP
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            
+            <a href="/admin/activations" class="admin-tile bg-white p-5 rounded-[24px] flex flex-col items-center justify-center text-center group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-5 text-5xl transform translate-x-2 -translate-y-2 group-hover:scale-110 transition duration-500"><i class="fa-solid fa-check-double"></i></div>
+                <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-colors"><i class="fa-solid fa-money-check-dollar"></i></div>
+                <h4 class="font-bold text-slate-800 text-sm">পেমেন্ট চেক</h4>
+                <p class="text-[10px] text-slate-400 mt-1 font-medium">একাউন্ট অ্যাক্টিভেশন</p>
+            </a>
+
+            <a href="/admin/withdrawals" class="admin-tile bg-white p-5 rounded-[24px] flex flex-col items-center justify-center text-center group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-5 text-5xl transform translate-x-2 -translate-y-2 group-hover:scale-110 transition duration-500"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <div class="h-12 w-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center text-xl mb-3 group-hover:bg-rose-500 group-hover:text-white transition-colors"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                <h4 class="font-bold text-slate-800 text-sm">উত্তোলন</h4>
+                <p class="text-[10px] text-slate-400 mt-1 font-medium">উইথড্র রিকোয়েস্ট</p>
+            </a>
+
+            <a href="/admin/vip" class="admin-tile bg-white p-5 rounded-[24px] flex flex-col items-center justify-center text-center group relative overflow-hidden md:col-span-1 col-span-2">
+                <div class="absolute top-0 right-0 p-3 opacity-5 text-5xl transform translate-x-2 -translate-y-2 group-hover:scale-110 transition duration-500"><i class="fa-solid fa-crown"></i></div>
+                <div class="h-12 w-12 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center text-xl mb-3 group-hover:bg-yellow-500 group-hover:text-white transition-colors"><i class="fa-solid fa-gem"></i></div>
+                <h4 class="font-bold text-slate-800 text-sm">VIP রিকোয়েস্ট</h4>
+                <p class="text-[10px] text-slate-400 mt-1 font-medium">এলিট মেম্বারশিপ এপ্রুভ</p>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ================= 3. TASKS & SERVICES ================= -->
+    <div>
+        <h3 class="font-black text-slate-800 text-sm mb-4 uppercase tracking-widest flex items-center gap-2 px-2">
+            <i class="fa-solid fa-layer-group text-teal-500"></i> Platform Services
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            
+            <a href="/admin/submissions" class="admin-tile bg-white p-5 rounded-[24px] flex flex-col items-center justify-center text-center group">
+                <div class="h-12 w-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl mb-3 group-hover:bg-purple-600 group-hover:text-white transition-colors"><i class="fa-solid fa-clipboard-check"></i></div>
+                <h4 class="font-bold text-slate-800 text-xs">টাস্ক প্রুফ চেক</h4>
+            </a>
+            
+            <a href="/adtask" class="admin-tile bg-white p-5 rounded-[24px] flex flex-col items-center justify-center text-center group">
+                <div class="h-12 w-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors"><i class="fa-solid fa-plus"></i></div>
+                <h4 class="font-bold text-slate-800 text-xs">নতুন টাস্ক</h4>
+            </a>
+
+            <a href="/admin/drive/manage" class="admin-tile bg-white p-5 rounded-[24px] flex flex-col items-center justify-center text-center group">
+                <div class="h-12 w-12 bg-sky-50 text-sky-500 rounded-xl flex items-center justify-center text-xl mb-3 group-hover:bg-sky-500 group-hover:text-white transition-colors"><i class="fa-solid fa-wifi"></i></div>
+                <h4 class="font-bold text-slate-800 text-xs">ড্রাইভ প্যাক</h4>
+            </a>
+
+            <a href="/proofs" class="admin-tile bg-white p-5 rounded-[24px] flex flex-col items-center justify-center text-center group">
+                <div class="h-12 w-12 bg-pink-50 text-pink-500 rounded-xl flex items-center justify-center text-xl mb-3 group-hover:bg-pink-500 group-hover:text-white transition-colors"><i class="fa-solid fa-images"></i></div>
+                <h4 class="font-bold text-slate-800 text-xs">গ্যালারি আপলোড</h4>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ================= 4. ADVANCED USER DATABASE ================= -->
+    <div>
+        <h3 class="font-black text-slate-800 text-sm mb-4 uppercase tracking-widest flex items-center gap-2 px-2">
+            <i class="fa-solid fa-users-gear text-indigo-500"></i> User Database
+        </h3>
+        <div class="grid grid-cols-2 gap-4">
+            
+            <!-- UserX Ultimate Filter -->
+            <a href="/admin/userx" class="col-span-2 admin-tile bg-gradient-to-r from-slate-900 to-indigo-900 p-6 rounded-[24px] flex items-center justify-between group overflow-hidden relative">
+                <div class="absolute right-0 top-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl"></div>
+                <div class="flex items-center gap-4 relative z-10">
+                    <div class="h-12 w-12 bg-white/10 text-white rounded-xl flex items-center justify-center text-2xl border border-white/20"><i class="fa-solid fa-filter"></i></div>
+                    <div>
+                        <h4 class="font-black text-white text-base">UserX Filter</h4>
+                        <p class="text-[10px] text-indigo-200 mt-1 uppercase tracking-widest font-bold">Ultimate Search & Export</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right text-white/50 group-hover:translate-x-2 transition relative z-10"></i>
+            </a>
+
+            <!-- Normal User Ops -->
+            <a href="/admin/users" class="admin-tile bg-white p-4 rounded-[20px] flex items-center gap-3">
+                <div class="h-10 w-10 bg-slate-100 text-slate-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-list"></i></div>
+                <span class="text-xs font-bold text-slate-700">সকল ইউজার</span>
+            </a>
+            
+            <a href="/admin/ref-check" class="admin-tile bg-white p-4 rounded-[20px] flex items-center gap-3">
+                <div class="h-10 w-10 bg-teal-50 text-teal-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-sitemap"></i></div>
+                <span class="text-xs font-bold text-slate-700">রেফার চেক</span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ================= 5. SYSTEM SECURITY & CLEANUP ================= -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- API Manager -->
+        <a href="/admin/api-keys" class="admin-tile bg-white p-5 rounded-[24px] flex items-center gap-4 relative overflow-hidden group border border-slate-100">
+            <div class="h-12 w-12 bg-slate-900 text-white rounded-xl flex items-center justify-center text-xl shadow-md"><i class="fa-solid fa-key"></i></div>
+            <div>
+                <h4 class="font-bold text-slate-800 text-sm">ImgBB API Manager</h4>
+                <p class="text-[10px] text-slate-500 mt-1 font-medium">Smart Rotation Setup</p>
+            </div>
+        </a>
+
+        <!-- Danger Zone -->
+        <a href="/admin/danger-zone" class="admin-tile bg-red-50 p-5 rounded-[24px] flex items-center gap-4 relative overflow-hidden group border border-red-100 hover:bg-red-100">
+            <div class="h-12 w-12 bg-red-500 text-white rounded-xl flex items-center justify-center text-xl shadow-md shadow-red-200"><i class="fa-solid fa-radiation"></i></div>
+            <div>
+                <h4 class="font-bold text-red-700 text-sm">Danger Zone</h4>
+                <p class="text-[10px] text-red-500 mt-1 font-medium uppercase tracking-wider">Mass Cleanup</p>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- ================= 6. SITE CONFIGURATION FORM ================= -->
+    <div class="clean-card p-6 md:p-8 mt-6">
+        <h3 class="font-black text-slate-800 mb-6 pb-4 border-b border-slate-100 flex items-center gap-2 text-base">
+            <i class="fa-solid fa-sliders text-emerald-500"></i> সাইট কনফিগারেশন
+        </h3>
+
+        <form method="POST" action="/admin" class="space-y-6">
+            
+            <!-- Toggles Area -->
+            <div class="grid md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-[24px] border border-slate-100">
+                
+                <!-- Maintenance -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-person-digging"></i></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800">Maintenance Mode</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5">সাইট সাধারণ ইউজারদের জন্য বন্ধ থাকবে</p>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="maintenance" class="sr-only peer" {{ 'checked' if settings.maintenance_mode }}>
+                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                    </label>
+                </div>
+
+                <!-- Activation Required -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800">Activation Barrier</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5">টাকা ছাড়া কেউ কাজ করতে পারবে না</p>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="activation" class="sr-only peer" {{ 'checked' if settings.activation_required }}>
+                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </div>
+
+            </div>
+
+            <!-- Global Notice -->
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest ml-1">হোমপেজ স্ক্রলিং নোটিশ</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 pt-4 pointer-events-none">
+                        <i class="fa-solid fa-bullhorn text-slate-400"></i>
+                    </div>
+                    <textarea name="notice" rows="3" class="w-full pl-11 p-4 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-sm font-medium text-slate-700 bg-slate-50 focus:bg-white transition leading-relaxed" placeholder="এখানে লেখা নোটিশ সবার ড্যাশবোর্ডে ভাসবে...">{{ settings.notice_text }}</textarea>
+                </div>
+            </div>
+
+            <!-- Save Action -->
+            <button type="submit" class="btn-emerald w-full text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg">
+                <i class="fa-solid fa-floppy-disk"></i> সেটিংস আপডেট করুন
+            </button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

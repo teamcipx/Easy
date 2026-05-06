@@ -1,0 +1,205 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Premium Entry Animations */
+    .fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Admin Card Style */
+    .admin-review-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .admin-review-card:hover {
+        border-color: #BFDBFE;
+        box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.1);
+        transform: translateY(-2px);
+    }
+
+    /* Copy Data Row */
+    .copy-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 14px; background: #F8FAFC; border-radius: 12px;
+        border: 1px solid #F1F5F9; margin-bottom: 8px;
+        transition: background 0.2s;
+    }
+    .copy-row:hover { background: #FFFFFF; border-color: #DBEAFE; }
+
+    /* Action Buttons */
+    .action-btn { transition: all 0.2s ease; }
+    .action-btn:active { transform: scale(0.95); }
+</style>
+
+<div class="max-w-4xl mx-auto space-y-8 fade-in-up pb-8 px-1">
+
+    <!-- ==========================================
+         1. ADD TASK FORM (Admin Control)
+    ========================================== -->
+    <div class="bg-white p-6 sm:p-8 border border-slate-200 rounded-[24px] shadow-sm relative overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600"></div>
+        
+        <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
+            <div class="h-12 w-12 bg-blue-50 text-blue-600 rounded-[14px] flex items-center justify-center text-xl shadow-sm border border-blue-100">
+                <i class="fa-solid fa-folder-plus"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-black text-slate-800">Add New Gmail Task</h2>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-0.5">Publish Work for Users</p>
+            </div>
+        </div>
+
+        <form method="POST" action="/admin/gmails" class="grid md:grid-cols-2 gap-4">
+            <!-- Full Name -->
+            <input type="text" name="first_name" required placeholder="First Name (ex: Rahim)" class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-blue-500 outline-none text-sm font-semibold transition">
+            <input type="text" name="last_name" placeholder="Last Name (ex: Uddin)" class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-blue-500 outline-none text-sm font-semibold transition">
+            
+            <!-- Email & Pass -->
+            <div class="relative">
+                <span class="absolute right-4 top-3.5 text-slate-400 text-xs font-bold font-mono">@gmail.com</span>
+                <input type="text" name="email_prefix" required placeholder="Email Prefix (ex: rahim2026)" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-blue-500 outline-none text-sm font-mono pr-24 transition">
+            </div>
+            <input type="text" name="password" required placeholder="Password" class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-blue-500 outline-none text-sm font-mono transition">
+            
+            <!-- Reward & Submit -->
+            <div class="relative">
+                <span class="absolute left-4 top-3.5 text-slate-400 font-bold">৳</span>
+                <input type="number" step="0.01" name="reward" required placeholder="Reward Amount" value="5" class="w-full pl-8 p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-blue-500 outline-none text-sm font-black transition">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white p-3.5 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition flex items-center justify-center gap-2">
+                Publish Task <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- ==========================================
+         2. PENDING REVIEWS (Check & Copy)
+    ========================================== -->
+    <div class="flex items-center justify-between mb-4 px-1 mt-8">
+        <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-check-to-slot text-amber-500"></i> Review Queue
+        </h3>
+        <span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-md text-[10px] font-bold border border-slate-200">
+            Pending: {{ pending_tasks|length }}
+        </span>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+        {% for task in pending_tasks %}
+        <div class="admin-review-card p-5 flex flex-col justify-between">
+            
+            <!-- User Info Header -->
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="h-8 w-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xs">
+                        {{ task.profiles.email[0] | upper }}
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Submitted By</p>
+                        <span class="text-xs font-bold text-slate-700 font-mono">{{ task.profiles.email }}</span>
+                    </div>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-lg text-center shadow-sm">
+                    <span class="block text-[7px] font-black text-emerald-600 uppercase tracking-widest mb-0.5">Payout</span>
+                    <span class="font-black text-emerald-700 text-sm font-mono leading-none">৳{{ task.reward }}</span>
+                </div>
+            </div>
+            
+            <!-- Extracted Data (With ONE-CLICK COPY) -->
+            <div class="mb-5 flex-grow">
+                
+                <!-- Full Name Row -->
+                <div class="copy-row group">
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.1em] mb-0.5">Full Name</p>
+                        <p class="text-sm font-bold text-slate-800" id="name_{{ task.id }}">{{ task.first_name }} {{ task.last_name }}</p>
+                    </div>
+                    <button onclick="copyAdminData('name_{{ task.id }}', this)" class="h-8 w-8 bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-blue-600 hover:border-blue-200 shadow-sm transition active:scale-90 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-regular fa-copy text-xs"></i>
+                    </button>
+                </div>
+                
+                <!-- Email Row (Highlighted) -->
+                <div class="copy-row group border-blue-100 bg-blue-50/50">
+                    <div class="overflow-hidden pr-2">
+                        <p class="text-[9px] text-blue-500 font-bold uppercase tracking-[0.1em] mb-0.5">Gmail Address</p>
+                        <p class="text-sm font-black text-blue-700 font-mono truncate w-full" id="email_{{ task.id }}">{{ task.email_prefix }}@gmail.com</p>
+                    </div>
+                    <button onclick="copyAdminData('email_{{ task.id }}', this)" class="h-8 w-8 bg-blue-600 border border-blue-700 rounded-lg text-white hover:bg-blue-700 shadow-sm transition active:scale-90 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-regular fa-copy text-xs"></i>
+                    </button>
+                </div>
+                
+                <!-- Password Row -->
+                <div class="copy-row group">
+                    <div class="overflow-hidden pr-2">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.1em] mb-0.5">Password</p>
+                        <p class="text-sm font-bold text-slate-800 font-mono truncate w-full" id="pass_{{ task.id }}">{{ task.password }}</p>
+                    </div>
+                    <button onclick="copyAdminData('pass_{{ task.id }}', this)" class="h-8 w-8 bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-blue-600 hover:border-blue-200 shadow-sm transition active:scale-90 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-regular fa-copy text-xs"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Actions (Approve / Reject) -->
+            <div class="flex gap-2 border-t border-slate-100 pt-4">
+                <a href="/admin/gmails/action/reject/{{ task.id }}" onclick="return confirm('রিজেক্ট করলে কাজটি আবার মার্কেটে (Available) চলে যাবে। নিশ্চিত?')" 
+                   class="action-btn flex-1 bg-white border border-red-200 text-red-600 py-3 rounded-[14px] text-[11px] font-bold text-center hover:bg-red-50 transition shadow-sm">
+                   <i class="fa-solid fa-xmark mr-1"></i> Reject
+                </a>
+                
+                <a href="/admin/gmails/action/approve/{{ task.id }}" onclick="return confirm('অ্যাপ্রুভ করবেন? ইউজারের ব্যালেন্সে টাকা যোগ হয়ে যাবে।')" 
+                   class="action-btn flex-1 bg-blue-600 text-white py-3 rounded-[14px] text-[11px] font-bold text-center shadow-md hover:bg-blue-700 transition">
+                   <i class="fa-solid fa-check-double mr-1"></i> Approve
+                </a>
+            </div>
+
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="col-span-full text-center py-20 bg-white rounded-[32px] border border-dashed border-slate-300 shadow-sm mt-4">
+            <div class="h-20 w-20 bg-slate-50 rounded-[20px] flex items-center justify-center mx-auto mb-4 text-4xl text-slate-300 border border-slate-100 shadow-sm">
+                <i class="fa-solid fa-envelope-circle-check"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Inbox Clear!</h3>
+            <p class="text-xs text-slate-500 mt-1 font-medium">কোনো কাজ পেন্ডিং নেই।</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- Copy Script with Fast Feedback -->
+<script>
+    function copyAdminData(elementId, btn) {
+        const textToCopy = document.getElementById(elementId).innerText;
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            // Visual Feedback
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-xs"></i>';
+            btn.classList.add('bg-green-500', 'text-white', 'border-green-600');
+            btn.classList.remove('bg-white', 'text-slate-400', 'border-slate-200', 'bg-blue-600', 'border-blue-700');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                // Revert to original classes based on the button type
+                if(elementId.includes('email')) {
+                    btn.classList.add('bg-blue-600', 'text-white', 'border-blue-700');
+                } else {
+                    btn.classList.add('bg-white', 'text-slate-400', 'border-slate-200');
+                }
+                btn.classList.remove('bg-green-500', 'text-white', 'border-green-600');
+            }, 1000); // 1 second fast feedback
+        });
+    }
+</script>
+
+{% endblock %}

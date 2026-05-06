@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Premium Entry Animations */
+    .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Hide Scrollbar for category tabs */
+    .hide-scroll::-webkit-scrollbar { display: none; }
+    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Telecom Offer Card */
+    .offer-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 24px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .offer-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.1);
+        border-color: #BFDBFE;
+    }
+</style>
+
+<div class="max-w-5xl mx-auto space-y-6 fade-in-up pb-8 px-1">
+
+    <!-- ==========================================
+         1. HERO HEADER (Corporate E-commerce Style)
+    ========================================== -->
+    <div class="bg-gradient-to-r from-[#1E3A8A] to-[#2563EB] rounded-[32px] p-6 sm:p-8 text-white relative overflow-hidden shadow-[0_10px_30px_rgba(37,99,235,0.2)]">
+        <!-- Abstract Decors -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-bl-full pointer-events-none"></div>
+        <div class="absolute bottom-[-20%] left-[-10%] w-48 h-48 bg-sky-400 opacity-20 rounded-full blur-[40px] pointer-events-none"></div>
+        <i class="fa-solid fa-wifi absolute right-6 top-1/2 transform -translate-y-1/2 text-8xl opacity-[0.04] pointer-events-none -rotate-12"></i>
+        
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+                <div class="inline-flex items-center gap-1.5 bg-blue-500/20 text-blue-200 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border border-blue-400/30 mb-4 backdrop-blur-sm shadow-sm">
+                    <i class="fa-solid fa-bolt text-amber-400"></i> Mega Sale Active
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black tracking-tight leading-tight mb-2">Telecom Offers</h2>
+                <p class="text-xs sm:text-sm text-blue-100 font-medium max-w-sm leading-relaxed">সকল অপারেটরের ইন্টারনেট, মিনিট ও কম্বো প্যাকে ৩০% পর্যন্ত স্পেশাল ডিসকাউন্ট!</p>
+            </div>
+            
+            <a href="/drive/history" class="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-6 py-3.5 rounded-2xl text-xs font-bold transition flex items-center justify-center gap-2 w-full sm:w-auto shadow-sm active:scale-95">
+                <i class="fa-solid fa-clock-rotate-left"></i> My Orders
+            </a>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. CATEGORY TABS (Scrollable on mobile)
+    ========================================== -->
+    <div class="flex gap-2.5 overflow-x-auto pb-2 hide-scroll px-1">
+        <button class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 whitespace-nowrap flex-shrink-0">All Offers</button>
+        <button class="px-6 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition shadow-sm whitespace-nowrap flex-shrink-0">Internet</button>
+        <button class="px-6 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition shadow-sm whitespace-nowrap flex-shrink-0">Minutes</button>
+        <button class="px-6 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition shadow-sm whitespace-nowrap flex-shrink-0">Combo</button>
+    </div>
+
+    <!-- ==========================================
+         3. OFFERS GRID
+    ========================================== -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for pack in packs %}
+        <div class="offer-card group h-full">
+            
+            <!-- Discount Badge (Absolute Top Right) -->
+            <div class="absolute top-0 right-0 bg-gradient-to-r from-red-500 to-rose-600 text-white text-[9px] font-black px-4 py-1.5 rounded-bl-[16px] shadow-sm uppercase tracking-widest z-10">
+                Save {{ pack.commission }}
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-6 flex flex-col flex-grow">
+                
+                <!-- Operator Info -->
+                <div class="flex items-start gap-4 mb-5">
+                    <!-- Operator Icon with dynamic color -->
+                    <div class="h-12 w-12 rounded-[14px] flex items-center justify-center text-white font-black text-sm shadow-sm flex-shrink-0
+                        {% if pack.operator == 'Grameenphone' %} bg-blue-600
+                        {% elif pack.operator == 'Robi' %} bg-red-600
+                        {% elif pack.operator == 'Airtel' %} bg-rose-500
+                        {% elif pack.operator == 'Banglalink' %} bg-orange-500
+                        {% else %} bg-emerald-500 {% endif %}">
+                        {{ pack.operator[:2] | upper }}
+                    </div>
+                    
+                    <div class="pr-10">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">{{ pack.operator }}</p>
+                        <h3 class="font-black text-slate-800 text-lg leading-tight">{{ pack.title }}</h3>
+                    </div>
+                </div>
+
+                <!-- Tags Row -->
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="bg-slate-50 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-regular fa-clock text-slate-400"></i> {{ pack.validity }}
+                    </span>
+                    <span class="bg-blue-50 text-blue-600 border border-blue-100 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                        {{ pack.category }}
+                    </span>
+                </div>
+
+                <!-- Spacer to push price to bottom -->
+                <div class="flex-grow"></div>
+
+                <!-- Price & Action Row -->
+                <div class="border-t border-slate-100 pt-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.1em] mb-0.5">Offer Price</p>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl font-black text-blue-600 font-mono tracking-tight leading-none">৳{{ pack.offer_price }}</span>
+                            <span class="text-xs text-slate-400 line-through font-mono font-bold leading-none">৳{{ pack.regular_price }}</span>
+                        </div>
+                    </div>
+
+                    <a href="/drive/buy/{{ pack.id }}" class="h-10 w-10 bg-slate-900 text-white rounded-[12px] flex items-center justify-center shadow-md hover:bg-blue-600 transition-colors group-hover:scale-105 active:scale-95 duration-200 flex-shrink-0">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="col-span-full text-center py-20 bg-white rounded-[32px] border border-slate-100 shadow-sm">
+            <div class="h-20 w-20 bg-slate-50 rounded-[20px] flex items-center justify-center mx-auto mb-4 text-4xl text-slate-300 border border-slate-100">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">No Offers Available</h3>
+            <p class="text-[11px] text-slate-500 mt-1 font-medium max-w-sm mx-auto leading-relaxed">অ্যাডমিন শীঘ্রই নতুন ধামাকা অফার যুক্ত করবেন। অনুগ্রহ করে কিছুক্ষণ পর আবার চেক করুন।</p>
+            <button onclick="location.reload()" class="mt-6 text-xs font-bold text-blue-600 bg-blue-50 px-6 py-3 rounded-xl border border-blue-100 hover:bg-blue-100 transition shadow-sm flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-rotate-right"></i> Refresh Store
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

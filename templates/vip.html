@@ -1,0 +1,228 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Premium Entry Animations */
+    .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Ultra-Premium VIP Card (Dark Gold Theme) */
+    .vip-store-card {
+        background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+    }
+    .vip-store-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(245, 158, 11, 0.15);
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    /* Large Background Watermark Number */
+    .vip-watermark {
+        position: absolute;
+        top: -15px;
+        right: -10px;
+        font-size: 140px;
+        font-weight: 900;
+        color: rgba(255, 255, 255, 0.02);
+        line-height: 1;
+        pointer-events: none;
+        z-index: 0;
+        transition: transform 0.5s ease;
+    }
+    .vip-store-card:hover .vip-watermark {
+        transform: scale(1.1) rotate(-5deg);
+        color: rgba(245, 158, 11, 0.05);
+    }
+
+    /* Gold Text Gradient */
+    .text-gold {
+        background: linear-gradient(to right, #FDE047, #F59E0B);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Staggered Delay */
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+</style>
+
+<div class="max-w-4xl mx-auto space-y-6 fade-in-up pb-8 px-1">
+
+    <!-- ==========================================
+         1. VIP HERO BANNER (Glass & Floating Orbs)
+    ========================================== -->
+    <div class="relative bg-white rounded-[32px] p-6 sm:p-8 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] overflow-hidden">
+        
+        <!-- Abstract BG Orbs -->
+        <div class="absolute top-[-50%] right-[-10%] w-64 h-64 bg-amber-400/10 rounded-full blur-[60px] animate-pulse"></div>
+        <div class="absolute bottom-[-50%] left-[-10%] w-48 h-48 bg-blue-400/10 rounded-full blur-[50px]"></div>
+        
+        <div class="relative z-10 text-center max-w-xl mx-auto">
+            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-amber-500 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100 inline-block mb-3 shadow-sm">
+                <i class="fa-solid fa-crown mr-1"></i> Elite Pass
+            </span>
+            
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-3">
+                Auto Profit <span class="text-blue-600">Generation</span>
+            </h1>
+            
+            <p class="text-xs text-slate-500 font-medium leading-relaxed mb-6">
+                এলিট মেম্বারশিপে আপগ্রেড করুন। কোনো টাস্ক বা রেফারেল ছাড়াই প্রতিদিন নিশ্চিত প্রফিট ক্লেইম করুন এবং আনলক করুন প্রিমিয়াম সব ফিচার।
+            </p>
+            
+            <!-- Quick Balances -->
+            <div class="flex justify-center gap-3">
+                <div class="bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl flex-1 max-w-[150px] shadow-sm text-left">
+                    <p class="text-[8px] font-black uppercase text-slate-400 tracking-[0.1em] mb-0.5">VIP Wallet</p>
+                    <p class="text-xl font-black text-slate-800 font-mono tracking-tight">৳{{ user.vip_balance or 0 }}</p>
+                </div>
+                <div class="bg-amber-50 border border-amber-100 px-5 py-3 rounded-2xl flex-1 max-w-[150px] shadow-sm text-left relative overflow-hidden">
+                    <i class="fa-solid fa-bolt absolute right-0 bottom-0 opacity-10 text-4xl transform translate-x-2 translate-y-1 text-amber-500"></i>
+                    <p class="text-[8px] font-black uppercase text-amber-600/70 tracking-[0.1em] mb-0.5">Active Plans</p>
+                    <p class="text-xl font-black text-amber-600 font-mono tracking-tight">{{ my_vips|length if my_vips else 0 }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. MY ACTIVE PACKAGES (CLAIM AREA)
+    ========================================== -->
+    {% if my_vips and my_vips|length > 0 %}
+    <div class="fade-in-up delay-100">
+        <div class="flex items-center justify-between mb-3 px-1">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-blue-600"></i> My Active Plans
+            </h3>
+        </div>
+        
+        <div class="space-y-3">
+            {% for vip in my_vips %}
+            <div class="bg-white p-4 rounded-[20px] shadow-sm border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-blue-200 transition">
+                
+                <!-- Package Info -->
+                <div class="flex items-center gap-4">
+                    <div class="h-12 w-12 rounded-[14px] bg-gradient-to-br from-slate-800 to-slate-900 text-white flex flex-col items-center justify-center shadow-md flex-shrink-0">
+                        <span class="text-[7px] font-black uppercase tracking-widest text-amber-400">LVL</span>
+                        <span class="text-lg font-black leading-none">{{ vip.level_id }}</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">Level {{ vip.level_id }} Pass</h4>
+                        <p class="text-[9px] text-slate-400 font-mono font-medium mt-0.5 flex items-center gap-1">
+                            <i class="fa-regular fa-clock text-amber-500"></i> Exp: {{ vip.expires_at[:10] }}
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Claim Action -->
+                <div class="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto border-t sm:border-t-0 border-slate-50 pt-3 sm:pt-0">
+                    <div>
+                        <p class="text-[9px] text-slate-400 uppercase font-bold tracking-widest mb-0.5">Daily Yield</p>
+                        <p class="text-sm font-black text-emerald-600 font-mono">+৳{{ vip.profit }}</p>
+                    </div>
+                    
+                    {% if vip.last_claim == today_date %}
+                        <button disabled class="bg-slate-50 text-slate-400 px-5 py-2.5 rounded-xl text-[10px] font-bold cursor-not-allowed border border-slate-200 flex items-center gap-1.5 uppercase tracking-wider">
+                            <i class="fa-solid fa-check"></i> Claimed
+                        </button>
+                    {% else %}
+                        <form method="POST" action="/vip">
+                            <input type="hidden" name="action" value="claim">
+                            <input type="hidden" name="vip_id" value="{{ vip.id }}">
+                            <button type="submit" class="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 px-5 py-2.5 rounded-xl text-[10px] font-black shadow-md hover:from-amber-500 hover:to-amber-600 transition flex items-center gap-1.5 uppercase tracking-wider active:scale-95">
+                                Claim <i class="fa-solid fa-bolt"></i>
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ==========================================
+         3. ELITE PLANS STORE
+    ========================================== -->
+    <div class="fade-in-up delay-200">
+        <div class="flex items-center justify-between mb-3 px-1 mt-6">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-store text-amber-500"></i> Upgrade Store
+            </h3>
+        </div>
+        
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {% for id, plan in plans.items() %}
+            <div class="vip-store-card group">
+                
+                <!-- Background Watermark -->
+                <div class="vip-watermark">0{{ id }}</div>
+
+                <div class="relative z-10 flex-grow p-6">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-5">
+                        <div>
+                            <span class="text-[8px] bg-slate-800/50 text-amber-400 px-2.5 py-1 rounded-md font-black tracking-widest uppercase border border-slate-700 backdrop-blur-sm shadow-sm">
+                                Level {{ id }}
+                            </span>
+                            <h3 class="text-xl font-black text-white mt-2">{{ plan.name }}</h3>
+                        </div>
+                        
+                        <!-- Dynamic Badges -->
+                        {% if id == 2 %}
+                            <div class="bg-blue-600 text-white text-[8px] font-black px-2 py-1 rounded-md shadow-sm uppercase tracking-widest flex items-center gap-1"><i class="fa-solid fa-fire text-amber-400"></i> Popular</div>
+                        {% elif id == 3 %}
+                            <div class="bg-emerald-500 text-white text-[8px] font-black px-2 py-1 rounded-md shadow-sm uppercase tracking-widest flex items-center gap-1"><i class="fa-solid fa-chart-line text-yellow-200"></i> Best ROI</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Price Block -->
+                    <div class="mb-5 border-b border-slate-700/50 pb-5">
+                        <p class="text-[9px] text-slate-400 uppercase font-bold tracking-[0.1em] mb-1">Total Investment</p>
+                        <div class="flex items-baseline gap-1">
+                            <h2 class="text-3xl font-black text-white font-mono tracking-tight">৳{{ plan.price }}</h2>
+                            <span class="text-[10px] text-slate-500 font-bold">.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Features List -->
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-medium">Daily Profit</span>
+                            <span class="text-emerald-400 font-black font-mono">৳{{ plan.daily_profit }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-medium">Validity</span>
+                            <span class="text-white font-bold">{{ plan.days }} Days</span>
+                        </div>
+                        
+                        <!-- Total Return Highlight Box -->
+                        <div class="flex items-center justify-between bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 mt-3">
+                            <span class="text-slate-300 font-bold text-[9px] uppercase tracking-widest">Total Return</span>
+                            <span class="text-gold font-black font-mono text-sm">৳{{ plan.daily_profit * plan.days }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buy Action Button (Sticky at bottom of card) -->
+                <div class="relative z-10 px-6 pb-6 mt-auto">
+                    <a href="/vip/buy/{{ id }}" class="block w-full bg-gradient-to-r from-blue-600 to-blue-700 text-center py-3.5 rounded-[14px] font-black text-xs text-white uppercase tracking-[0.1em] shadow-[0_4px_15px_rgba(37,99,235,0.3)] hover:from-blue-500 hover:to-blue-600 transition-all active:scale-[0.98] border border-blue-500">
+                        Purchase Plan
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

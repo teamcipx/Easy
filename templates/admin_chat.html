@@ -1,0 +1,209 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* ==========================================
+       HIDING LAYOUT WIDGETS
+    ========================================== */
+    /* Hide the new Floating Pill Bottom Nav */
+    nav.fixed.bottom-6 { display: none !important; }
+    /* Hide telegram floating button */
+    div.fixed.bottom-\[110px\] { display: none !important; }
+    
+    main { padding-bottom: 10px !important; }
+
+    .chat-layout {
+        height: calc(100vh - 100px); 
+        display: flex; flex-direction: column;
+        background: #F8FAFC; border-radius: 20px;
+        overflow: hidden; border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .chat-messages { flex-grow: 1; overflow-y: auto; padding: 16px; scroll-behavior: smooth; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+
+    .bubble { max-width: 80%; width: fit-content; animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    
+    .msg-admin {
+        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+        color: white; border-radius: 20px 20px 4px 20px;
+        padding: 10px 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .msg-user {
+        background: #FFFFFF; color: #1E293B; border-radius: 20px 20px 20px 4px;
+        padding: 10px 14px; border: 1px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    #imagePreviewBox { transition: all 0.3s ease; }
+</style>
+
+<div class="w-full max-w-3xl mx-auto pt-2 px-1">
+    <div class="chat-layout relative bg-[#F8FAFC]">
+        
+        <!-- Header (Admin Style) -->
+        <div class="bg-slate-900 px-4 py-3 flex items-center justify-between z-20 shadow-lg flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <a href="/admin/inbox" class="h-10 w-10 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition border border-white/10">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </a>
+                <div>
+                    <h2 class="font-bold text-white text-sm leading-tight">{{ target_email }}</h2>
+                    <p class="text-[9px] text-blue-400 font-mono tracking-widest uppercase mt-0.5">UID: {{ target_id[:8] }}</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <a href="/admin/inbox/action/hide/{{ target_id }}" class="text-[10px] font-bold uppercase tracking-widest bg-white/10 text-white px-3 py-2 rounded-lg border border-white/20 hover:bg-white/20 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-eye-slash"></i> Hide
+                </a>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-messages space-y-4" id="chatContainer">
+            <div class="text-center text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] my-3 bg-slate-100 px-3 py-1 rounded-full w-max mx-auto shadow-sm">Admin Support Channel</div>
+            
+            <!-- Dynamic Chat Messages -->
+            <div id="chatContent" class="space-y-4 pb-2">
+                {% for msg in messages %}
+                    {% if msg.sender_role == 'admin' %}
+                    <div class="flex justify-end bubble ml-auto">
+                        <div class="flex flex-col items-end">
+                            {% if msg.image_url %}
+                                <a href="{{ msg.image_url }}" target="_blank"><img src="{{ msg.image_url }}" class="rounded-[16px] mb-1 border-2 border-slate-700 shadow-sm max-w-[220px] max-h-[220px] object-cover"></a>
+                            {% endif %}
+                            {% if msg.message %}
+                                <div class="msg-admin text-sm">{{ msg.message }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="flex justify-start bubble mr-auto">
+                        <div class="flex flex-col items-start">
+                            <p class="text-[9px] font-bold text-blue-500 ml-2 mb-1 uppercase tracking-wider">User</p>
+                            {% if msg.image_url %}
+                                <a href="{{ msg.image_url }}" target="_blank"><img src="{{ msg.image_url }}" class="rounded-[16px] mb-1 border border-slate-200 shadow-sm max-w-[220px] max-h-[220px] object-cover"></a>
+                            {% endif %}
+                            {% if msg.message %}
+                                <div class="msg-user text-sm">{{ msg.message }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Input Area (AJAX) -->
+        <div class="bg-white border-t border-slate-200 flex-shrink-0 z-20 relative pb-safe">
+            
+            <div id="imagePreviewBox" class="hidden absolute bottom-full left-0 w-full bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3 flex items-center justify-between shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
+                <div class="flex items-center gap-3">
+                    <img id="previewImg" src="" class="h-10 w-10 object-cover rounded-lg border border-slate-700 shadow-sm">
+                    <span class="text-xs font-bold text-white">Image attached</span>
+                </div>
+                <button type="button" onclick="removeImage()" class="h-8 w-8 bg-red-500/20 text-red-400 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form class="p-3 flex items-end gap-2" id="chatForm" onsubmit="handleAjaxSend(event)">
+                <label class="h-[46px] w-[46px] bg-slate-50 text-slate-500 rounded-[14px] flex items-center justify-center cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition border border-slate-200 flex-shrink-0 shadow-sm">
+                    <i class="fa-solid fa-image text-lg"></i>
+                    <input type="file" name="image" id="imageInput" class="hidden" accept="image/*" onchange="previewImage(this)">
+                </label>
+                
+                <textarea name="message" id="msgInput" rows="1" class="w-full bg-slate-50 border border-slate-200 rounded-[16px] px-4 py-3 text-sm focus:outline-none focus:border-slate-400 resize-none font-medium text-slate-800" placeholder="Reply to user..."></textarea>
+                
+                <button type="submit" id="sendBtn" class="h-[46px] w-[46px] bg-slate-800 text-white rounded-[14px] flex items-center justify-center shadow-lg shadow-slate-800/30 hover:bg-slate-900 active:scale-95 transition flex-shrink-0">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById("chatContainer");
+    const chatContent = document.getElementById("chatContent");
+
+    function scrollToBottom() { chatBox.scrollTop = chatBox.scrollHeight; }
+    setTimeout(scrollToBottom, 100);
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreviewBox').classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    function removeImage() {
+        document.getElementById('imageInput').value = "";
+        document.getElementById('imagePreviewBox').classList.add('hidden');
+    }
+
+    async function handleAjaxSend(event) {
+        event.preventDefault(); 
+        
+        const form = document.getElementById('chatForm');
+        const btn = document.getElementById('sendBtn');
+        const msgInput = document.getElementById('msgInput');
+        const imgInput = document.getElementById('imageInput');
+
+        if (!msgInput.value.trim() && imgInput.files.length === 0) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.classList.add('opacity-80');
+
+        const formData = new FormData(form);
+
+        try {
+            await fetch(window.location.href, { method: 'POST', body: formData });
+            form.reset();
+            removeImage();
+            fetchNewMessages(true);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert("Network error! Message not sent.");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+            btn.classList.remove('opacity-80');
+        }
+    }
+
+    function fetchNewMessages(forceScroll = false) {
+        fetch(window.location.href)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.getElementById('chatContent').innerHTML;
+                
+                if (chatContent.innerHTML.length !== newContent.length) {
+                    const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 100;
+                    chatContent.innerHTML = newContent;
+                    if(isAtBottom || forceScroll) {
+                        setTimeout(scrollToBottom, 100);
+                    }
+                }
+            });
+    }
+    
+    setInterval(fetchNewMessages, 1500); 
+
+    document.getElementById("msgInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            document.getElementById("chatForm").dispatchEvent(new Event('submit'));
+        }
+    });
+</script>
+
+{% endblock %}

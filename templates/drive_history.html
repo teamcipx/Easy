@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-md mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6 px-1">
+        <h2 class="text-xl font-bold text-[#0A2540] flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> ড্রাইভ হিস্টোরি
+        </h2>
+        <a href="/drive" class="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition">
+            <i class="fa-solid fa-cart-plus"></i> নতুন কিনুন
+        </a>
+    </div>
+
+    <!-- Orders List -->
+    <div class="space-y-4">
+        {% for order in orders %}
+        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-50 relative overflow-hidden group">
+            
+            <!-- Operator Badge (Visual) -->
+            <div class="absolute -right-4 -top-4 w-16 h-16 rounded-full opacity-10 
+                {% if order.operator == 'Grameenphone' %} bg-blue-600
+                {% elif order.operator == 'Robi' %} bg-red-600
+                {% elif order.operator == 'Airtel' %} bg-red-500
+                {% elif order.operator == 'Banglalink' %} bg-orange-500
+                {% else %} bg-green-500 {% endif %}">
+            </div>
+
+            <div class="flex justify-between items-start mb-3 relative z-10">
+                <div>
+                    <h3 class="font-bold text-[#0A2540] text-sm">{{ order.pack_title }}</h3>
+                    <p class="text-[10px] text-gray-500 mt-0.5">
+                        {{ order.operator }} | {{ order.mobile_number }}
+                    </p>
+                </div>
+                
+                <!-- Status Badge -->
+                <span class="px-2 py-1 rounded-lg text-[10px] font-bold border 
+                    {% if order.status == 'success' %} bg-green-50 text-green-600 border-green-100
+                    {% elif order.status == 'canceled' %} bg-red-50 text-red-600 border-red-100
+                    {% else %} bg-yellow-50 text-yellow-600 border-yellow-100 {% endif %}">
+                    {{ order.status | upper }}
+                </span>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="bg-gray-50 rounded-xl p-3 flex justify-between items-center text-xs border border-gray-100 relative z-10">
+                <div class="text-gray-500">
+                    <p>Trx: <span class="font-mono text-gray-700">{{ order.trx_id }}</span></p>
+                    <p class="mt-0.5 text-[9px]">{{ order.created_at[:10] }}</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-[#E2136E] text-base">৳{{ order.price }}</p>
+                    <p class="text-[9px] text-gray-400">{{ order.payment_method }}</p>
+                </div>
+            </div>
+
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-200">
+            <div class="h-16 w-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-indigo-300">
+                <i class="fa-solid fa-basket-shopping"></i>
+            </div>
+            <h3 class="text-sm font-bold text-gray-500">কোনো অর্ডার পাওয়া যায়নি</h3>
+            <a href="/drive" class="text-xs text-indigo-600 font-bold mt-2 inline-block">অফার দেখুন</a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,372 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Premium Entry Animation */
+    .fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    
+    /* Detailed Task Card */
+    .detailed-card {
+        background: #ffffff;
+        border-radius: 24px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    .detailed-card:hover {
+        border-color: #BFDBFE;
+        box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.1);
+        transform: translateY(-4px);
+    }
+    
+    /* Copy Data Row (Premium Style) */
+    .copy-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 16px; background: #F8FAFC; border-radius: 16px;
+        border: 1px solid #F1F5F9; margin-bottom: 12px;
+        transition: all 0.2s ease;
+    }
+    .copy-row:hover { background: #FFFFFF; border-color: #DBEAFE; box-shadow: 0 2px 10px rgba(37, 99, 235, 0.05); }
+    
+    /* Timer Pulse Animation */
+    .pulse-danger { animation: pulseDanger 2s infinite; }
+    @keyframes pulseDanger {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+        50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+    }
+
+    /* Gradient Background for Header */
+    .hero-gradient {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    }
+</style>
+
+<div class="max-w-3xl mx-auto space-y-6 fade-in-up pb-8 px-1">
+
+    <!-- ==========================================
+         1. DETAILED HERO HEADER & RULES
+    ========================================== -->
+    <div class="hero-gradient rounded-[32px] p-6 sm:p-8 text-white shadow-xl shadow-blue-600/20 relative overflow-hidden">
+        <!-- Abstract Google Icon BG -->
+        <i class="fa-brands fa-google absolute right-0 top-1/2 transform -translate-y-1/2 -mr-6 text-9xl opacity-5 pointer-events-none"></i>
+        <div class="absolute top-0 right-0 w-48 h-48 bg-white opacity-5 rounded-bl-full pointer-events-none"></div>
+        
+        <div class="relative z-10">
+            <!-- Breadcrumb & Badge -->
+            <div class="flex items-center justify-between mb-5">
+                <a href="/tasks" class="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/20 transition backdrop-blur-sm border border-white/20">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </a>
+                <span class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border border-red-400 shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-fire animate-pulse"></i> High Paying
+                </span>
+            </div>
+            
+            <h1 class="text-3xl sm:text-4xl font-black mb-3 tracking-tight">Create Gmail & Earn</h1>
+            <p class="text-blue-100 text-sm font-medium mb-6 leading-relaxed max-w-lg">
+                অ্যাডমিন কর্তৃক দেওয়া নির্ধারিত নাম ও পাসওয়ার্ড ব্যবহার করে সম্পূর্ণ ফ্রেশ জিমেইল একাউন্ট তৈরি করুন এবং প্রতি একাউন্টের জন্য ইনস্ট্যান্ট পেমেন্ট বুঝে নিন।
+            </p>
+            
+            <!-- Detailed Rules Box (Glassmorphism) -->
+            <div class="bg-slate-900/40 border border-white/10 rounded-2xl p-5 backdrop-blur-md">
+                <h4 class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list"></i> কাজের কঠোর নিয়মাবলী:
+                </h4>
+                <div class="grid sm:grid-cols-2 gap-3 text-xs text-white/90 font-medium">
+                    <div class="flex items-start gap-2 bg-white/5 p-2.5 rounded-xl border border-white/5">
+                        <i class="fa-solid fa-circle-dot text-[8px] mt-1 text-emerald-400 flex-shrink-0"></i>
+                        <span>জিমেইলটি অবশ্যই রিকভারি মেইল বা নাম্বার ছাড়া (Fresh) খুলতে হবে।</span>
+                    </div>
+                    <div class="flex items-start gap-2 bg-white/5 p-2.5 rounded-xl border border-white/5">
+                        <i class="fa-solid fa-circle-dot text-[8px] mt-1 text-emerald-400 flex-shrink-0"></i>
+                        <span>প্রদত্ত ফার্স্ট নেম, লাস্ট নেম এবং পাসওয়ার্ড হুবহু ব্যবহার করতে হবে।</span>
+                    </div>
+                    <div class="flex items-start gap-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20 text-red-200">
+                        <i class="fa-solid fa-triangle-exclamation text-[10px] mt-0.5 text-red-400 flex-shrink-0"></i>
+                        <span>কাজ রিসিভ করার ঠিক <b>১ ঘণ্টার মধ্যে</b> সাবমিট করতে হবে।</span>
+                    </div>
+                    <div class="flex items-start gap-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20 text-red-200">
+                        <i class="fa-solid fa-triangle-exclamation text-[10px] mt-0.5 text-red-400 flex-shrink-0"></i>
+                        <span>ভুল তথ্য দিলে বা সময় পার হলে মেইন ব্যালেন্স থেকে <b>২০ টাকা জরিমানা</b> কাটা হবে।</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. MY ACTIVE TASK (Detailed Workspace)
+    ========================================== -->
+    {% if my_active %}
+        {% set task = my_active[0] %}
+        
+        <div class="detailed-card p-6 sm:p-8 {{ 'border-emerald-300 bg-emerald-50/20' if task.status == 'submitted' else 'border-blue-200' }}">
+            
+            <!-- Workspace Header & Timer -->
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 pb-5 border-b border-slate-100">
+                <div>
+                    <h3 class="font-black text-slate-800 text-lg flex items-center gap-2">
+                        <div class="h-10 w-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg shadow-sm border border-blue-100">
+                            <i class="fa-regular fa-folder-open"></i>
+                        </div>
+                        Your Workspace
+                    </h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 ml-12">Task ID: #{{ task.id }}</p>
+                </div>
+                
+                {% if task.status == 'locked' %}
+                    <!-- Live Timer Badge (Pulse Red if running out) -->
+                    <div class="pulse-danger bg-red-50 text-red-600 px-4 py-2.5 rounded-xl border border-red-100 flex items-center gap-2 shadow-sm shrink-0">
+                        <i class="fa-regular fa-clock text-sm animate-pulse"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Time Left:</span>
+                        <span id="timer" data-locked="{{ task.locked_at }}" class="font-mono text-base font-black tracking-wider bg-white px-2 py-0.5 rounded shadow-sm border border-red-100">00:00</span>
+                    </div>
+                {% else %}
+                    <!-- Submitted Badge -->
+                    <div class="bg-emerald-50 text-emerald-700 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-200 flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-check-double text-sm"></i> Task Submitted
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Gmail Details (Copy Area) -->
+            <div class="mb-8 relative">
+                <div class="absolute left-6 top-6 bottom-6 w-px bg-slate-200 hidden sm:block"></div>
+
+                <!-- First Name -->
+                <div class="copy-row group relative z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="h-8 w-8 bg-white rounded-full border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-400 shadow-sm hidden sm:flex">1</div>
+                        <div>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.15em] mb-0.5">First Name</p>
+                            <p class="text-base font-bold text-slate-800" id="fName">{{ task.first_name }}</p>
+                        </div>
+                    </div>
+                    <button onclick="copyData('fName', this)" class="h-10 w-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-blue-600 hover:border-blue-300 shadow-sm transition active:scale-90 flex items-center justify-center">
+                        <i class="fa-regular fa-copy text-sm"></i>
+                    </button>
+                </div>
+                
+                <!-- Last Name (Optional) -->
+                {% if task.last_name and task.last_name|trim != '' %}
+                <div class="copy-row group relative z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="h-8 w-8 bg-white rounded-full border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-400 shadow-sm hidden sm:flex">2</div>
+                        <div>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.15em] mb-0.5">Last Name</p>
+                            <p class="text-base font-bold text-slate-800" id="lName">{{ task.last_name }}</p>
+                        </div>
+                    </div>
+                    <button onclick="copyData('lName', this)" class="h-10 w-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-blue-600 hover:border-blue-300 shadow-sm transition active:scale-90 flex items-center justify-center">
+                        <i class="fa-regular fa-copy text-sm"></i>
+                    </button>
+                </div>
+                {% endif %}
+                
+                <!-- Email Address (Highlighted) -->
+                <div class="copy-row group relative z-10 border-blue-200 bg-blue-50/30">
+                    <div class="flex items-center gap-4">
+                        <div class="h-8 w-8 bg-blue-600 rounded-full border border-blue-700 flex items-center justify-center text-[10px] font-bold text-white shadow-sm hidden sm:flex"><i class="fa-solid fa-at"></i></div>
+                        <div>
+                            <p class="text-[9px] text-blue-500 font-bold uppercase tracking-[0.15em] mb-0.5">Email Address</p>
+                            <p class="text-base sm:text-lg font-black text-blue-700 font-mono" id="emailText">{{ task.email_prefix }}@gmail.com</p>
+                        </div>
+                    </div>
+                    <button onclick="copyData('emailText', this)" class="h-10 w-10 bg-blue-600 border border-blue-700 rounded-xl text-white hover:bg-blue-700 shadow-md transition active:scale-90 flex items-center justify-center">
+                        <i class="fa-regular fa-copy text-sm"></i>
+                    </button>
+                </div>
+                
+                <!-- Password -->
+                <div class="copy-row group relative z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="h-8 w-8 bg-white rounded-full border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-400 shadow-sm hidden sm:flex"><i class="fa-solid fa-key"></i></div>
+                        <div>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.15em] mb-0.5">Password</p>
+                            <p class="text-base font-bold text-slate-800 font-mono tracking-wider bg-white px-2 py-0.5 rounded border border-slate-100" id="passText">{{ task.password }}</p>
+                        </div>
+                    </div>
+                    <button onclick="copyData('passText', this)" class="h-10 w-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-blue-600 hover:border-blue-300 shadow-sm transition active:scale-90 flex items-center justify-center">
+                        <i class="fa-regular fa-copy text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Actions (Video & Submit) -->
+            {% if task.status == 'locked' %}
+                <div class="bg-amber-50 border border-amber-100 p-4 rounded-[16px] mb-5 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                    <p class="text-[10px] text-amber-800 font-medium leading-relaxed">সম্পূর্ণ কাজ শেষ করার পর নিচের সাবমিট বাটনে ক্লিক করুন। ভুল তথ্য দিয়ে সাবমিট করলে একাউন্ট জরিমানা বা ব্যান হতে পারে।</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-3">
+                    <button onclick="document.getElementById('videoModal').classList.remove('hidden')" class="w-full sm:w-auto px-6 py-4 bg-white text-red-600 border border-red-200 rounded-2xl font-bold text-sm hover:bg-red-50 transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-youtube text-lg"></i> Watch Tutorial
+                    </button>
+                    
+                    <a href="/gmail-tasks/submit/{{ task.id }}" onclick="return confirm('আপনি কি নিশ্চিত যে উপরের তথ্যগুলো দিয়েই জিমেইলটি খুলেছেন?')" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-[0_8px_20px_rgba(37,99,235,0.25)] hover:bg-blue-700 active:scale-[0.98] transition flex items-center justify-center gap-2 border border-blue-700">
+                        <i class="fa-solid fa-check-double"></i> Complete & Submit
+                    </a>
+                </div>
+            {% else %}
+                <div class="bg-emerald-50 border border-emerald-100 text-emerald-700 p-4 rounded-2xl text-center text-sm font-bold flex flex-col items-center justify-center gap-2">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl mb-1"></i>
+                    <span>Admin is reviewing your submission</span>
+                    <span class="text-[10px] font-normal text-emerald-600 mt-1">Please wait for the payout to be added to your balance.</span>
+                </div>
+            {% endif %}
+
+        </div>
+
+    {% else %}
+
+    <!-- ==========================================
+         3. AVAILABLE TASKS GRID (Detailed Cards)
+    ========================================== -->
+    <div>
+        <div class="flex items-center justify-between mb-4 px-2 mt-4">
+            <h3 class="font-black text-slate-800 text-base flex items-center gap-2">
+                <i class="fa-solid fa-briefcase text-blue-500"></i> Available Work
+            </h3>
+            <span class="text-[10px] text-slate-400 font-bold bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm"><i class="fa-solid fa-rotate text-blue-500 mr-1"></i> Auto Refreshes</span>
+        </div>
+        
+        <div class="grid sm:grid-cols-2 gap-4">
+            {% for t in available %}
+            <div class="detailed-card p-5 flex flex-col justify-between group hover:border-blue-300">
+                
+                <div class="flex justify-between items-start mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="h-12 w-12 bg-red-50 text-red-500 rounded-xl flex items-center justify-center text-xl border border-red-100 group-hover:scale-105 transition shadow-sm">
+                            <i class="fa-brands fa-google"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Gmail Creation</h4>
+                            <p class="text-[10px] text-slate-400 font-mono font-bold mt-0.5 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100 inline-block">Task ID: #{{ t.id }}</p>
+                        </div>
+                    </div>
+                    <!-- Payout Badge -->
+                    <div class="bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-lg text-center shadow-sm">
+                        <span class="block text-[8px] font-black text-emerald-600 uppercase tracking-widest mb-0.5">Payout</span>
+                        <span class="font-black text-emerald-700 text-sm font-mono leading-none">৳{{ t.reward }}</span>
+                    </div>
+                </div>
+
+                <!-- Info Strip -->
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex justify-between items-center mb-5">
+                    <span class="text-[10px] font-bold text-slate-500 flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-400"></i> Time: 60 Mins</span>
+                    <span class="text-[10px] font-bold text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-shield-check text-green-400"></i> Fast Review</span>
+                </div>
+                
+                <button onclick="confirmTaskTake('{{ t.id }}')" class="w-full bg-slate-900 text-white text-center py-3.5 rounded-xl text-xs font-bold shadow-md hover:bg-blue-600 transition uppercase tracking-widest flex items-center justify-center gap-2">
+                    <span>Accept Task</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="col-span-2 text-center py-16 bg-white rounded-[32px] border border-slate-200 shadow-sm">
+                <div class="h-20 w-20 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl border border-slate-100">
+                    <i class="fa-solid fa-mug-hot"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-700">No tasks available right now</h3>
+                <p class="text-xs text-slate-400 mt-1 font-medium max-w-sm mx-auto">নতুন কাজ আসলে এখানে দেখতে পাবেন। কিছুক্ষণ পর আবার চেক করুন।</p>
+                <button onclick="location.reload()" class="mt-6 bg-white border border-slate-200 text-blue-600 px-6 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:bg-blue-50 transition flex items-center justify-center gap-2 mx-auto">
+                    <i class="fa-solid fa-rotate-right"></i> Refresh Page
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- ==========================================
+     4. VIDEO MODAL (Popup for Tutorial)
+========================================== -->
+<div id="videoModal" class="fixed inset-0 z-[100] hidden bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300" onclick="this.classList.add('hidden')">
+    <button class="absolute top-6 right-6 h-10 w-10 bg-white/10 rounded-full text-white hover:bg-red-500 transition flex items-center justify-center z-50 backdrop-blur border border-white/20 shadow-lg">
+        <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+    
+    <div class="w-full max-w-[360px] bg-black rounded-[24px] overflow-hidden shadow-2xl relative border border-slate-700" onclick="event.stopPropagation()">
+        <!-- Facebook Reels Iframe (Optimized for Mobile Portrait) -->
+        <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F14770%2F%3Fapp%3Dfbl&width=360&show_text=false&height=640&appId" width="360" height="640" style="border:none;overflow:hidden; width: 100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+    // Premium Copy Function with Inline Feedback
+    function copyData(elementId, btn) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-white text-sm"></i>';
+            btn.classList.add('bg-green-500', 'border-green-600');
+            btn.classList.remove('bg-white', 'text-slate-400', 'text-blue-500');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('bg-green-500', 'border-green-600');
+                btn.classList.add('bg-white', 'text-slate-400', 'text-blue-500');
+            }, 1500);
+        });
+    }
+
+    // Confirm Take Task
+    function confirmTaskTake(id) {
+        if(confirm('শর্ত: কাজটি রিসিভ করার ঠিক ১ ঘণ্টার মধ্যে জমা দিতে হবে। অন্যথায় ২০ টাকা জরিমানা কাটা হবে। আপনি কি শর্তে রাজি?')) {
+            window.location.href = '/gmail-tasks/take/' + id;
+        }
+    }
+
+    // Robust Live Countdown Timer
+    const timerElement = document.getElementById('timer');
+    if (timerElement) {
+        const lockedAtStr = timerElement.getAttribute('data-locked');
+        
+        let lockedAt;
+        if(lockedAtStr.includes('Z') || lockedAtStr.includes('+')) {
+            lockedAt = new Date(lockedAtStr).getTime();
+        } else {
+            lockedAt = new Date(lockedAtStr + 'Z').getTime(); // Fallback to UTC
+        }
+        
+        // 1 hour deadline
+        const deadline = lockedAt + (60 * 60 * 1000); 
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = deadline - now;
+
+            if (distance < 0) {
+                clearInterval(x);
+                timerElement.innerHTML = "EXPIRED";
+                const parent = timerElement.parentElement;
+                parent.classList.replace('text-red-600', 'text-white');
+                parent.classList.replace('bg-red-50', 'bg-red-600');
+                
+                setTimeout(() => location.reload(), 2000); // Trigger penalty on reload
+            } else {
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                const mDisplay = minutes < 10 ? "0" + minutes : minutes;
+                const sDisplay = seconds < 10 ? "0" + seconds : seconds;
+                
+                timerElement.innerHTML = mDisplay + ":" + sDisplay;
+                
+                // Urgency Pulse if less than 5 mins
+                if(minutes < 5) {
+                    timerElement.parentElement.classList.add('animate-bounce', 'bg-red-100');
+                }
+            }
+        }, 1000);
+    }
+</script>
+
+{% endblock %}

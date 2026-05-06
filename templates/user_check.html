@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-50 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <div class="h-12 w-12 bg-blue-50 text-[#0057FF] rounded-full flex items-center justify-center text-2xl shadow-sm">
+                <i class="fa-solid fa-filter"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-[#0A2540]">নতুন ইউজার ফিল্টার</h2>
+                <p class="text-xs text-gray-500">শর্ত: ব্যালেন্স ১০-৫০ | গত ২৪ ঘন্টা | জিমেইল</p>
+            </div>
+        </div>
+        
+        <div class="bg-blue-600 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg shadow-blue-200">
+            পাওয়া গেছে: {{ count }} / 290
+        </div>
+    </div>
+
+    <!-- Data Display & Copy Area -->
+    <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100">
+        
+        <label class="block text-sm font-bold text-gray-700 mb-3 flex justify-between">
+            <span>ইমেইল লিস্ট (CSV Format)</span>
+            <span class="text-xs text-gray-400 font-normal">Comma Separated</span>
+        </label>
+
+        <div class="relative">
+            <!-- Text Area -->
+            <textarea id="emailList" readonly rows="10" 
+                class="w-full p-4 border border-gray-200 rounded-2xl bg-gray-50 text-sm font-mono text-[#0A2540] focus:outline-[#E2136E] resize-y"
+                placeholder="কোনো ডাটা পাওয়া যায়নি...">{{ csv_data }}</textarea>
+            
+            <!-- Copy Button (Floating) -->
+            <button onclick="copyEmails()" 
+                class="absolute bottom-4 right-4 bg-[#E2136E] text-white px-6 py-2 rounded-xl text-xs font-bold shadow-lg hover:bg-[#c2105e] active:scale-95 transition flex items-center gap-2">
+                <i class="fa-regular fa-copy"></i> কপি করুন
+            </button>
+        </div>
+
+        <!-- Info -->
+        <div class="mt-4 flex items-start gap-2 text-xs text-gray-500 bg-blue-50 p-3 rounded-xl border border-blue-100">
+            <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+            <p>এই লিস্টে শুধুমাত্র তাদের ইমেইল আছে যারা গত ২৪ ঘন্টায় জয়েন করেছে, ব্যালেন্স ১০-৫০ এর মধ্যে এবং জিমেইল (@gmail.com) ব্যবহার করেছে।</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- JavaScript for Copy -->
+<script>
+    function copyEmails() {
+        const textArea = document.getElementById("emailList");
+        
+        if (!textArea.value) {
+            alert("কোনো ডাটা নেই!");
+            return;
+        }
+
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); // Mobile Support
+
+        navigator.clipboard.writeText(textArea.value).then(() => {
+            alert("✅ " + "{{ count }}" + " টি ইমেইল কপি করা হয়েছে!");
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    .fade-in-up { animation: fadeInUp 0.5s forwards; opacity: 0; transform: translateY(15px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Ad Container */
+    .premium-ad-card { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 20px; position: relative; padding: 12px; margin: 16px 0; overflow: hidden; }
+    .ad-badge { position: absolute; top: 0; right: 0; background: #F1F5F9; color: #94A3B8; font-size: 8px; font-weight: 800; text-transform: uppercase; padding: 4px 8px; border-bottom-left-radius: 12px; z-index: 10; }
+    .ad-inner { display: flex; justify-content: center; align-items: center; background: #F8FAFC; border-radius: 12px; overflow: hidden; min-height: 60px; }
+
+    /* Scratch Card Container */
+    .scratch-container {
+        position: relative; width: 300px; height: 300px; margin: 0 auto;
+        border-radius: 24px; overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 4px solid #F8FAFC;
+    }
+    
+    /* The Reward Behind the Canvas */
+    .scratch-reward {
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, #FFFBEB 0%, #F59E0B 100%);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        z-index: 1;
+    }
+    
+    /* The Canvas (Silver cover to scratch off) */
+    canvas {
+        position: absolute; inset: 0; z-index: 2;
+        cursor: crosshair; touch-action: none;
+    }
+</style>
+
+<div class="max-w-xl mx-auto px-1 pb-8 fade-in-up">
+
+    <!-- AD 1 -->
+    <div class="premium-ad-card"><span class="ad-badge">Sponsored</span><div class="ad-inner"><script>atOptions = {'key' : '4a72be96f78b75e42afea5ee99005d34','format' : 'iframe','height' : 60,'width' : 468,'params' : {}};</script><script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script></div></div>
+
+    <!-- Hype Header -->
+    <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-[24px] p-6 text-white text-center shadow-lg relative overflow-hidden mb-6">
+        <i class="fa-solid fa-gift absolute left-4 top-1/2 transform -translate-y-1/2 text-7xl opacity-5"></i>
+        <div class="relative z-10">
+            <span class="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse border border-red-400 shadow-sm inline-block mb-2">
+                Hot Offer
+            </span>
+            <h2 class="text-3xl font-black text-amber-400">WIN UP TO ৳100!</h2>
+            <p class="text-xs text-slate-400 mt-2">কার্ড ঘষে আপনার ভাগ্য পরীক্ষা করুন।</p>
+            <p class="text-[10px] bg-white/10 px-3 py-1 rounded-lg inline-block mt-3 border border-white/20">Today's limit: {{ count }}/3</p>
+        </div>
+    </div>
+
+    <!-- Scratch Area -->
+    <div class="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 text-center mb-6">
+        <h3 class="font-bold text-slate-800 mb-6 uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+            <i class="fa-solid fa-hand-pointer text-blue-500"></i> Scratch the card
+        </h3>
+        
+        <div class="scratch-container" id="scratchContainer">
+            <!-- Background (Reward) -->
+            <div class="scratch-reward">
+                <i class="fa-solid fa-trophy text-amber-600 text-5xl mb-2"></i>
+                <p class="text-sm font-bold text-amber-900 uppercase">You Won!</p>
+                <h1 id="rewardAmount" class="text-5xl font-black text-white font-mono drop-shadow-md">???</h1>
+            </div>
+            <!-- Foreground Canvas -->
+            <canvas id="scratchCanvas"></canvas>
+        </div>
+        
+        <p id="claimMsg" class="mt-6 text-sm font-bold text-green-600 hidden bg-green-50 p-3 rounded-xl border border-green-200">
+            ✅ ৳<span id="amountText"></span> আপনার ব্যালেন্সে যোগ হয়েছে!
+        </p>
+    </div>
+
+    <!-- AD 2 -->
+    <div class="premium-ad-card"><span class="ad-badge">Sponsored</span><div class="ad-inner"><script>atOptions = {'key' : '4a72be96f78b75e42afea5ee99005d34','format' : 'iframe','height' : 60,'width' : 468,'params' : {}};</script><script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script></div></div>
+</div>
+
+<script>
+    // HTML5 Canvas Scratch Logic
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('scratchContainer');
+    let isDrawing = false;
+    let isRevealed = false;
+
+    // Setup Canvas Size
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+
+    // Fill Canvas with Silver Cover
+    ctx.fillStyle = '#CBD5E1'; // Slate-300
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Add "Scratch Here" Text on cover
+    ctx.fillStyle = '#64748B';
+    ctx.font = '900 24px Inter';
+    ctx.textAlign = "center";
+    ctx.fillText("SCRATCH HERE", canvas.width/2, canvas.height/2);
+
+    // Mouse/Touch Events
+    const getPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        return { x, y };
+    };
+
+    const startDraw = (e) => { isDrawing = true; scratch(e); };
+    const endDraw = () => { isDrawing = false; checkClear(); };
+    
+    const scratch = (e) => {
+        if (!isDrawing || isRevealed) return;
+        e.preventDefault(); // Prevent scrolling on mobile
+        const { x, y } = getPos(e);
+        
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(x, y, 25, 0, Math.PI * 2); // 25px brush radius
+        ctx.fill();
+    };
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', scratch);
+    canvas.addEventListener('mouseup', endDraw);
+    
+    canvas.addEventListener('touchstart', startDraw, {passive: false});
+    canvas.addEventListener('touchmove', scratch, {passive: false});
+    canvas.addEventListener('touchend', endDraw);
+
+    // Check how much is scratched
+    function checkClear() {
+        if(isRevealed) return;
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let clearPixels = 0;
+        for(let i = 3; i < imageData.data.length; i += 4) {
+            if(imageData.data[i] === 0) clearPixels++; // Alpha 0 means scratched
+        }
+        
+        const clearPercentage = (clearPixels / (canvas.width * canvas.height)) * 100;
+        
+        if(clearPercentage > 40) { // If 40% cleared, auto reveal
+            isRevealed = true;
+            canvas.style.transition = 'opacity 0.5s ease';
+            canvas.style.opacity = '0';
+            fetchReward();
+        }
+    }
+
+    // Backend AJAX Call
+    function fetchReward() {
+        fetch('/skatch', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                document.getElementById('rewardAmount').innerText = '৳' + data.reward;
+                document.getElementById('amountText').innerText = data.reward;
+                document.getElementById('claimMsg').classList.remove('hidden');
+                
+                // Reload after 3 seconds so user can scratch again
+                setTimeout(() => location.reload(), 3000);
+            } else {
+                alert(data.message);
+                location.reload();
+            }
+        });
+    }
+</script>
+{% endblock %}

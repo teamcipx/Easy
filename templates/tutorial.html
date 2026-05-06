@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Premium Entry Animations */
+    .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    
+    /* Device Mockup Wrapper for Video */
+    .video-mockup {
+        background: #0F172A; /* Dark Slate */
+        border-radius: 36px;
+        padding: 8px;
+        box-shadow: 0 20px 50px -10px rgba(37, 99, 235, 0.25);
+        border: 1px solid #1E293B;
+        position: relative;
+    }
+    .video-inner {
+        border-radius: 28px;
+        overflow: hidden;
+        background: #000;
+        position: relative;
+        height: 700px; /* Fixed height for reels */
+    }
+    
+    /* Step Cards (Bento UI) */
+    .step-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .step-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.1);
+        border-color: #BFDBFE;
+    }
+    .step-number {
+        position: absolute;
+        top: -15px;
+        right: -10px;
+        font-size: 80px;
+        font-weight: 900;
+        color: rgba(37, 99, 235, 0.03);
+        line-height: 1;
+        pointer-events: none;
+        transition: all 0.5s ease;
+    }
+    .step-card:hover .step-number {
+        transform: scale(1.1) rotate(-5deg);
+        color: rgba(37, 99, 235, 0.08);
+    }
+</style>
+
+<div class="max-w-4xl mx-auto space-y-8 fade-in-up pb-8 px-1">
+
+    <!-- ==========================================
+         1. PAGE HEADER
+    ========================================== -->
+    <div class="text-center space-y-3 mb-6">
+        <div class="inline-flex items-center justify-center h-16 w-16 rounded-[20px] bg-red-50 text-red-500 text-3xl shadow-sm border border-red-100 transform -rotate-6">
+            <i class="fa-brands fa-youtube"></i>
+        </div>
+        <h2 class="text-3xl font-black text-slate-800 tracking-tight leading-none">Video Guide</h2>
+        <p class="text-slate-500 text-xs font-medium max-w-sm mx-auto uppercase tracking-widest">কিভাবে কাজ করবেন?</p>
+    </div>
+
+    <!-- ==========================================
+         2. VIDEO PLAYER (App Mockup Style)
+    ========================================== -->
+    <div class="flex justify-center px-2 relative z-20">
+        <div class="w-full max-w-[380px] video-mockup group">
+            
+            <!-- Mobile Notch / Camera Hole -->
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-[14px] z-30 flex justify-center items-end pb-1.5">
+                <div class="w-16 h-1.5 bg-slate-800 rounded-full"></div>
+            </div>
+
+            <div class="video-inner">
+                <!-- Loading State -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-0">
+                    <i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-4xl mb-4"></i>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest animate-pulse">Loading Stream...</span>
+                </div>
+
+                <!-- NEW Facebook Reels Iframe -->
+                <iframe 
+                    src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1599960621081297%2F%3Fapp%3Dfbl&width=500&show_text=false&height=700&appId" 
+                    class="absolute top-0 left-0 w-full h-full z-10" 
+                    style="border:none;overflow:hidden" 
+                    scrolling="no" 
+                    frameborder="0" 
+                    allowfullscreen="true" 
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sound Hint -->
+    <div class="text-center -mt-6 relative z-30">
+        <p class="text-[10px] text-slate-600 font-bold bg-white px-5 py-2.5 rounded-full inline-block shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-slate-200">
+            <i class="fa-solid fa-volume-high text-blue-600 mr-1.5"></i> সাউন্ড শুনতে ভিডিওর ওপর একবার ট্যাপ করুন
+        </p>
+    </div>
+
+    <!-- ==========================================
+         3. INSTRUCTION STEPS (Bento Grid)
+    ========================================== -->
+    <div class="mt-12">
+        <div class="flex items-center gap-2 mb-6 justify-center">
+            <span class="h-px w-8 bg-slate-300"></span>
+            <h3 class="font-black text-slate-400 text-[10px] uppercase tracking-[0.2em]">Step-by-Step Guide</h3>
+            <span class="h-px w-8 bg-slate-300"></span>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-5">
+            <!-- Step 1 -->
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="h-12 w-12 bg-blue-50 text-blue-600 rounded-[14px] flex items-center justify-center text-xl mb-4 shadow-sm border border-blue-100 relative z-10">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h4 class="text-base font-bold text-slate-800 mb-2 relative z-10">Create Account</h4>
+                <p class="text-[11px] text-slate-500 font-medium leading-relaxed relative z-10">সঠিক তথ্য এবং একটি ভ্যালিড জিমেইল ব্যবহার করে আপনার একাউন্ট রেজিস্ট্রেশন সম্পূর্ণ করুন।</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="h-12 w-12 bg-amber-50 text-amber-500 rounded-[14px] flex items-center justify-center text-xl mb-4 shadow-sm border border-amber-100 relative z-10">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h4 class="text-base font-bold text-slate-800 mb-2 relative z-10">Perform Tasks</h4>
+                <p class="text-[11px] text-slate-500 font-medium leading-relaxed relative z-10">জিমেইল ক্রিয়েট, ভিডিও দেখা বা লাইক দেওয়ার মতো কাজগুলো নিয়ম মেনে করুন এবং প্রুফ জমা দিন।</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-[14px] flex items-center justify-center text-xl mb-4 shadow-sm border border-emerald-100 relative z-10">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+                <h4 class="text-base font-bold text-slate-800 mb-2 relative z-10">Get Paid</h4>
+                <p class="text-[11px] text-slate-500 font-medium leading-relaxed relative z-10">আপনার ব্যালেন্স মিনিমাম উইথড্র এমাউন্টে পৌঁছালেই বিকাশ/নগদের মাধ্যমে টাকা পকেটস্থ করুন।</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         4. CTA BUTTONS
+    ========================================== -->
+    <div class="pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-4">
+        
+        <a href="/" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-slate-600 px-6 py-4 rounded-[16px] text-sm font-bold border border-slate-200 hover:bg-slate-50 transition shadow-sm">
+            <i class="fa-solid fa-house"></i> Back Home
+        </a>
+        
+        {% if session.get('user_id') %}
+        <a href="/tasks" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-[16px] text-sm font-black uppercase tracking-widest shadow-[0_8px_20px_rgba(37,99,235,0.25)] hover:bg-blue-700 hover:scale-105 active:scale-95 transition duration-300">
+            <span>Start Working</span> <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        {% else %}
+        <a href="/register" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-[16px] text-sm font-black uppercase tracking-widest shadow-[0_8px_20px_rgba(37,99,235,0.25)] hover:bg-blue-700 hover:scale-105 active:scale-95 transition duration-300">
+            <span>Join Network</span> <i class="fa-solid fa-user-plus"></i>
+        </a>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
