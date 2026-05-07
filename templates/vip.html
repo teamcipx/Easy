@@ -9,7 +9,7 @@
     /* Ultra-Premium VIP Card (Dark Gold Theme) */
     .vip-store-card {
         background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(245, 158, 11, 0.2);
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
         position: relative;
         overflow: hidden;
@@ -24,44 +24,43 @@
         border-color: rgba(245, 158, 11, 0.3);
     }
 
-    /* Large Background Watermark Number */
+    /* Background Watermark */
     .vip-watermark {
-        position: absolute;
-        top: -15px;
-        right: -10px;
-        font-size: 140px;
-        font-weight: 900;
-        color: rgba(255, 255, 255, 0.02);
-        line-height: 1;
-        pointer-events: none;
-        z-index: 0;
-        transition: transform 0.5s ease;
+        position: absolute; top: -15px; right: -10px;
+        font-size: 140px; font-weight: 900; color: rgba(255, 255, 255, 0.02);
+        line-height: 1; pointer-events: none; z-index: 0; transition: transform 0.5s ease;
     }
-    .vip-store-card:hover .vip-watermark {
-        transform: scale(1.1) rotate(-5deg);
-        color: rgba(245, 158, 11, 0.05);
-    }
+    .vip-store-card:hover .vip-watermark { transform: scale(1.1) rotate(-5deg); color: rgba(245, 158, 11, 0.05); }
 
-    /* Gold Text Gradient */
-    .text-gold {
-        background: linear-gradient(to right, #FDE047, #F59E0B);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    /* VIP Benefit Cards */
+    .benefit-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 20px;
+        padding: 16px;
+        display: flex;
+        gap: 12px;
+        transition: all 0.3s ease;
     }
-
-    /* Staggered Delay */
-    .delay-100 { animation-delay: 0.1s; }
-    .delay-200 { animation-delay: 0.2s; }
+    .benefit-card:hover {
+        border-color: #F59E0B;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.08);
+        transform: translateY(-2px);
+    }
+    
+    .gold-gradient {
+        background: linear-gradient(to right, #F59E0B, #D97706);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
 </style>
 
-<div class="max-w-4xl mx-auto space-y-6 fade-in-up pb-8 px-1">
+<div class="max-w-4xl mx-auto space-y-8 fade-in-up pb-8 px-1">
 
     <!-- ==========================================
          1. VIP HERO BANNER (Glass & Floating Orbs)
     ========================================== -->
     <div class="relative bg-white rounded-[32px] p-6 sm:p-8 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] overflow-hidden">
         
-        <!-- Abstract BG Orbs -->
         <div class="absolute top-[-50%] right-[-10%] w-64 h-64 bg-amber-400/10 rounded-full blur-[60px] animate-pulse"></div>
         <div class="absolute bottom-[-50%] left-[-10%] w-48 h-48 bg-blue-400/10 rounded-full blur-[50px]"></div>
         
@@ -78,7 +77,6 @@
                 এলিট মেম্বারশিপে আপগ্রেড করুন। কোনো টাস্ক বা রেফারেল ছাড়াই প্রতিদিন নিশ্চিত প্রফিট ক্লেইম করুন এবং আনলক করুন প্রিমিয়াম সব ফিচার।
             </p>
             
-            <!-- Quick Balances -->
             <div class="flex justify-center gap-3">
                 <div class="bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl flex-1 max-w-[150px] shadow-sm text-left">
                     <p class="text-[8px] font-black uppercase text-slate-400 tracking-[0.1em] mb-0.5">VIP Wallet</p>
@@ -94,10 +92,69 @@
     </div>
 
     <!-- ==========================================
-         2. MY ACTIVE PACKAGES (CLAIM AREA)
+         2. VIP BENEFITS (New Feature Section)
+    ========================================== -->
+    <div>
+        <div class="flex items-center justify-between mb-4 px-1">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-gem text-amber-500"></i> VIP মেম্বারদের এক্সক্লুসিভ সুবিধাসমূহ
+            </h3>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+            
+            <div class="benefit-card">
+                <div class="h-10 w-10 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center text-lg shadow-sm flex-shrink-0"><i class="fa-solid fa-bolt-lightning"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800">ইনস্ট্যান্ট পেমেন্ট (২৪ ঘন্টা)</h4>
+                    <p class="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed">পেমেন্ট রিকোয়েস্ট দেওয়ার মাত্র <b>১০ মিনিটের মধ্যে</b> টাকা পৌঁছে যাবে। উইথড্র সিস্টেম ২৪ ঘন্টাই খোলা থাকবে।</p>
+                </div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="h-10 w-10 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center text-lg shadow-sm flex-shrink-0"><i class="fa-solid fa-user-slash"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800">কোনো রেফার লাগবে না</h4>
+                    <p class="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed">VIP মেম্বারদের টাকা তোলার জন্য কোনো রেফারেলের শর্ত নেই। স্বাধীনভাবে কাজ করুন এবং আয় তুলুন।</p>
+                </div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="h-10 w-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg shadow-sm flex-shrink-0"><i class="fa-solid fa-wallet"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800">মিনিমাম উইথড্র মাত্র ৫০৳</h4>
+                    <p class="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed">সাধারণ ইউজারদের মত ৩০০৳ এর জন্য অপেক্ষা করতে হবে না। আপনার ব্যালেন্স <b>৫০ টাকা</b> হলেই উইথড্র করতে পারবেন।</p>
+                </div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="h-10 w-10 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center text-lg shadow-sm flex-shrink-0"><i class="fa-solid fa-headset"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800">প্রাইভেট লাইভ সাপোর্ট</h4>
+                    <p class="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed">আমাদের স্পেশাল <b>VIP সাপোর্ট গ্রুপে</b> জয়েন হতে পারবেন, যেখানে অ্যাডমিন পার্সোনালি আপনার সব সমস্যার দ্রুত সমাধান করবে।</p>
+                </div>
+            </div>
+
+            <div class="benefit-card sm:col-span-2">
+                <div class="h-10 w-10 bg-slate-900 text-white rounded-xl flex items-center justify-center text-lg shadow-sm flex-shrink-0"><i class="fa-solid fa-star"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800">প্রোফাইলে স্পেশাল ব্যাজ ও লুক</h4>
+                    <p class="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed">আপনার অ্যাকাউন্টে একটি স্পেশাল <b><i class="fa-solid fa-crown text-amber-500"></i> VIP Crown</b> ব্যাজ যুক্ত হবে এবং আপনি স্পেশাল হাই-পেইং <b>"Premium Tasks"</b> করার সুযোগ পাবেন।</p>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4 rounded-2xl text-center shadow-sm">
+            <p class="text-xs font-bold text-amber-900">দেরি না করে আজই <b class="gold-gradient">VIP Master Member</b> হিসেবে যুক্ত হোন! ❤️‍🩹</p>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         3. MY ACTIVE PACKAGES (CLAIM AREA)
     ========================================== -->
     {% if my_vips and my_vips|length > 0 %}
-    <div class="fade-in-up delay-100">
+    <div>
         <div class="flex items-center justify-between mb-3 px-1">
             <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                 <i class="fa-solid fa-layer-group text-blue-600"></i> My Active Plans
@@ -108,7 +165,6 @@
             {% for vip in my_vips %}
             <div class="bg-white p-4 rounded-[20px] shadow-sm border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-blue-200 transition">
                 
-                <!-- Package Info -->
                 <div class="flex items-center gap-4">
                     <div class="h-12 w-12 rounded-[14px] bg-gradient-to-br from-slate-800 to-slate-900 text-white flex flex-col items-center justify-center shadow-md flex-shrink-0">
                         <span class="text-[7px] font-black uppercase tracking-widest text-amber-400">LVL</span>
@@ -122,7 +178,6 @@
                     </div>
                 </div>
                 
-                <!-- Claim Action -->
                 <div class="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto border-t sm:border-t-0 border-slate-50 pt-3 sm:pt-0">
                     <div>
                         <p class="text-[9px] text-slate-400 uppercase font-bold tracking-widest mb-0.5">Daily Yield</p>
@@ -150,9 +205,9 @@
     {% endif %}
 
     <!-- ==========================================
-         3. ELITE PLANS STORE
+         4. ELITE PLANS STORE
     ========================================== -->
-    <div class="fade-in-up delay-200">
+    <div>
         <div class="flex items-center justify-between mb-3 px-1 mt-6">
             <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                 <i class="fa-solid fa-store text-amber-500"></i> Upgrade Store
@@ -162,13 +217,10 @@
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {% for id, plan in plans.items() %}
             <div class="vip-store-card group">
-                
-                <!-- Background Watermark -->
                 <div class="vip-watermark">0{{ id }}</div>
 
                 <div class="relative z-10 flex-grow p-6">
-                    <!-- Header -->
-                    <div class="flex justify-between items-start mb-5">
+                    <div class="flex justify-between items-start mb-6">
                         <div>
                             <span class="text-[8px] bg-slate-800/50 text-amber-400 px-2.5 py-1 rounded-md font-black tracking-widest uppercase border border-slate-700 backdrop-blur-sm shadow-sm">
                                 Level {{ id }}
@@ -176,7 +228,6 @@
                             <h3 class="text-xl font-black text-white mt-2">{{ plan.name }}</h3>
                         </div>
                         
-                        <!-- Dynamic Badges -->
                         {% if id == 2 %}
                             <div class="bg-blue-600 text-white text-[8px] font-black px-2 py-1 rounded-md shadow-sm uppercase tracking-widest flex items-center gap-1"><i class="fa-solid fa-fire text-amber-400"></i> Popular</div>
                         {% elif id == 3 %}
@@ -184,35 +235,31 @@
                         {% endif %}
                     </div>
 
-                    <!-- Price Block -->
                     <div class="mb-5 border-b border-slate-700/50 pb-5">
                         <p class="text-[9px] text-slate-400 uppercase font-bold tracking-[0.1em] mb-1">Total Investment</p>
                         <div class="flex items-baseline gap-1">
-                            <h2 class="text-3xl font-black text-white font-mono tracking-tight">৳{{ plan.price }}</h2>
-                            <span class="text-[10px] text-slate-500 font-bold">.00</span>
+                            <h2 class="text-4xl font-black text-white font-mono tracking-tight">৳{{ plan.price }}</h2>
+                            <span class="text-xs text-slate-500 font-bold">.00</span>
                         </div>
                     </div>
 
-                    <!-- Features List -->
-                    <div class="space-y-3 mb-6">
-                        <div class="flex items-center justify-between text-xs">
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center justify-between text-sm">
                             <span class="text-slate-400 font-medium">Daily Profit</span>
-                            <span class="text-emerald-400 font-black font-mono">৳{{ plan.daily_profit }}</span>
+                            <span class="text-emerald-400 font-black font-mono tracking-tight">৳{{ plan.daily_profit }}</span>
                         </div>
-                        <div class="flex items-center justify-between text-xs">
+                        <div class="flex items-center justify-between text-sm">
                             <span class="text-slate-400 font-medium">Validity</span>
                             <span class="text-white font-bold">{{ plan.days }} Days</span>
                         </div>
                         
-                        <!-- Total Return Highlight Box -->
-                        <div class="flex items-center justify-between bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 mt-3">
-                            <span class="text-slate-300 font-bold text-[9px] uppercase tracking-widest">Total Return</span>
-                            <span class="text-gold font-black font-mono text-sm">৳{{ plan.daily_profit * plan.days }}</span>
+                        <div class="flex items-center justify-between bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 mt-2">
+                            <span class="text-slate-300 font-bold text-[9px] uppercase tracking-wider">Total Return</span>
+                            <span class="gold-gradient font-black font-mono text-lg">৳{{ plan.daily_profit * plan.days }}</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Buy Action Button (Sticky at bottom of card) -->
                 <div class="relative z-10 px-6 pb-6 mt-auto">
                     <a href="/vip/buy/{{ id }}" class="block w-full bg-gradient-to-r from-blue-600 to-blue-700 text-center py-3.5 rounded-[14px] font-black text-xs text-white uppercase tracking-[0.1em] shadow-[0_4px_15px_rgba(37,99,235,0.3)] hover:from-blue-500 hover:to-blue-600 transition-all active:scale-[0.98] border border-blue-500">
                         Purchase Plan
