@@ -294,56 +294,92 @@
 
 </div>
 
-<!-- ==========================================
-     10. SMART POPUP MODAL (Notice & Support)
-========================================== -->
-<div id="welcomePopup" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hide flex items-center justify-center px-4">
-    <div class="popup-content bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden relative">
+<div id="welcomePopup" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[100] flex items-center justify-center px-4 transition-all duration-500">
+    
+    <div class="popup-content bg-white/90 backdrop-blur-xl w-full max-w-sm rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden relative border border-white/20">
         
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-700 to-blue-600 p-6 text-center relative">
-            <button onclick="closePopup()" class="absolute top-4 right-4 h-8 w-8 bg-white/20 hover:bg-red-500 rounded-full flex items-center justify-center text-white transition">
-                <i class="fa-solid fa-xmark"></i>
+        <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl"></div>
+
+        <div class="pt-8 pb-4 px-6 text-center relative">
+            <button onclick="closePopup()" class="absolute top-5 right-5 h-9 w-9 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-full flex items-center justify-center text-slate-400 transition-all duration-300 active:scale-90">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <div class="h-16 w-16 bg-white text-blue-600 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg transform -rotate-3 mb-3">
-                <i class="fa-solid fa-handshake-angle"></i>
-            </div>
-            <h2 class="text-xl font-black text-white tracking-tight">Earn Daily Updates</h2>
-        </div>
-
-        <!-- Body -->
-        <div class="p-6">
-            <p class="text-sm text-slate-600 font-medium text-center leading-relaxed mb-5">
-                যেকোনো আপডেট পেতে আমাদের <b class="text-blue-600">নোটিস পেজ</b> দেখুন এবং <b class="text-[#2AABEE]">টেলিগ্রাম চ্যানেলে</b> জয়েন হতে পারেন।
-            </p>
-
-            <div class="grid grid-cols-2 gap-3 mb-5">
-                <a href="/notice" class="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center gap-2 hover:bg-blue-50 hover:border-blue-200 transition group text-slate-700">
-                    <i class="fa-solid fa-bullhorn text-blue-500 group-hover:scale-110 transition"></i> <span class="text-xs font-bold">Notice</span>
-                </a>
-                <a href="https://t.me/pay_easy_earn" target="_blank" class="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center gap-2 hover:bg-sky-50 hover:border-sky-200 transition group text-slate-700">
-                    <i class="fa-brands fa-telegram text-[#2AABEE] group-hover:scale-110 transition text-lg"></i> <span class="text-xs font-bold">Channel</span>
-                </a>
-                <a href="/tutorial" class="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center gap-2 hover:bg-red-50 hover:border-red-200 transition group text-slate-700">
-                    <i class="fa-brands fa-youtube text-red-500 group-hover:scale-110 transition"></i> <span class="text-xs font-bold">Tutorial</span>
-                </a>
-                <a href="https://t.me/payrsrp" target="_blank" class="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-50 hover:border-emerald-200 transition group text-slate-700">
-                    <i class="fa-solid fa-headset text-emerald-500 group-hover:scale-110 transition"></i> <span class="text-xs font-bold">Support</span>
-                </a>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl text-center">
-                <p class="text-[10px] text-blue-800 font-bold leading-relaxed">
-                    Telegram থাকলে টেলিগ্রামে আসুন, না থাকলে <a href="/chat" class="text-blue-600 underline">Live Chat</a> এ যান। কিছু না বুঝলে Contact করুন।
-                </p>
+            
+            <div class="relative inline-block mb-4">
+                <div class="h-20 w-20 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-[24px] flex items-center justify-center text-3xl text-white shadow-xl shadow-blue-200 rotate-6 transform hover:rotate-0 transition-transform duration-500">
+                    <i class="fa-solid fa- rocket-launch"></i> <i class="fa-solid fa-bolt-lightning"></i>
+                </div>
+                <span class="absolute -bottom-1 -right-1 flex h-4 w-4">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-white"></span>
+                </span>
             </div>
             
-            <button onclick="closePopup()" class="w-full mt-4 bg-slate-900 text-white py-3.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition active:scale-95 shadow-md">
-                Got it, Thanks!
+            <h2 class="text-2xl font-black text-slate-800 tracking-tight">Stay Updated!</h2>
+            <p class="text-[13px] text-slate-500 font-medium mt-2 leading-relaxed">
+                সঠিক তথ্য এবং নতুন আপডেট পেতে আমাদের সাথে যুক্ত থাকুন।
+            </p>
+        </div>
+
+        <div class="p-6 pt-2">
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <a href="/notice" class="group bg-slate-50 p-4 rounded-3xl flex flex-col items-center gap-2 hover:bg-blue-600 transition-all duration-300 hover:shadow-lg hover:shadow-blue-200 border border-slate-100">
+                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <span class="text-[12px] font-bold text-slate-700 group-hover:text-white">Notice</span>
+                </a>
+
+                <a href="https://t.me/pay_easy_earn" target="_blank" class="group bg-slate-50 p-4 rounded-3xl flex flex-col items-center gap-2 hover:bg-[#2AABEE] transition-all duration-300 hover:shadow-lg hover:shadow-sky-200 border border-slate-100">
+                    <div class="h-10 w-10 rounded-full bg-sky-100 flex items-center justify-center text-[#2AABEE] group-hover:bg-white/20 group-hover:text-white transition-colors">
+                        <i class="fa-brands fa-telegram text-xl"></i>
+                    </div>
+                    <span class="text-[12px] font-bold text-slate-700 group-hover:text-white">Telegram</span>
+                </a>
+
+                <a href="/tutorial" class="group bg-slate-50 p-4 rounded-3xl flex flex-col items-center gap-2 hover:bg-red-600 transition-all duration-300 hover:shadow-lg hover:shadow-red-200 border border-slate-100">
+                    <div class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
+                        <i class="fa-brands fa-youtube"></i>
+                    </div>
+                    <span class="text-[12px] font-bold text-slate-700 group-hover:text-white">Tutorial</span>
+                </a>
+
+                <a href="https://t.me/earndailysite" target="_blank" class="group bg-slate-50 p-4 rounded-3xl flex flex-col items-center gap-2 hover:bg-emerald-600 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-200 border border-slate-100">
+                    <div class="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <span class="text-[12px] font-bold text-slate-700 group-hover:text-white">Support</span>
+                </a>
+            </div>
+
+            <div class="bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100/50 p-4 rounded-[24px] mb-6">
+                <div class="flex gap-3">
+                    <div class="text-blue-500 pt-1">
+                        <i class="fa-solid fa-circle-info text-lg"></i>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-[1.6]">
+                        টেলিগ্রাম নেই? কোনো চিন্তা নেই! আমাদের <a href="/chat" class="text-blue-600 font-bold hover:underline">Live Chat</a> ব্যবহার করুন। আমরা ২৪/৭ আপনার সহায়তায় আছি।
+                    </p>
+                </div>
+            </div>
+            
+            <button onclick="closePopup()" class="w-full py-4 bg-slate-900 text-white rounded-2xl text-[13px] font-bold uppercase tracking-wider hover:bg-blue-700 transition-all duration-300 active:scale-[0.98] shadow-xl shadow-slate-200 hover:shadow-blue-100">
+                Understood
             </button>
         </div>
     </div>
 </div>
+
+<style>
+    @keyframes popupShow {
+        from { opacity: 0; transform: scale(0.9) translateY(20px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .popup-content {
+        animation: popupShow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+</style>
 
 <!-- ==========================================
      SCRIPTS
