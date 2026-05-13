@@ -49,6 +49,40 @@
     }
 
     #imagePreviewBox { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    /* ==========================================
+       HIDING ALL BOTTOM WIDGETS FOR FULL-SCREEN CHAT
+    ========================================== */
+    /* 1. Hide the entire bottom nav wrapper */
+    nav.fixed.bottom-6, 
+    nav[class*="bottom-"], 
+    .glass-effect.rounded-full.shadow-float {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+
+    /* 2. Hide Telegram floating icon */
+    div.fixed.z-40.group, 
+    div.fixed[class*="bottom-"] {
+        display: none !important;
+    }
+
+    /* 3. Hide any global toast container that overlaps */
+    #toastContainer {
+        display: none !important;
+    }
+
+    /* 4. Remove padding added by layout.html */
+    main { 
+        padding-top: 10px !important; 
+        padding-bottom: 20px !important; 
+    }
+
+    /* Ensure html and body don't scroll behind the chat */
+    html, body {
+        overflow: hidden !important;
+        height: 100vh !important;
+    }
 </style>
 
 <div class="w-full max-w-2xl mx-auto">
