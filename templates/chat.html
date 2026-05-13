@@ -208,18 +208,17 @@
         
     </div>
 </div>
-
 <script>
     const chatBox = document.getElementById("chatContainer");
     const chatContent = document.getElementById("chatContent");
-
-    // Scroll to bottom smoothly
+    
+    // Auto Scroll Logic
     function scrollToBottom() {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
     setTimeout(scrollToBottom, 100);
 
-    // Image Preview Logic
+    // Image Preview
     function previewImage(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -235,7 +234,11 @@
         document.getElementById('imagePreviewBox').classList.add('hidden');
     }
 
-    // 🚀 ULTRA FAST AJAX SEND LOGIC (Optimistic UI)
+    // ==========================================
+    // 🚀 MESSENGER-LEVEL FAST SENDING LOGIC
+    // ==========================================
+    let isSending = false; // Prevent overlapping sends
+
     async function handleAjaxSend(event) {
         event.preventDefault(); 
         
@@ -249,50 +252,68 @@
 
         if (!messageText && !hasImage) return;
 
-        // 1. INSTANTLY SHOW MESSAGE ON SCREEN (Zero Delay)
+        // 1. INSTANT UI UPDATE (Optimistic UI)
         if(messageText && !hasImage) {
             const safeText = messageText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            
+            // Check if user or admin (Determine Bubble Color)
+            const isUser = window.location.pathname === '/chat';
+            const bubbleClass = isUser ? 'msg-user text-sm' : 'msg-admin text-sm';
+            
             const tempHTML = `
-                <div class="flex justify-end bubble ml-auto opacity-70">
+                <div class="flex justify-end bubble ml-auto opacity-70 temp-msg">
                     <div class="flex flex-col items-end">
-                        <div class="msg-user text-sm">${safeText}</div>
-                        <span class="text-[9px] text-slate-400 mt-1"><i class="fa-solid fa-circle-notch fa-spin"></i> Sending...</span>
+                        <div class="${bubbleClass}">${safeText}</div>
+                        <span class="text-[8px] text-slate-400 mt-1"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
                     </div>
                 </div>`;
             chatContent.insertAdjacentHTML('beforeend', tempHTML);
             scrollToBottom();
         }
 
-        // 2. Button Loading State
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
-        
+        // 2. Prepare Data & Instantly Reset Input (Allows Rapid Typing)
         const formData = new FormData(form);
-
-        // 3. Reset Input UI Instantly
         form.reset();
         msgInput.style.height = 'auto'; 
         removeImage();
+        msgInput.focus(); // Keep keyboard open on mobile!
+
+        // If uploading an image, show loader on button
+        if(hasImage) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+        }
 
         try {
+            // 3. Send in Background
             await fetch(window.location.href, {
                 method: 'POST',
                 body: formData
             });
 
-            // Fetch real messages from database
+            // 4. Clean up temp messages & fetch real ones
+            document.querySelectorAll('.temp-msg').forEach(e => e.remove());
             fetchNewMessages(true);
+            
         } catch (error) {
             console.error('Error sending message:', error);
-            alert("Network error! Message not sent.");
         } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+            if(hasImage) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+            }
         }
     }
 
-    // BACKGROUND POLLING (Every 1.5 Seconds)
+    // ==========================================
+    // 📡 BACKGROUND POLLING (Smart Sync)
+    // ==========================================
+    let pollInterval;
+
     function fetchNewMessages(forceScroll = false) {
+        // Skip polling if user is currently typing a very long message
+        if(document.getElementById('msgInput').value.trim().length > 50) return;
+
         fetch(window.location.href)
             .then(response => response.text())
             .then(html => {
@@ -302,16 +323,27 @@
                 
                 if (chatContent.innerHTML.length !== newContent.length) {
                     const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 100;
-                    chatContent.innerHTML = newContent;
-                    if(isAtBottom || forceScroll) {
-                        setTimeout(scrollToBottom, 50);
+                    
+                    // Don't overwrite if there are temp messages (wait for them to clear)
+                    if(document.querySelectorAll('.temp-msg').length === 0) {
+                        chatContent.innerHTML = newContent;
+                        if(isAtBottom || forceScroll) setTimeout(scrollToBottom, 50);
                     }
                 }
             });
     }
     
-    setInterval(fetchNewMessages, 1500); 
+    // Start fast polling
+    pollInterval = setInterval(fetchNewMessages, 2000);
 
+    // Submit on Enter Key (Shift+Enter for new line)
+    document.getElementById("msgInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            if(this.value.trim() !== '') {
+                document.getElementById("chatForm").dispatchEvent(new Event('submit'));
+            }
+        }
+    });
 </script>
-
 {% endblock %}
