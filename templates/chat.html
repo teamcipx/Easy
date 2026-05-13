@@ -3,79 +3,89 @@
 
 <style>
     /* ==========================================
-       HIDING LAYOUT WIDGETS (BOTTOM NAV & TELEGRAM)
+       HIDING WIDGETS (BOTTOM NAV ONLY)
     ========================================== */
-    /* Hide the new Floating Pill Bottom Nav */
-    nav.fixed.bottom-6 { display: none !important; }
-    /* Hide telegram floating button */
-    div.fixed.bottom-\[110px\] { display: none !important; }
-    
-    /* Adjust main container padding to remove bottom gap */
-    main { padding-bottom: 10px !important; }
+    .bottom-navbar { display: none !important; }
+    .fixed.z-40.group { display: none !important; }
+    main { padding-bottom: 20px !important; }
 
-    /* Native App Chat Layout */
+    /* Modern App Chat Layout */
     .chat-layout {
         height: calc(100vh - 120px); 
         display: flex;
         flex-direction: column;
-        background: #F8FAFC;
-        border-radius: 20px;
+        background: #F8FAFC; /* Light slate */
+        border-radius: 28px;
         overflow: hidden;
         border: 1px solid #E2E8F0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
     }
     
     .chat-messages {
         flex-grow: 1;
         overflow-y: auto;
-        padding: 16px;
+        padding: 20px 16px;
         scroll-behavior: smooth;
+        background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+        background-size: 20px 20px; /* Subtle dot pattern background */
     }
     .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
 
-    /* Message Bubbles */
-    .bubble { max-width: 80%; width: fit-content; animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    /* Message Bubbles (Modern Style) */
+    .bubble { max-width: 85%; width: fit-content; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
     .msg-user {
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-        color: white; border-radius: 20px 20px 4px 20px;
-        padding: 10px 14px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
+        color: white; border-radius: 24px 24px 4px 24px;
+        padding: 12px 16px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+        white-space: pre-wrap; word-break: break-word; font-medium;
     }
     .msg-admin {
-        background: #FFFFFF; color: #1E293B; border-radius: 20px 20px 20px 4px;
-        padding: 10px 14px; border: 1px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        background: #FFFFFF; color: #1E293B; border-radius: 24px 24px 24px 4px;
+        padding: 12px 16px; border: 1px solid #E2E8F0; box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+        white-space: pre-wrap; word-break: break-word; font-medium;
     }
 
-    #imagePreviewBox { transition: all 0.3s ease; }
+    #imagePreviewBox { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 </style>
 
 <div class="w-full max-w-2xl mx-auto">
     <div class="chat-layout relative bg-[#F8FAFC]">
         
         <!-- ==========================================
-             FIXED SYSTEM MESSAGE (PINNED)
+             FIXED SYSTEM MESSAGE (PINNED HEADER)
         ========================================== -->
-        <div class="bg-blue-50 border-b border-blue-100 p-4 z-20 flex-shrink-0 shadow-sm relative overflow-hidden">
-            <div class="absolute right-0 top-0 text-blue-500 opacity-5 text-6xl transform translate-x-4 -translate-y-2"><i class="fa-solid fa-robot"></i></div>
+        <div class="bg-white border-b border-slate-100 p-4 z-20 flex-shrink-0 shadow-sm relative overflow-hidden">
+            <!-- Abstract Decor -->
+            <div class="absolute right-0 top-0 w-32 h-32 bg-blue-50 rounded-bl-full opacity-50 pointer-events-none"></div>
             
-            <div class="flex items-start gap-3 relative z-10">
-                <div class="h-10 w-10 bg-white text-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-blue-100">
-                    <i class="fa-solid fa-headset text-lg"></i>
-                </div>
+            <div class="flex items-start gap-4 relative z-10">
+                <a href="/dashboard" class="h-10 w-10 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200 hover:bg-blue-50 hover:text-blue-600 transition active:scale-95">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </a>
+                
                 <div class="flex-grow">
-                    <div class="flex justify-between items-center mb-1">
-                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-widest">System Auto-Reply</h3>
-                        <span class="flex items-center gap-1 text-[9px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full"><span class="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-ping"></span> Live</span>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <div>
+                            <h3 class="text-sm font-black text-slate-800 tracking-tight">Earn Daily Support</h3>
+                            <span class="flex items-center gap-1.5 text-[9px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5"><span class="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-ping"></span> Live Agent Online</span>
+                        </div>
+                        <a href="https://t.me/earndailysite" target="_blank" class="bg-blue-50 text-blue-600 h-9 w-9 rounded-full flex items-center justify-center text-lg hover:bg-blue-600 hover:text-white transition shadow-sm" title="Join Telegram">
+                            <i class="fa-brands fa-telegram"></i>
+                        </a>
                     </div>
-                    <p class="text-[11px] text-slate-600 font-medium leading-relaxed">
-                        স্বাগতম! আমরা আপনাকে সাহায্য করার জন্য আছি। যদি এখানে রিপ্লাই পেতে দেরি হয়, তবে দয়া করে আমাদের 
-                        <a href="https://t.me/earndailysite" target="_blank" class="text-blue-600 font-black hover:underline inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-blue-100 mx-1 shadow-sm">
-                            <i class="fa-brands fa-telegram"></i> টেলিগ্রাম সাপোর্টে
-                        </a> 
-                        মেসেজ দিন।
-                    </p>
+                    
+                    <div class="bg-blue-50/50 border border-blue-100 p-3 rounded-xl mt-2">
+                        <p class="text-[11px] text-slate-600 font-medium leading-relaxed">
+                            স্বাগতম! আমরা আপনাকে সাহায্য করার জন্য আছি। যদি এখানে রিপ্লাই পেতে দেরি হয়, তবে দয়া করে আমাদের 
+                            <a href="https://t.me/earndailysite" target="_blank" class="text-blue-600 font-bold hover:underline inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded shadow-sm border border-blue-100 mx-1">
+                                <i class="fa-brands fa-telegram"></i> টেলিগ্রাম সাপোর্টে
+                            </a> 
+                            মেসেজ দিন।
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,35 +93,42 @@
         <!-- ==========================================
              SCROLLABLE CHAT MESSAGES
         ========================================== -->
-        <div class="chat-messages space-y-4" id="chatContainer">
-            <div class="text-center text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] my-2 bg-slate-100 px-3 py-1 rounded-full w-max mx-auto shadow-sm">Conversation Secured</div>
+        <div class="chat-messages space-y-5" id="chatContainer">
+            <div class="text-center text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] my-2 bg-white px-4 py-1.5 rounded-full w-max mx-auto shadow-sm border border-slate-100">Conversation Secured</div>
             
             <!-- Dynamic Chat Messages -->
-            <div id="chatContent" class="space-y-4 pb-2">
+            <div id="chatContent" class="space-y-5 pb-2">
                 {% for msg in messages %}
                     {% if msg.sender_role == 'user' %}
                     <!-- User Msg -->
                     <div class="flex justify-end bubble ml-auto">
                         <div class="flex flex-col items-end">
                             {% if msg.image_url %}
-                                <a href="{{ msg.image_url }}" target="_blank"><img src="{{ msg.image_url }}" class="rounded-[16px] mb-1 border-2 border-white shadow-sm max-w-[220px] max-h-[220px] object-cover"></a>
+                                <a href="{{ msg.image_url }}" target="_blank" class="relative group block mb-1">
+                                    <img src="{{ msg.image_url }}" class="rounded-[20px] border-2 border-white shadow-sm max-w-[240px] max-h-[240px] object-cover transition-transform group-hover:scale-[1.02]">
+                                </a>
                             {% endif %}
                             {% if msg.message %}
                                 <div class="msg-user text-sm">{{ msg.message }}</div>
                             {% endif %}
+                            <p class="text-[9px] text-slate-400 font-medium mt-1 mr-1"><i class="fa-solid fa-check-double text-blue-500"></i> Read</p>
                         </div>
                     </div>
                     {% else %}
                     <!-- Admin Msg -->
                     <div class="flex justify-start bubble mr-auto">
-                        <div class="flex flex-col items-start">
-                            <p class="text-[9px] font-bold text-slate-400 ml-2 mb-1 uppercase tracking-wider">Admin</p>
-                            {% if msg.image_url %}
-                                <a href="{{ msg.image_url }}" target="_blank"><img src="{{ msg.image_url }}" class="rounded-[16px] mb-1 border border-slate-200 shadow-sm max-w-[220px] max-h-[220px] object-cover"></a>
-                            {% endif %}
-                            {% if msg.message %}
-                                <div class="msg-admin text-sm">{{ msg.message }}</div>
-                            {% endif %}
+                        <div class="flex items-end gap-2">
+                            <!-- Admin Avatar -->
+                            <div class="h-6 w-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px] font-black border border-blue-200 mb-5 flex-shrink-0">A</div>
+                            <div class="flex flex-col items-start">
+                                <p class="text-[9px] font-bold text-slate-400 ml-2 mb-1 uppercase tracking-wider">Support Team</p>
+                                {% if msg.image_url %}
+                                    <a href="{{ msg.image_url }}" target="_blank"><img src="{{ msg.image_url }}" class="rounded-[20px] mb-1 border border-slate-200 shadow-sm max-w-[240px] max-h-[240px] object-cover"></a>
+                                {% endif %}
+                                {% if msg.message %}
+                                    <div class="msg-admin text-sm">{{ msg.message }}</div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% endif %}
@@ -127,22 +144,29 @@
             <!-- Image Preview Box -->
             <div id="imagePreviewBox" class="hidden absolute bottom-full left-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-100 p-3 flex items-center justify-between shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
                 <div class="flex items-center gap-3">
-                    <img id="previewImg" src="" class="h-10 w-10 object-cover rounded-lg border border-slate-200 shadow-sm">
-                    <span class="text-xs font-bold text-slate-600">Image attached</span>
+                    <img id="previewImg" src="" class="h-12 w-12 object-cover rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-slate-700">Image attached</span>
+                        <span class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest"><i class="fa-solid fa-check"></i> Ready to send</span>
+                    </div>
                 </div>
-                <button type="button" onclick="removeImage()" class="h-8 w-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition border border-red-100"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="removeImage()" class="h-8 w-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition border border-red-100 shadow-sm"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <!-- Form -->
             <form class="p-3 flex items-end gap-2" id="chatForm" onsubmit="handleAjaxSend(event)">
-                <label class="h-[46px] w-[46px] bg-slate-50 text-slate-400 rounded-[14px] flex items-center justify-center cursor-pointer hover:text-blue-600 hover:bg-blue-50 transition border border-slate-200 flex-shrink-0 shadow-sm">
+                
+                <label class="h-[48px] w-[48px] bg-slate-50 text-slate-400 rounded-full flex items-center justify-center cursor-pointer hover:text-blue-600 hover:bg-blue-50 transition border border-slate-200 flex-shrink-0 shadow-sm active:scale-95">
                     <i class="fa-solid fa-image text-lg"></i>
                     <input type="file" name="image" id="imageInput" class="hidden" accept="image/*" onchange="previewImage(this)">
                 </label>
                 
-                <textarea name="message" id="msgInput" rows="1" class="w-full bg-slate-50 border border-slate-200 rounded-[16px] px-4 py-3 text-sm focus:outline-none focus:border-blue-500 resize-none font-medium text-slate-800" placeholder="Type a message..."></textarea>
+                <textarea name="message" id="msgInput" rows="1" 
+                          class="w-full bg-slate-50 border border-slate-200 rounded-[24px] px-5 py-3.5 text-sm focus:outline-none focus:border-blue-500 resize-none font-medium text-slate-800 overflow-hidden shadow-inner" 
+                          placeholder="Message support..."
+                          oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                 
-                <button type="submit" id="sendBtn" class="h-[46px] w-[46px] bg-blue-600 text-white rounded-[14px] flex items-center justify-center shadow-lg shadow-blue-600/30 hover:bg-blue-700 active:scale-95 transition flex-shrink-0">
+                <button type="submit" id="sendBtn" class="h-[48px] w-[48px] bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-600/30 hover:bg-blue-700 active:scale-95 transition flex-shrink-0">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </form>
@@ -177,7 +201,7 @@
         document.getElementById('imagePreviewBox').classList.add('hidden');
     }
 
-    // AJAX SEND LOGIC
+    // 🚀 ULTRA FAST AJAX SEND LOGIC (Optimistic UI)
     async function handleAjaxSend(event) {
         event.preventDefault(); 
         
@@ -186,18 +210,43 @@
         const msgInput = document.getElementById('msgInput');
         const imgInput = document.getElementById('imageInput');
 
-        if (!msgInput.value.trim() && imgInput.files.length === 0) return;
+        const messageText = msgInput.value.trim();
+        const hasImage = imgInput.files.length > 0;
 
+        if (!messageText && !hasImage) return;
+
+        // 1. INSTANTLY SHOW MESSAGE ON SCREEN (Zero Delay)
+        if(messageText && !hasImage) {
+            const safeText = messageText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const tempHTML = `
+                <div class="flex justify-end bubble ml-auto opacity-70">
+                    <div class="flex flex-col items-end">
+                        <div class="msg-user text-sm">${safeText}</div>
+                        <span class="text-[9px] text-slate-400 mt-1"><i class="fa-solid fa-circle-notch fa-spin"></i> Sending...</span>
+                    </div>
+                </div>`;
+            chatContent.insertAdjacentHTML('beforeend', tempHTML);
+            scrollToBottom();
+        }
+
+        // 2. Button Loading State
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-        btn.classList.add('opacity-80');
-
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+        
         const formData = new FormData(form);
 
+        // 3. Reset Input UI Instantly
+        form.reset();
+        msgInput.style.height = 'auto'; 
+        removeImage();
+
         try {
-            await fetch(window.location.href, { method: 'POST', body: formData });
-            form.reset();
-            removeImage();
+            await fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            });
+
+            // Fetch real messages from database
             fetchNewMessages(true);
         } catch (error) {
             console.error('Error sending message:', error);
@@ -205,11 +254,10 @@
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
-            btn.classList.remove('opacity-80');
         }
     }
 
-    // BACKGROUND POLLING
+    // BACKGROUND POLLING (Every 1.5 Seconds)
     function fetchNewMessages(forceScroll = false) {
         fetch(window.location.href)
             .then(response => response.text())
@@ -221,19 +269,15 @@
                 if (chatContent.innerHTML.length !== newContent.length) {
                     const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 100;
                     chatContent.innerHTML = newContent;
-                    if(isAtBottom || forceScroll) setTimeout(scrollToBottom, 100);
+                    if(isAtBottom || forceScroll) {
+                        setTimeout(scrollToBottom, 50);
+                    }
                 }
             });
     }
     
     setInterval(fetchNewMessages, 1500); 
 
-    // Submit on Enter
-    document.getElementById("msgInput").addEventListener("keypress", function(event) {
-        if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-            document.getElementById("chatForm").dispatchEvent(new Event('submit'));
-        }
-    });
 </script>
+
 {% endblock %}
