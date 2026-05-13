@@ -4,52 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ article.title }} | Earn Daily Blog</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #F8FAFC; color: #1E293B; font-family: 'Inter', sans-serif; }
+        
         .ad-container { 
             background: white; border: 1px dashed #cbd5e1; padding: 10px; margin: 20px 0; 
-            text-align: center; border-radius: 12px; min-height: 100px; 
+            text-align: center; border-radius: 12px; min-height: 120px; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            overflow: hidden; /* To prevent ad overflow */
+            overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
+        
         .ad-badge { 
-            font-size: 10px; color: #94a3b8; text-transform: uppercase; 
-            letter-spacing: 2px; margin-bottom: 5px; display: block; width: 100%; text-align: center; 
+            font-size: 9px; color: #94a3b8; text-transform: uppercase; 
+            letter-spacing: 2px; margin-bottom: 8px; display: block; width: 100%; text-align: center; font-weight: bold;
         }
-        /* Style for iframes injected by ad networks */
-        .ad-container iframe {
-            max-width: 100%;
-            margin: 0 auto;
+
+        /* Essential for Adsterra/Monetag Iframes */
+        iframe {
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            border: none !important;
+            display: block !important;
         }
     </style>
 
     <!-- ==========================================
-         POP-UNDER ADS (Head Section)
+         POP-UNDER ADS (Placed in HEAD)
     ========================================== -->
     {% if page_id == 'ad1' %}
-        <script data-cfasync='false' src='//wwr.giriudog.com/?tag=f61dc3c0'></script>
+        <!-- AD1: Pop-under -->
+        <script data-cfasync="false" type="text/javascript" src="//wwr.giriudog.com/?tag=f61dc3c0"></script>
     {% endif %}
 
 </head>
 <body>
 
     <!-- Header -->
-    <header class="bg-blue-600 text-white p-4 shadow-md text-center">
-        <h1 class="text-xl font-black">Earn Daily Blog</h1>
-        <p class="text-xs text-blue-200">Category: {{ article.topic }}</p>
+    <header class="bg-blue-600 text-white p-5 shadow-md text-center border-b-4 border-blue-800">
+        <h1 class="text-2xl font-black">Earn Daily Blog</h1>
+        <p class="text-xs text-blue-200 mt-1 font-medium">Category: {{ article.topic }}</p>
     </header>
 
-    <div class="max-w-3xl mx-auto p-4 pb-20">
+    <div class="max-w-3xl mx-auto p-4 pb-24">
 
         <!-- ==========================================
-             AD ZONE 1: TOP BANNER
+             AD ZONE 1: TOP BANNER 
         ========================================== -->
         <div class="ad-container">
-            <span class="ad-badge">Sponsored (Top)</span>
+            <span class="ad-badge">Advertisement (Top)</span>
             
-            {% if page_id == 'ad2' %}
-                <!-- Adsterra 468x60 -->
+            {% if page_id == 'ad1' %}
+                <!-- Test text -->
+                <p class="text-xs text-slate-400">Loading Native Ad...</p>
+                
+            {% elif page_id == 'ad2' %}
+                
+                <!-- Adsterra Banner 468x60 -->
                 <script type="text/javascript">
                     atOptions = {
                         'key' : '4a72be96f78b75e42afea5ee99005d34',
@@ -59,27 +71,26 @@
                         'params' : {}
                     };
                 </script>
-                <script type="text/javascript" src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
-                
-                <!-- Native Ad -->
-                <script type="text/javascript" src="https://pl29435484.profitablecpmratenetwork.com/48/b2/21/48b2213dba06ca877a5c17d2c0c0cad5.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+
+                <!-- Propeller/Monetag Native -->
+                <script data-cfasync="false" type="text/javascript" src="https://pl29435484.profitablecpmratenetwork.com/48/b2/21/48b2213dba06ca877a5c17d2c0c0cad5.js"></script>
 
             {% elif page_id == 'ad3' %}
-                <!-- Wpadmngr Ad -->
                 <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
             {% else %}
-                <p class="text-xs text-slate-400">Loading Premium Content...</p>
+                <p class="text-xs text-slate-400">Premium Space</p>
             {% endif %}
             
         </div>
 
         <!-- Article Content -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
-            <h2 class="text-2xl font-bold mb-4">{{ article.title }}</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-                Welcome to today's special article regarding {{ article.topic }}. In this modern era, staying updated with the latest trends is highly important. Many people are searching for the best strategies to improve their daily lives and boost their productivity.
+            <h2 class="text-2xl font-black text-slate-800 mb-4">{{ article.title }}</h2>
+            <p class="text-slate-600 mb-4 leading-relaxed font-medium">
+                Welcome to today's special article regarding <b class="text-blue-600">{{ article.topic }}</b>. In this modern era, staying updated with the latest trends is highly important. Many people are searching for the best strategies to improve their daily lives and boost their productivity.
             </p>
-            <p class="text-slate-600 leading-relaxed">
+            <p class="text-slate-600 leading-relaxed font-medium">
                 Remember to scroll slowly and read the content carefully. Spending time on this page helps you gather more knowledge. Keep scrolling down to discover more interesting facts and premium advertisements selected just for you.
             </p>
         </div>
@@ -88,10 +99,10 @@
              AD ZONE 2: MIDDLE BANNER
         ========================================== -->
         <div class="ad-container">
-            <span class="ad-badge">Advertisement (Middle)</span>
+            <span class="ad-badge">Sponsored Content</span>
             
             {% if page_id == 'ad2' %}
-                <!-- Adsterra 468x60 -->
+                <!-- Adsterra Banner 2 -->
                 <script type="text/javascript">
                     atOptions = {
                         'key' : '4a72be96f78b75e42afea5ee99005d34',
@@ -101,10 +112,10 @@
                         'params' : {}
                     };
                 </script>
-                <script type="text/javascript" src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
-                
-                <!-- Native Ad 2 -->
-                <script type="text/javascript" src="https://pl29435493.profitablecpmratenetwork.com/df/d5/70/dfd57048bc30eb2192b8232718671aa1.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+
+                <!-- Propeller Native 2 -->
+                <script data-cfasync="false" type="text/javascript" src="https://pl29435493.profitablecpmratenetwork.com/df/d5/70/dfd57048bc30eb2192b8232718671aa1.js"></script>
 
             {% elif page_id == 'ad3' %}
                 <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
@@ -116,8 +127,8 @@
 
         <!-- More Article Content -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
-            <h3 class="text-xl font-bold mb-3">Why this is important?</h3>
-            <p class="text-slate-600 leading-relaxed">
+            <h3 class="text-xl font-black text-slate-800 mb-3">Why this is important?</h3>
+            <p class="text-slate-600 leading-relaxed font-medium">
                 Knowledge is power. When you explore different fields like {{ article.topic }}, you open doors to new opportunities. Always take your time to digest the information provided on websites. Engaging with sponsored contents also supports creators to bring more quality articles for free!
             </p>
         </div>
@@ -126,10 +137,10 @@
              AD ZONE 3: BOTTOM BANNER
         ========================================== -->
         <div class="ad-container">
-            <span class="ad-badge">Sponsored (Bottom)</span>
+            <span class="ad-badge">Advertisement (Bottom)</span>
             
             {% if page_id == 'ad2' %}
-                <!-- Adsterra 468x60 -->
+                <!-- Adsterra Banner 3 -->
                 <script type="text/javascript">
                     atOptions = {
                         'key' : '4a72be96f78b75e42afea5ee99005d34',
@@ -139,7 +150,7 @@
                         'params' : {}
                     };
                 </script>
-                <script type="text/javascript" src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
 
             {% elif page_id == 'ad3' or page_id == 'ad5' %}
                 <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
@@ -151,9 +162,10 @@
 
     </div>
 
-    <!-- User Instruction Timer Reminder -->
-    <div class="fixed bottom-0 w-full bg-slate-900 text-white p-3 text-center text-xs font-bold shadow-[0_-10px_20px_rgba(0,0,0,0.1)] z-50">
-        <i class="fa-solid fa-clock text-amber-400 mr-1"></i> Please wait here for 30 seconds before going back!
+    <!-- Timer Reminder -->
+    <div class="fixed bottom-0 w-full bg-slate-900 text-white p-4 text-center text-sm font-bold shadow-[0_-10px_30px_rgba(0,0,0,0.2)] flex items-center justify-center gap-2">
+        <i class="fa-solid fa-clock text-amber-400 animate-pulse"></i> 
+        <span>Please wait here for <span class="text-amber-400">30 seconds</span> before going back!</span>
     </div>
 
 </body>
