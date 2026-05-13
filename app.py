@@ -1,4 +1,4 @@
-import os
+timport os
 import random
 import string
 import requests
@@ -915,6 +915,86 @@ def admin_drive_manage():
 
     return render_template('admin_drive.html', packs=packs, orders=final_orders)
 
+    # ==========================================
+# 💼 B2B / CUSTOM WORK REQUEST SYSTEM
+# ==========================================
+
+@app.route('/hire-us', methods=['GET', 'POST'])
+def hire_us():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        phone = request.form.get('phone')
+        service = request.form.get('service')
+        details = request.form.get('details')
+
+        try:
+            # Save to Supabase
+            supabase.table('client_requests').insert({
+                'name': name,
+                'phone': phone,
+                'service_type': service,
+                'details': details,
+                'status': 'pending'
+            }).execute()
+            
+            # Send Telegram Alert (If you have this function)
+            try:
+                tg_msg = f"💼 <b>New Client Request!</b>\n\n👤 Name: {name}\n📞 Phone: {phone}\n📌 Service: {service}\n📝 Details: {details}"
+                send_to_telegram_channel(title="Business Proposal", content=tg_msg)
+            except:
+                pass
+            
+            flash("✅ আপনার রিকোয়েস্ট সফলভাবে জমা হয়েছে! আমাদের টিম খুব দ্রুত আপনার সাথে যোগাযোগ করবে।", "success")
+        except Exception as e:
+            print(f"Client Request Error: {e}")
+            flash("❌ সার্ভার সমস্যা! অনুগ্রহ করে আবার চেষ্টা করুন।", "error")
+            
+        return redirect(url_for('hire_us'))
+
+    # 16 Detailed Service Packages (Low/Cheap Price focused descriptions)
+    services = [
+        {'icon': 'fa-youtube', 'color': 'text-red-500', 'bg': 'bg-red-50', 'title': 'YouTube Views & Watch Time', 'desc': '100% Organic, Non-drop views at cheapest rate.'},
+        {'icon': 'fa-youtube', 'color': 'text-red-600', 'bg': 'bg-red-100', 'title': 'YouTube Subscribers', 'desc': 'Real active Bangladeshi subscribers. Fast delivery.'},
+        {'icon': 'fa-facebook', 'color': 'text-blue-600', 'bg': 'bg-blue-50', 'title': 'FB Page Organic Boost', 'desc': 'Boost your page reach and engagement naturally.'},
+        {'icon': 'fa-facebook', 'color': 'text-blue-500', 'bg': 'bg-blue-100', 'title': 'Facebook Followers', 'desc': 'Real profile/page followers at a very cheap price.'},
+        {'icon': 'fa-share-nodes', 'color': 'text-indigo-500', 'bg': 'bg-indigo-50', 'title': 'Video Share & Comments', 'desc': 'Get real comments and shares to make video viral.'},
+        {'icon': 'fa-users', 'color': 'text-purple-600', 'bg': 'bg-purple-50', 'title': 'Targeted Referrals', 'desc': 'Need active referrals for your App/Bot? We got you.'},
+        {'icon': 'fa-google-play', 'color': 'text-emerald-500', 'bg': 'bg-emerald-50', 'title': 'App Installs (CPI)', 'desc': 'Real user installs to rank your app in PlayStore.'},
+        {'icon': 'fa-star', 'color': 'text-yellow-600', 'bg': 'bg-yellow-50', 'title': 'App 5-Star Reviews', 'desc': 'Positive reviews and 5-star ratings by real users.'},
+        {'icon': 'fa-telegram', 'color': 'text-sky-500', 'bg': 'bg-sky-50', 'title': 'Telegram Members', 'desc': 'Active members for your Telegram Group/Channel.'},
+        {'icon': 'fa-globe', 'color': 'text-teal-500', 'bg': 'bg-teal-50', 'title': 'Website Traffic', 'desc': 'Organic visitors for AdSense safe revenue & sales.'},
+        {'icon': 'fa-tiktok', 'color': 'text-slate-800', 'bg': 'bg-slate-100', 'title': 'TikTok Engagement', 'desc': 'Real TikTok followers, views and hearts (Likes).'},
+        {'icon': 'fa-instagram', 'color': 'text-pink-500', 'bg': 'bg-pink-50', 'title': 'Instagram Growth', 'desc': 'Organic Instagram followers and post engagement.'},
+        {'icon': 'fa-user-check', 'color': 'text-amber-500', 'bg': 'bg-amber-50', 'title': 'CPA / Lead Generation', 'desc': 'Targeted sign-ups and leads for your CPA offers.'},
+        {'icon': 'fa-twitter', 'color': 'text-sky-400', 'bg': 'bg-sky-100', 'title': 'Twitter (X) Growth', 'desc': 'Twitter followers, retweets and organic reach.'},
+        {'icon': 'fa-briefcase', 'color': 'text-slate-600', 'bg': 'bg-slate-200', 'title': 'LinkedIn Services', 'desc': 'Professional connections and company page followers.'},
+        {'icon': 'fa-list-check', 'color': 'text-orange-500', 'bg': 'bg-orange-50', 'title': 'Custom Micro Tasks', 'desc': 'Any specific custom task you want at the cheapest rate.'}
+    ]
+
+    return render_template('hire_us.html', services=services)
+
+
+# ==========================================
+# ADMIN: CLIENT REQUESTS PANEL
+# ==========================================
+@app.route('/admin/requ')
+@login_required
+@admin_required
+def admin_requests():
+    reqs = supabase.table('client_requests').select('*').eq('status', 'pending').order('created_at', desc=True).execute().data
+    return render_template('admin_requ.html', requests=reqs)
+
+@app.route('/admin/requ/hide/<int:req_id>')
+@login_required
+@admin_required
+def hide_client_request(req_id):
+    try:
+        supabase.table('client_requests').update({'status': 'hidden'}).eq('id', req_id).execute()
+        flash("✅ রিকোয়েস্টটি চেকড (হাইড) করা হয়েছে।", "success")
+    except Exception as e:
+        flash("❌ Error updating status.", "error")
+    return redirect(url_for('admin_requests'))
+    
 
 # --- 1. SPECIAL TASK SUBMISSION PAGE ---
 @app.route('/special-task', methods=['GET', 'POST'])
