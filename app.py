@@ -470,6 +470,64 @@ def scratch_page():
 
     return render_template('scratch.html', count=user_data['scratch_count'])
 
+
+# ==========================================
+# 🎁 PREMIUM OFFERWALL ROUTE (CPALead)
+# ==========================================
+@app.route('/offerwall')
+@login_required
+def offerwall():
+    # আপনার CPALead এর ডাইরেক্ট লিংক
+    CPALEAD_LINK = "https://www.modcraftforge.com/list/vaYH2pOG"
+    
+    # লিংকের শেষে ইউজারের আইডি যুক্ত করে দেওয়া হচ্ছে
+    user_specific_link = f"{CPALEAD_LINK}?subid={session['user_id']}"
+    
+    return redirect(user_specific_link)
+
+# ==========================================
+# 💸 CPALEAD POSTBACK (AUTO PAYMENT SYSTEM)
+# ==========================================
+@app.route('/postback/cpalead', methods=['GET'])
+def cpalead_postback():
+    try:
+        user_id = request.args.get('subid')
+        payout_usd = request.args.get('payout')
+        campaign_name = request.args.get('campaign_name', 'Offerwall Task')
+
+        if not user_id or not payout_usd:
+            return "Missing parameters", 400
+
+        usd_amount = float(payout_usd)
+
+        # 💰 Business Logic: 
+        # আপনি CPALead এ $1 = 100 BDT সেট করেছেন। 
+        # তাই CPALead আপনাকে $1 দিলে, ইউজারের ব্যালেন্সে সরাসরি 100 টাকা যোগ হবে।
+        # (আপনার লাভ: ডলারের আসল রেট ১২০ টাকা, আপনি ইউজারকে ১০০ দিচ্ছেন, তাই প্রতি ডলারে আপনার ২০ টাকা লাভ থাকছে)।
+        
+        user_reward = round(usd_amount * 100, 2)
+
+        user_data = supabase.table('profiles').select('balance').eq('id', user_id).single().execute().data
+        
+        if user_data:
+            # ব্যালেন্স আপডেট
+            new_balance = float(user_data['balance']) + user_reward
+            supabase.table('profiles').update({'balance': new_balance}).eq('id', user_id).execute()
+            
+            # হিস্টোরি (Log) সেভ করা
+            supabase.table('cpalead_logs').insert({
+                'user_id': user_id,
+                'campaign_name': campaign_name,
+                'usd_earned': usd_amount,
+                'taka_given': user_reward
+            }).execute()
+
+        return "OK", 200
+
+    except Exception as e:
+        print(f"Postback Error: {e}")
+        return "Error", 500
+        
 # ==========================================
 # LIVE CHAT SYSTEM (USER & ADMIN)
 # ==========================================
