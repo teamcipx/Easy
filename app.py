@@ -62,6 +62,18 @@ SPECIAL_TASK_INFO = {
     'tutorial': 'https://payr.site/st', 
     'description': 'ভিডিও দেখে নিয়ম মেনে Bot Start করে, রেফারেল লিংক কপি করুন এবং এয়ারড্রপ ট্রান্সফার করে প্রুফ দিন।'
 }
+
+AD_LINKS = [
+    {'id': 1, 'url': 'https://shrinkme.click/Test53773'},
+    {'id': 2, 'url': 'https://earn-daily.site/ad/ad1.html'},
+    {'id': 3, 'url': 'https://wwp.giriuvan.com/redirect-zone/b4f8673f'},
+    {'id': 4, 'url': 'https://earn-daily.site/ad/ad2.html'},
+    {'id': 5, 'url': 'https://earn-daily.site/ad/ad3.html'},
+    {'id': 6, 'url': 'https://earn-daily.site/ad/ad4.html'},
+    {'id': 7, 'url': 'https://www.profitablecpmratenetwork.com/km3q6ybu?key=5e41374af5e20288afad65cea8753ac2'},
+    {'id': 8, 'url': 'https://shrinkme.click/Test53773'}
+]
+
 # --- VIP LEVEL CONFIGURATION ---
 VIP_PLANS = {
     1: {'name': 'Starter', 'price': 100, 'daily_profit': 10, 'days': 14, 'min_withdraw': 200},
@@ -1108,7 +1120,53 @@ def vip_action(action, req_id):
         flash(f"System Error: {str(e)}", "error")
 
     return redirect(url_for('admin_vip'))
+
+# ==========================================
+# 📺 WATCH ADS SYSTEM (Smart Timer)
+# ==========================================
+
+@app.route('/watch-ads')
+@login_required
+def watch_ads():
+    from datetime import datetime
+    today_date = str(datetime.utcnow().date())
     
+    user_data = supabase.table('profiles').select('ad_views_count, last_ad_date').eq('id', session['user_id']).single().execute().data
+    
+    # 24 Hour Reset Logic
+    if user_data.get('last_ad_date') != today_date:
+        user_data['ad_views_count'] = 0
+        supabase.table('profiles').update({'ad_views_count': 0, 'last_ad_date': today_date}).eq('id', session['user_id']).execute()
+        
+    return render_template('watch_ads.html', ads=AD_LINKS, completed_count=user_data['ad_views_count'])
+
+@app.route('/api/claim-ad', methods=['POST'])
+@login_required
+def claim_ad():
+    try:
+        from datetime import datetime
+        today_date = str(datetime.utcnow().date())
+        
+        user_data = supabase.table('profiles').select('ad_views_count, balance, last_ad_date').eq('id', session['user_id']).single().execute().data
+        
+        if user_data.get('last_ad_date') == today_date and user_data['ad_views_count'] >= len(AD_LINKS):
+            return jsonify({'success': False, 'message': 'আজকের সবগুলো অ্যাড দেখা হয়ে গেছে!'})
+
+        # Add 2 Taka & Update Count
+        new_balance = float(user_data['balance']) + 2.00
+        new_count = user_data['ad_views_count'] + 1
+        
+        supabase.table('profiles').update({
+            'balance': new_balance,
+            'ad_views_count': new_count,
+            'last_ad_date': today_date
+        }).eq('id', session['user_id']).execute()
+        
+        return jsonify({'success': True, 'message': '✅ ৳2.00 ব্যালেন্সে যোগ হয়েছে!', 'new_balance': new_balance})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+        
 @app.route('/st')
 def special_video_page():
     # লগিন ছাড়াও দেখা যাবে, তবে লগিন থাকলে মেনু ঠিক থাকবে
