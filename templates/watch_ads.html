@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    .ad-card {
+        background: #ffffff; border: 1px solid #E2E8F0; border-radius: 20px;
+        padding: 16px; transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .progress-bar-bg { background: #E2E8F0; height: 6px; border-radius: 10px; overflow: hidden; margin-top: 12px; display: none; }
+    .progress-fill { background: #2563EB; height: 100%; width: 0%; transition: width 0.3s ease; }
+</style>
+
+<div class="max-w-2xl mx-auto space-y-6 fade-in-up pb-10 px-1">
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-br from-blue-700 to-blue-600 rounded-[28px] p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+        <i class="fa-solid fa-play absolute right-4 top-1/2 transform -translate-y-1/2 text-8xl opacity-10"></i>
+        <div class="relative z-10">
+            <h2 class="text-2xl sm:text-3xl font-black mb-2 tracking-tight">Watch Ads & Earn</h2>
+            <p class="text-xs text-blue-100 font-medium leading-relaxed max-w-md">
+                প্রতিটি লিংকে ক্লিক করে <b class="text-white">৩০ সেকেন্ড</b> অপেক্ষা করুন। যদি পেইজে <b class="text-amber-300">"I am human"</b> লেখা আসে তবে তাতে ক্লিক করে ভেরিফাই করবেন।
+            </p>
+            <div class="mt-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl inline-flex items-center gap-2 border border-white/20 shadow-sm">
+                <i class="fa-solid fa-coins text-amber-400"></i>
+                <span class="text-sm font-bold font-mono">Per Ad: ৳2.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- AD LIST -->
+    <div class="space-y-4">
+        {% for ad in ads %}
+            {% set is_completed = True if completed_count >= loop.index else False %}
+            
+            <div class="ad-card shadow-sm group" id="card-{{ ad.id }}">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-[14px] flex items-center justify-center text-xl shadow-sm border
+                            {{ 'bg-green-50 text-green-500 border-green-200' if is_completed else 'bg-blue-50 text-blue-600 border-blue-100' }}">
+                            <i class="fa-solid {{ 'fa-check' if is_completed else 'fa-link' }}"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Sponsored Task {{ loop.index }}</h3>
+                            <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5 {{ 'text-green-500' if is_completed else 'text-slate-400' }}" id="status-{{ ad.id }}">
+                                {{ 'Completed Today' if is_completed else '30 Seconds Required' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if not is_completed %}
+                    <button id="btn-{{ ad.id }}" onclick="startAdTimer('{{ ad.id }}', '{{ ad.url }}')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:bg-blue-600 transition active:scale-95 flex items-center gap-1.5">
+                        <i class="fa-solid fa-play"></i> Start
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Hidden Progress Bar -->
+                {% if not is_completed %}
+                <div class="progress-bar-bg" id="progress-container-{{ ad.id }}">
+                    <div class="progress-fill" id="progress-{{ ad.id }}"></div>
+                </div>
+                <p id="timer-text-{{ ad.id }}" class="text-center text-[10px] font-bold text-blue-600 mt-2 hidden animate-pulse"></p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- 🚀 SMART JAVASCRIPT LOGIC FOR PAUSE/RESUME TIMER -->
+<script>
+    let currentAdId = null;
+    let requiredTime = 30; // 30 Seconds
+    let timeLeft = 30;
+    let leaveTime = 0;
+    let isTracking = false;
+
+    // 1. Click Start Button
+    function startAdTimer(id, url) {
+        if(isTracking) {
+            alert("আপনি ইতিমধ্যেই একটি অ্যাড দেখছেন। সেটি শেষ করুন।");
+            return;
+        }
+
+        currentAdId = id;
+        
+        // Setup UI
+        document.getElementById(`btn-${id}`).innerText = "Watching...";
+        document.getElementById(`btn-${id}`).classList.replace('bg-slate-900', 'bg-slate-300');
+        document.getElementById(`btn-${id}`).classList.add('pointer-events-none', 'text-slate-500');
+        
+        document.getElementById(`progress-container-${id}`).style.display = 'block';
+        document.getElementById(`timer-text-${id}`).style.display = 'block';
+        document.getElementById(`timer-text-${id}`).innerText = "অ্যাড পেজে গিয়ে অপেক্ষা করুন...";
+
+        // Reset tracking variables
+        timeLeft = 30;
+        isTracking = true;
+
+        // Open Ad Link
+        window.open(url, '_blank');
+    }
+
+    // 2. Track when user leaves/enters the main tab
+    document.addEventListener('visibilitychange', function() {
+        if (!isTracking || !currentAdId) return;
+
+        const statusText = document.getElementById(`status-${currentAdId}`);
+        const timerText = document.getElementById(`timer-text-${currentAdId}`);
+        const progressBar = document.getElementById(`progress-${currentAdId}`);
+
+        if (document.hidden) {
+            // User went to the Ad tab (Start counting)
+            leaveTime = Date.now();
+            statusText.innerText = "Tracking Time...";
+            statusText.classList.replace('text-slate-400', 'text-blue-500');
+        } else {
+            // User came back to the Main tab
+            if (leaveTime > 0) {
+                // Calculate how much time they spent on the ad tab
+                let timeSpent = Math.floor((Date.now() - leaveTime) / 1000);
+                timeLeft -= timeSpent;
+                leaveTime = 0; // Reset
+
+                if (timeLeft <= 0) {
+                    // Task Completed!
+                    isTracking = false;
+                    timeLeft = 0;
+                    progressBar.style.width = "100%";
+                    progressBar.classList.add('bg-green-500');
+                    timerText.innerText = "Task Complete! Claiming Reward...";
+                    timerText.classList.replace('text-blue-600', 'text-green-600');
+                    
+                    claimReward(currentAdId);
+                } else {
+                    // Came back too early
+                    progressBar.style.width = ((requiredTime - timeLeft) / requiredTime * 100) + "%";
+                    timerText.innerText = `You came back too early! ${timeLeft} seconds remaining. Go back to the ad tab.`;
+                    timerText.classList.replace('text-blue-600', 'text-red-500');
+                    
+                    // Enable button to let them go back
+                    const btn = document.getElementById(`btn-${currentAdId}`);
+                    btn.classList.remove('pointer-events-none', 'text-slate-500', 'bg-slate-300');
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.innerHTML = '<i class="fa-solid fa-play"></i> Resume';
+                }
+            }
+        }
+    });
+
+    // 3. Claim Reward via AJAX
+    function claimReward(id) {
+        fetch('/api/claim-ad', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                const btn = document.getElementById(`btn-${id}`);
+                btn.classList.remove('pointer-events-none');
+                btn.className = "bg-green-100 text-green-700 px-4 py-2 rounded-xl text-xs font-bold border border-green-200 pointer-events-none";
+                btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Claimed';
+                
+                document.getElementById(`status-${id}`).innerText = "Completed Today";
+                document.getElementById(`status-${id}`).classList.replace('text-blue-500', 'text-green-500');
+                
+                // Show Success Toast
+                alert(data.message);
+                
+                // Reload after 2 seconds to sync state
+                setTimeout(() => { location.reload(); }, 2000);
+            } else {
+                alert(data.message);
+                isTracking = false;
+            }
+        });
+    }
+</script>
+{% endblock %}
