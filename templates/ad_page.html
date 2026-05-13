@@ -7,32 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #F8FAFC; color: #1E293B; font-family: 'Inter', sans-serif; }
-        .ad-container { background: white; border: 1px dashed #cbd5e1; padding: 10px; margin: 20px 0; text-align: center; border-radius: 12px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .ad-badge { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; display: block; width: 100%; text-align: center; }
+        .ad-container { 
+            background: white; border: 1px dashed #cbd5e1; padding: 10px; margin: 20px 0; 
+            text-align: center; border-radius: 12px; min-height: 100px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            overflow: hidden; /* To prevent ad overflow */
+        }
+        .ad-badge { 
+            font-size: 10px; color: #94a3b8; text-transform: uppercase; 
+            letter-spacing: 2px; margin-bottom: 5px; display: block; width: 100%; text-align: center; 
+        }
+        /* Style for iframes injected by ad networks */
+        .ad-container iframe {
+            max-width: 100%;
+            margin: 0 auto;
+        }
     </style>
 
     <!-- ==========================================
-         POP-UNDER ADS (Network specific)
+         POP-UNDER ADS (Head Section)
     ========================================== -->
     {% if page_id == 'ad1' %}
-
-
-    {% elif page_id == 'ad2' %}
-
-<script>
-  atOptions = {
-    'key' : '4a72be96f78b75e42afea5ee99005d34',
-    'format' : 'iframe',
-    'height' : 60,
-    'width' : 468,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
-
-    {% elif page_id == 'ad3' %}
-        <!-- AD3: Any other Pop-under Code Here -->
-
+        <script data-cfasync='false' src='//wwr.giriudog.com/?tag=f61dc3c0'></script>
     {% endif %}
 
 </head>
@@ -47,48 +43,32 @@
     <div class="max-w-3xl mx-auto p-4 pb-20">
 
         <!-- ==========================================
-             AD ZONE 1: TOP BANNER (Different by Page)
+             AD ZONE 1: TOP BANNER
         ========================================== -->
         <div class="ad-container">
             <span class="ad-badge">Sponsored (Top)</span>
             
-            {% if page_id == 'ad1' %}
+            {% if page_id == 'ad2' %}
+                <!-- Adsterra 468x60 -->
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '4a72be96f78b75e42afea5ee99005d34',
+                        'format' : 'iframe',
+                        'height' : 60,
+                        'width' : 468,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
                 
-<script data-cfasync='false' src='//wwr.giriudog.com/?tag=f61dc3c0'></script>
+                <!-- Native Ad -->
+                <script type="text/javascript" src="https://pl29435484.profitablecpmratenetwork.com/48/b2/21/48b2213dba06ca877a5c17d2c0c0cad5.js"></script>
 
-
-
-                <p class="text-xs text-slate-400">1</p>
-                
-            {% elif page_id == 'ad2' %}
-<script>
-  atOptions = {
-    'key' : '4a72be96f78b75e42afea5ee99005d34',
-    'format' : 'iframe',
-    'height' : 60,
-    'width' : 468,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
-
-<script src="https://pl29435484.profitablecpmratenetwork.com/48/b2/21/48b2213dba06ca877a5c17d2c0c0cad5.js"></script>
-
-
-
-                <p class="text-xs text-slate-400">2</p>
-                
             {% elif page_id == 'ad3' %}
-               <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
-                <p class="text-xs text-slate-400">_</p>
-                
-            {% elif page_id == 'ad4' %}
-                <!-- AD4 Top Banner Code -->
-                <p class="text-xs text-slate-400">Network 4 Banner Here</p>
-                
-            {% elif page_id == 'ad5' %}
-                <!-- AD5 Top Banner Code -->
-                <p class="text-xs text-slate-400">Network 5 Banner Here</p>
+                <!-- Wpadmngr Ad -->
+                <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
+            {% else %}
+                <p class="text-xs text-slate-400">Loading Premium Content...</p>
             {% endif %}
             
         </div>
@@ -105,55 +85,31 @@
         </div>
 
         <!-- ==========================================
-             AD ZONE 2: MIDDLE BANNER (Different by Page)
+             AD ZONE 2: MIDDLE BANNER
         ========================================== -->
         <div class="ad-container">
             <span class="ad-badge">Advertisement (Middle)</span>
             
-            {% if page_id == 'ad1' %}
-               
-                <p class="text-xs text-slate-400">-</p>
+            {% if page_id == 'ad2' %}
+                <!-- Adsterra 468x60 -->
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '4a72be96f78b75e42afea5ee99005d34',
+                        'format' : 'iframe',
+                        'height' : 60,
+                        'width' : 468,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
                 
-            {% elif page_id == 'ad2' %}
+                <!-- Native Ad 2 -->
+                <script type="text/javascript" src="https://pl29435493.profitablecpmratenetwork.com/df/d5/70/dfd57048bc30eb2192b8232718671aa1.js"></script>
 
-<script>
-  atOptions = {
-    'key' : '4a72be96f78b75e42afea5ee99005d34',
-    'format' : 'iframe',
-    'height' : 60,
-    'width' : 468,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
-<script>
-  atOptions = {
-    'key' : '4a72be96f78b75e42afea5ee99005d34',
-    'format' : 'iframe',
-    'height' : 60,
-    'width' : 468,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
-
-<script src="https://pl29435493.profitablecpmratenetwork.com/df/d5/70/dfd57048bc30eb2192b8232718671aa1.js"></script>
-
-               <p text-slate-400">Monetag Square Ad Here</p>
-                
             {% elif page_id == 'ad3' %}
-                <!-- AD3 Middle Ad Code -->
-<script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
-
-                <p class="text-xs text-slate-400">Network 3 Square Ad Here</p>
-                
-            {% elif page_id == 'ad4' %}
-                <!-- AD4 Middle Ad Code -->
-                <p class="text-xs text-slate-400">Network 4 Square Ad Here</p>
-                
-            {% elif page_id == 'ad5' %}
-                <!-- AD5 Middle Ad Code -->
-                <p class="text-xs text-slate-400">Network 5 Square Ad Here</p>
+                <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
+            {% else %}
+                <p class="text-xs text-slate-400">Discover More</p>
             {% endif %}
             
         </div>
@@ -167,47 +123,28 @@
         </div>
 
         <!-- ==========================================
-             AD ZONE 3: BOTTOM BANNER (Different by Page)
+             AD ZONE 3: BOTTOM BANNER
         ========================================== -->
         <div class="ad-container">
             <span class="ad-badge">Sponsored (Bottom)</span>
             
-            {% if page_id == 'ad1' %}
-   
+            {% if page_id == 'ad2' %}
+                <!-- Adsterra 468x60 -->
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '4a72be96f78b75e42afea5ee99005d34',
+                        'format' : 'iframe',
+                        'height' : 60,
+                        'width' : 468,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
 
-                <p class="text-xs text-slate-400">-</p>
-                
-            {% elif page_id == 'ad2' %}
-   
-<script>
-  atOptions = {
-    'key' : '4a72be96f78b75e42afea5ee99005d34',
-    'format' : 'iframe',
-    'height' : 60,
-    'width' : 468,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
-                <p class="text-xs text-slate-400">-</p>
-                
-            {% elif page_id == 'ad3' %}
-                <!-- AD3 Bottom Banner Code -->
-<script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
-
-                <p class="text-xs text-slate-400">Network 3 Banner Here</p>
-                
-            {% elif page_id == 'ad4' %}
-
-
-                <!-- AD4 Bottom Banner Code -->
-                <p class="text-xs text-slate-400">Network 4 Banner Here</p>
-                
-            {% elif page_id == 'ad5' %}
-
-<script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
-                <!-- AD5 Bottom Banner Code -->
-                <p class="text-xs text-slate-400">Network 5 Banner Here</p>
+            {% elif page_id == 'ad3' or page_id == 'ad5' %}
+                <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="440676"></script>
+            {% else %}
+                <p class="text-xs text-slate-400">Thanks for reading!</p>
             {% endif %}
             
         </div>
@@ -215,7 +152,7 @@
     </div>
 
     <!-- User Instruction Timer Reminder -->
-    <div class="fixed bottom-0 w-full bg-slate-900 text-white p-3 text-center text-xs font-bold shadow-[0_-10px_20px_rgba(0,0,0,0.1)]">
+    <div class="fixed bottom-0 w-full bg-slate-900 text-white p-3 text-center text-xs font-bold shadow-[0_-10px_20px_rgba(0,0,0,0.1)] z-50">
         <i class="fa-solid fa-clock text-amber-400 mr-1"></i> Please wait here for 30 seconds before going back!
     </div>
 
