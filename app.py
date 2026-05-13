@@ -474,6 +474,56 @@ def scratch_page():
 # LIVE CHAT SYSTEM (USER & ADMIN)
 # ==========================================
 
+# ==========================================
+# 🌐 DYNAMIC AD PAGES (Smart Routing for Watch Ads)
+# ==========================================
+@app.route('/ad/<page_id>.html')
+def serve_ad_page(page_id):
+    """
+    এই রাউটটি /ad/ad1.html, /ad/ad2.html ইত্যাদি সব লিংকের জন্য কাজ করবে।
+    অ্যাড নেটওয়ার্ককে (যেমন: Adsterra/Adsense) বোকা বানানোর জন্য 
+    প্রতিটি পেজে আলাদা আলাদা ফেক আর্টিকেল (Content) দেখানো হবে।
+    """
+    
+    # 📝 Fake Content Database (SEO Friendly & AdSense Safe)
+    articles = {
+        'ad1': {
+            'title': 'Top 10 Technology Trends Shaping the Future in 2025', 
+            'topic': 'Technology',
+            'desc': 'In the rapidly evolving world of technology, staying ahead of the curve is crucial. From Artificial Intelligence (AI) to Quantum Computing, 2025 promises to bring groundbreaking innovations. Many tech enthusiasts believe that smart devices will soon seamlessly integrate into our daily routines, completely changing the way we work, live, and communicate.'
+        },
+        'ad2': {
+            'title': '5 Simple Habits for a Healthier and Happier Life', 
+            'topic': 'Health & Fitness',
+            'desc': 'Maintaining a healthy lifestyle does not require extreme diets or exhausting workouts. Simple habits like drinking enough water, walking for 30 minutes daily, and getting at least 7 hours of sleep can drastically improve your physical and mental well-being. Start small, be consistent, and watch your body thank you later.'
+        },
+        'ad3': {
+            'title': 'Understanding Cryptocurrency: A Beginner’s Guide', 
+            'topic': 'Finance & Crypto',
+            'desc': 'Cryptocurrency has taken the financial world by storm. Bitcoin, Ethereum, and other digital assets offer decentralized ways to transfer value across the globe. However, investing in crypto requires proper research and risk management. Always understand the market volatility before investing your hard-earned money.'
+        },
+        'ad4': {
+            'title': 'The Ultimate Guide to Starting a Freelance Career', 
+            'topic': 'Career & Education',
+            'desc': 'Freelancing offers ultimate freedom and flexibility. Whether you are a web developer, graphic designer, or content writer, platforms like Upwork and Fiverr allow you to connect with global clients. The key to success in freelancing is building a strong portfolio and maintaining excellent communication with clients.'
+        },
+        'ad5': {
+            'title': 'Top Tourist Destinations You Must Visit Before 30', 
+            'topic': 'Travel & Lifestyle',
+            'desc': 'Traveling broadens the mind and soul. From the serene beaches of Maldives to the historic streets of Rome, exploring different cultures is a life-changing experience. Always plan your trips ahead, keep a flexible budget, and make memories that will last a lifetime.'
+        }
+    }
+    
+    # Check if page_id exists in our dictionary, else give a generic default article
+    article = articles.get(page_id, {
+        'title': 'Discover Amazing Content & Daily Tips', 
+        'topic': 'General Knowledge',
+        'desc': 'Welcome to our daily blog. Exploring new topics and learning something new every day keeps the mind sharp and active. Read through our engaging contents and support our creators by interacting with the sponsored contents tailored for you.'
+    })
+    
+    # Pass the data to the HTML template
+    return render_template('ad_page.html', article=article, page_id=page_id)
+    
 @app.route('/chat', methods=['GET', 'POST'])
 @login_required
 def user_chat():
