@@ -2,127 +2,317 @@
 {% block content %}
 
 <style>
-    .fade-in-up { animation: fadeInUp 0.5s forwards; opacity: 0; transform: translateY(15px); }
+    .fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
     @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-    /* Animated Timer Circle */
-    .timer-ring {
-        position: relative;
-        width: 120px; height: 120px;
-        border-radius: 50%;
-        background: conic-gradient(#2563EB var(--progress, 100%), #E2E8F0 0deg);
-        display: flex; align-items: center; justify-content: center;
-        transition: background 1s linear;
-        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+    /* Custom Ad Wrapper (Native App Style) */
+    .premium-ad-card {
+        background: #ffffff; border: 1px solid #E2E8F0; border-radius: 20px;
+        position: relative; padding: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
     }
-    .timer-inner {
-        width: 100px; height: 100px;
-        background: #ffffff;
-        border-radius: 50%;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+    .ad-badge {
+        position: absolute; top: 0; right: 0; background: #F1F5F9; color: #94A3B8;
+        font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+        padding: 4px 8px; border-bottom-left-radius: 12px; z-index: 10;
     }
+    .ad-inner {
+        display: flex; justify-content: center; align-items: center;
+        background: #F8FAFC; border-radius: 12px; overflow: hidden; min-height: 60px;
+    }
+
+    /* Modern Dropzone */
+    .upload-area { border: 2px dashed #CBD5E1; background: #F8FAFC; transition: all 0.3s ease; }
+    .upload-area.has-file { border-style: solid; border-color: #10B981; background: #ECFDF5; box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.3); }
+
+    .step-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 24px; width: 24px; border-radius: 8px;
+        background: #EFF6FF; color: #2563EB; font-weight: 800; font-size: 12px;
+    }
+
+    /* Smart Progress Bar */
+    .progress-bar-bg { background: #E2E8F0; height: 6px; border-radius: 10px; overflow: hidden; margin-top: 12px; display: none; }
+    .progress-fill { background: #2563EB; height: 100%; width: 0%; transition: width 0.3s ease; }
 </style>
 
-<div class="max-w-md mx-auto space-y-6 fade-in-up pb-10 px-1 pt-6 text-center">
+<div class="max-w-2xl mx-auto space-y-6 fade-in-up pb-8 px-1">
 
-    <!-- Header Icon -->
-    <div class="h-16 w-16 bg-blue-50 text-blue-600 rounded-[20px] flex items-center justify-center text-3xl mx-auto mb-2 border border-blue-100 shadow-sm">
-        <i class="fa-solid fa-hourglass-half animate-pulse"></i>
-    </div>
-    
-    <h2 class="text-2xl font-black text-slate-800 tracking-tight">Processing Task...</h2>
-    <p class="text-xs text-slate-500 font-medium px-4">
-        দয়া করে পেইজটি ক্লোজ করবেন না। আমরা আপনার টাস্কের ডেস্টিনেশন লিংক প্রস্তুত করছি।
-    </p>
-
-    <!-- Ad Space (Top) -->
-    <div class="bg-white border border-slate-200 rounded-[20px] p-2 flex justify-center overflow-hidden my-6">
-        <script>
-          atOptions = {
-            'key' : '4a72be96f78b75e42afea5ee99005d34',
-            'format' : 'iframe',
-            'height' : 60,
-            'width' : 468,
-            'params' : {}
-          };
-        </script>
-        <script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+    <!-- 1. HEADER -->
+    <div class="flex items-center gap-4 mb-6">
+        <a href="/tasks" class="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-slate-500 shadow-sm border border-slate-200 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-95">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+            <h2 class="text-xl font-black text-slate-800 tracking-tight leading-none">Task Submission</h2>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">Proof Verification</p>
+        </div>
     </div>
 
-    <!-- The Timer UI -->
-    <div class="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 flex flex-col items-center">
+    <!-- AD 1 -->
+    <div class="premium-ad-card">
+        <span class="ad-badge">Sponsored</span>
+        <div class="ad-inner">
+            <script>atOptions={'key':'4a72be96f78b75e42afea5ee99005d34','format':'iframe','height':60,'width':468,'params':{}};</script>
+            <script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+        </div>
+    </div>
+
+    <!-- 2. TASK MISSION CARD -->
+    <div class="bg-white rounded-[24px] shadow-sm border border-slate-100 relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-blue-600/5 rounded-bl-full pointer-events-none"></div>
         
-        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Security Check in Progress</p>
+        <div class="p-6 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-start gap-4">
+                <div class="h-14 w-14 rounded-[16px] flex items-center justify-center text-2xl shadow-sm border flex-shrink-0
+                    {% if 'YouTube' in task.category %} bg-red-50 text-red-500 border-red-100
+                    {% elif 'Facebook' in task.category %} bg-blue-50 text-blue-600 border-blue-100
+                    {% elif 'TikTok' in task.category %} bg-slate-900 text-white border-slate-800
+                    {% else %} bg-slate-100 text-slate-600 border-slate-200 {% endif %}">
+                    {% if 'YouTube' in task.category %} <i class="fa-brands fa-youtube"></i>
+                    {% elif 'Facebook' in task.category %} <i class="fa-brands fa-facebook"></i>
+                    {% elif 'TikTok' in task.category %} <i class="fa-brands fa-tiktok"></i>
+                    {% else %} <i class="fa-solid fa-globe"></i> {% endif %}
+                </div>
+                <div>
+                    <span id="taskCategory" class="text-[9px] font-black uppercase tracking-widest text-blue-600 mb-1 block">{{ task.category }}</span>
+                    <h3 class="font-bold text-slate-800 text-lg leading-tight mb-1.5">{{ task.title }}</h3>
+                    <p class="text-xs text-slate-500 font-medium leading-relaxed max-w-sm">{{ task.description }}</p>
+                </div>
+            </div>
+            
+            <div class="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl border border-emerald-100 flex items-center gap-2 self-start md:self-center flex-shrink-0">
+                <i class="fa-solid fa-coins text-emerald-500"></i>
+                <span class="text-sm font-black font-mono tracking-tight">+৳{{ task.reward }}</span>
+            </div>
+        </div>
+    </div>
 
-        <div class="timer-ring mb-6" id="timerRing">
-            <div class="timer-inner">
-                <span id="countdownText" class="text-4xl font-black text-blue-600 font-mono leading-none">{{ timer }}</span>
-                <span class="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Secs</span>
+    <!-- 3. SMART TIMER & ACTION STEP -->
+    {% if task.task_type == 'screenshot' and task.link %}
+    <div class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 relative overflow-hidden" id="taskActionBox">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="step-badge">1</div>
+                <h3 class="font-bold text-slate-800 text-sm">Perform Action</h3>
+            </div>
+            <!-- Dynamic Required Time Indicator -->
+            <span id="requiredTimeBadge" class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border border-blue-100 hidden">
+                <i class="fa-regular fa-clock"></i> <span id="timeText">-- Sec Req</span>
+            </span>
+        </div>
+        
+        <p class="text-xs text-slate-500 mb-4 pl-11">কাজের লিংকে ক্লিক করুন এবং নির্ধারিত সময় পার না হওয়া পর্যন্ত ওই পেজে অপেক্ষা করুন। এরপর ফিরে এসে প্রুফ জমা দিন।</p>
+        
+        <div class="pl-0 sm:pl-11">
+            <button id="startLinkBtn" onclick="startTaskTimer('{{ task.link }}')" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-blue-600 text-white border border-blue-700 px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all">
+                <i class="fa-solid fa-play" id="linkIcon"></i> <span id="linkBtnText">Open Task Link</span>
+            </button>
+
+            <!-- Hidden Progress Bar -->
+            <div class="progress-bar-bg w-full max-w-sm" id="progressContainer">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <p id="timerMessage" class="text-[10px] font-bold text-blue-600 mt-2 hidden animate-pulse"></p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 4. UPLOAD PROOF FORM (Locked by Default until timer finishes) -->
+    <form method="POST" enctype="multipart/form-data" onsubmit="return submitFinalProof()" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 relative overflow-hidden">
+        
+        <!-- Lock Overlay for Timer -->
+        {% if task.task_type == 'screenshot' and task.link %}
+        <div id="uploadLockOverlay" class="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-30 flex flex-col items-center justify-center transition-opacity duration-300">
+            <i class="fa-solid fa-lock text-3xl text-slate-300 mb-2"></i>
+            <p class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">টাইমার শেষ হলে এটি আনলক হবে</p>
+        </div>
+        {% endif %}
+
+        <div class="flex items-center gap-3 mb-5 border-b border-slate-50 pb-3 relative z-10">
+            <div class="step-badge">2</div>
+            <h3 class="font-bold text-slate-800 text-sm">Upload Proof</h3>
+        </div>
+
+        <p class="text-xs text-slate-500 mb-4 pl-11 relative z-10">কাজটি সম্পন্ন করার পর একটি ক্লিয়ার স্ক্রিনশট নিচে আপলোড করুন।</p>
+
+        <!-- Dropzone Area -->
+        <div class="pl-0 sm:pl-11 mb-6 relative z-10">
+            <div class="relative w-full cursor-pointer group">
+                <input type="file" name="screenshot" id="fileInput" accept="image/*" required 
+                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                       onchange="handleFileUpload(this)">
+                
+                <div id="uploadBox" class="upload-area rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[140px]">
+                    <div id="uploadIcon" class="h-12 w-12 bg-white text-slate-400 border border-slate-200 rounded-full flex items-center justify-center text-xl mb-3 shadow-sm transition-all group-hover:scale-110 group-hover:text-blue-500 group-hover:border-blue-200">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <p id="uploadText" class="text-sm font-bold text-slate-600 group-hover:text-blue-600 transition-colors">
+                        Tap to select image
+                    </p>
+                </div>
             </div>
         </div>
 
-        <p id="instructionText" class="text-xs text-slate-500 font-medium mb-6">
-            Please wait <b class="text-slate-800">{{ timer }} seconds</b>.
-        </p>
+        <button type="submit" id="submitBtn" class="w-full bg-slate-800 text-white py-4 rounded-[14px] font-black text-sm uppercase tracking-widest shadow-lg hover:bg-slate-900 active:scale-[0.98] transition-all flex items-center justify-center gap-2 relative z-10">
+            <span>Submit Verification</span>
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </form>
 
-        <!-- Hidden Action Button (Appears when timer ends) -->
-        <a href="{{ next_route }}" id="continueBtn" {% if 'http' in next_route %} target="_blank" {% endif %} class="hidden w-full bg-blue-600 text-white py-4 rounded-[16px] font-black text-sm uppercase tracking-widest shadow-[0_8px_20px_rgba(37,99,235,0.25)] hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-            <span>Continue to Task</span>
-            <i class="fa-solid fa-arrow-right"></i>
-        </a>
-    </div>
-
-    <!-- Ad Space (Bottom) -->
-    <div class="bg-white border border-slate-200 rounded-[20px] p-2 flex justify-center overflow-hidden mt-6">
-        <script>
-          atOptions = {
-            'key' : '4a72be96f78b75e42afea5ee99005d34',
-            'format' : 'iframe',
-            'height' : 60,
-            'width' : 468,
-            'params' : {}
-          };
-        </script>
-        <script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+    <!-- AD 2 -->
+    <div class="premium-ad-card mt-2">
+        <span class="ad-badge">Sponsored</span>
+        <div class="ad-inner">
+            <script>atOptions={'key':'4a72be96f78b75e42afea5ee99005d34','format':'iframe','height':60,'width':468,'params':{}};</script>
+            <script src="https://www.highperformanceformat.com/4a72be96f78b75e42afea5ee99005d34/invoke.js"></script>
+        </div>
     </div>
 
 </div>
 
-<!-- Timer Logic -->
+<!-- 🚀 SMART TIMER LOGIC FOR TASK LINKS -->
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let totalTime = parseInt("{{ timer }}");
-        let timeLeft = totalTime;
+    const categoryName = document.getElementById('taskCategory') ? document.getElementById('taskCategory').innerText.toLowerCase() : '';
+    
+    // Set dynamic time based on category
+    let requiredTime = 30; // Default Web/YouTube
+    if (categoryName.includes('facebook') || categoryName.includes('telegram')) requiredTime = 15;
+    if (categoryName.includes('tiktok')) requiredTime = 30;
+
+    let timeLeft = requiredTime;
+    let leaveTime = 0;
+    let isTracking = false;
+    let taskCompleted = false;
+
+    // Show initial time on load
+    const reqTimeBadge = document.getElementById('requiredTimeBadge');
+    const timeText = document.getElementById('timeText');
+    if(reqTimeBadge) {
+        reqTimeBadge.classList.remove('hidden');
+        timeText.innerText = `${requiredTime} Sec Req`;
+    }
+
+    // 1. Click Start / Resume
+    function startTaskTimer(url) {
+        if(taskCompleted) return;
+
+        const btn = document.getElementById('startLinkBtn');
+        const btnText = document.getElementById('linkBtnText');
+        const icon = document.getElementById('linkIcon');
+        const progContainer = document.getElementById('progressContainer');
+        const msg = document.getElementById('timerMessage');
+
+        // UI Changes
+        btn.classList.replace('bg-blue-600', 'bg-slate-200');
+        btn.classList.replace('text-white', 'text-slate-500');
+        btn.classList.add('pointer-events-none');
+        btnText.innerText = "Monitoring View...";
+        icon.className = "fa-solid fa-eye";
+
+        progContainer.style.display = 'block';
+        msg.style.display = 'block';
+        msg.innerText = "কাজ সম্পন্ন করতে ওই পেজে অপেক্ষা করুন...";
+        msg.className = "text-[10px] font-bold text-blue-600 mt-2 animate-pulse";
+
+        // Reset tracking
+        isTracking = true;
         
-        const countdownText = document.getElementById("countdownText");
-        const timerRing = document.getElementById("timerRing");
-        const instructionText = document.getElementById("instructionText");
-        const continueBtn = document.getElementById("continueBtn");
+        window.open(url, '_blank');
+    }
 
-        const interval = setInterval(() => {
-            timeLeft--;
-            
-            // Update Text
-            countdownText.innerText = timeLeft;
-            
-            // Update Circular Progress Bar
-            let percentage = (timeLeft / totalTime) * 100;
-            timerRing.style.setProperty('--progress', `${percentage}%`);
+    // 2. Track Tab Visibility
+    document.addEventListener('visibilitychange', function() {
+        if (!isTracking || taskCompleted) return;
 
-            if (timeLeft <= 0) {
-                clearInterval(interval);
-                
-                // Show Button and Success State
-                timerRing.style.background = "#10B981"; // Emerald Green
-                countdownText.innerHTML = '<i class="fa-solid fa-check text-green-500"></i>';
-                countdownText.nextElementSibling.style.display = 'none'; // Hide "Secs" text
-                
-                instructionText.innerHTML = "<span class='text-green-600 font-bold'>Verification Complete! Click below to proceed.</span>";
-                continueBtn.classList.remove("hidden");
+        const btn = document.getElementById('startLinkBtn');
+        const btnText = document.getElementById('linkBtnText');
+        const icon = document.getElementById('linkIcon');
+        const progressBar = document.getElementById('progressBar');
+        const msg = document.getElementById('timerMessage');
+        const lockOverlay = document.getElementById('uploadLockOverlay');
+
+        if (document.hidden) {
+            leaveTime = Date.now();
+            msg.innerText = "Tracking Time in Background...";
+        } else {
+            if (leaveTime > 0) {
+                let timeSpent = Math.floor((Date.now() - leaveTime) / 1000);
+                timeLeft -= timeSpent;
+                leaveTime = 0; // Reset
+
+                if (timeLeft <= 0) {
+                    // 🎉 Success! Time completed
+                    isTracking = false;
+                    taskCompleted = true;
+                    timeLeft = 0;
+
+                    progressBar.style.width = "100%";
+                    progressBar.classList.add('bg-green-500');
+                    
+                    msg.innerText = "✅ Time Requirement Met! You can now upload proof.";
+                    msg.className = "text-[10px] font-bold text-green-600 mt-2";
+                    
+                    btn.classList.replace('bg-slate-200', 'bg-green-100');
+                    btn.classList.replace('text-slate-500', 'text-green-700');
+                    btn.classList.replace('border-blue-700', 'border-green-200');
+                    btnText.innerText = "Task Time Completed";
+                    icon.className = "fa-solid fa-check-double";
+
+                    // Unlock the upload form!
+                    if(lockOverlay) {
+                        lockOverlay.style.opacity = '0';
+                        setTimeout(() => lockOverlay.style.display = 'none', 300);
+                    }
+                } else {
+                    // ⚠️ Came back too early
+                    progressBar.style.width = ((requiredTime - timeLeft) / requiredTime * 100) + "%";
+                    
+                    msg.innerText = `You came back too early! ${timeLeft} seconds remaining. Click Resume.`;
+                    msg.className = "text-[10px] font-bold text-red-500 mt-2";
+                    
+                    // Convert button to Resume
+                    btn.classList.remove('pointer-events-none', 'bg-slate-200', 'text-slate-500');
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btnText.innerText = "Resume Task";
+                    icon.className = "fa-solid fa-play";
+                }
             }
-        }, 1000);
+        }
     });
+
+    // Smart File Upload UI
+    function handleFileUpload(input) {
+        const uploadBox = document.getElementById('uploadBox');
+        const uploadIcon = document.getElementById('uploadIcon');
+        const uploadText = document.getElementById('uploadText');
+
+        if (input.files && input.files[0]) {
+            uploadBox.classList.add('has-file');
+            uploadIcon.className = "h-12 w-12 bg-green-500 text-white rounded-full flex items-center justify-center text-xl mx-auto mb-3 shadow-md border-2 border-white transform scale-110";
+            uploadIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            uploadText.textContent = "Image Attached Successfully";
+            uploadText.className = "text-sm font-bold text-green-700 truncate w-full px-4 block";
+        }
+    }
+
+    // Submit Loader
+    function submitFinalProof() {
+        // Double check if timer task is completed (for link tasks)
+        const category = document.getElementById('taskCategory') ? document.getElementById('taskCategory').innerText.toLowerCase() : '';
+        const isLinkTask = !!document.getElementById('taskActionBox'); // Check if step 1 box exists
+
+        if(isLinkTask && !taskCompleted) {
+            alert("⚠️ আপনাকে আগে লিংকে গিয়ে নির্ধারিত সময় পর্যন্ত অপেক্ষা করতে হবে। এরপর প্রুফ আপলোড আনলক হবে।");
+            return false;
+        }
+
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i> <span class="tracking-widest">Encrypting...</span>';
+        btn.classList.add('opacity-90', 'cursor-not-allowed');
+        return true;
+    }
 </script>
 
 {% endblock %}
