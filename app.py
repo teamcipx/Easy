@@ -1039,6 +1039,9 @@ def admin_drive_manage():
 # 💼 B2B / CUSTOM WORK REQUEST SYSTEM
 # ==========================================
 
+# ==========================================
+# 💼 B2B / CUSTOM WORK REQUEST SYSTEM
+# ==========================================
 @app.route('/hire-us', methods=['GET', 'POST'])
 def hire_us():
     if request.method == 'POST':
@@ -1048,7 +1051,7 @@ def hire_us():
         details = request.form.get('details')
 
         try:
-            # Save to Supabase
+            # 1. Save directly to Supabase Database (It will show in Admin Panel)
             supabase.table('client_requests').insert({
                 'name': name,
                 'phone': phone,
@@ -1057,43 +1060,37 @@ def hire_us():
                 'status': 'pending'
             }).execute()
             
-            # Send Telegram Alert (If you have this function)
-            try:
-                tg_msg = f"💼 <b>New Client Request!</b>\n\n👤 Name: {name}\n📞 Phone: {phone}\n📌 Service: {service}\n📝 Details: {details}"
-                send_to_telegram_channel(title="Business Proposal", content=tg_msg)
-            except:
-                pass
+            # (টেলিগ্রামের কোড সম্পূর্ণ রিমুভ করা হয়েছে)
             
-            flash("✅ আপনার রিকোয়েস্ট সফলভাবে জমা হয়েছে! আমাদের টিম খুব দ্রুত আপনার সাথে যোগাযোগ করবে।", "success")
+            flash("✅ আপনার প্রপোজালটি সফলভাবে জমা হয়েছে! অ্যাডমিন প্যানেল থেকে রিভিউ করে আপনার সাথে যোগাযোগ করা হবে।", "success")
         except Exception as e:
             print(f"Client Request Error: {e}")
             flash("❌ সার্ভার সমস্যা! অনুগ্রহ করে আবার চেষ্টা করুন।", "error")
             
         return redirect(url_for('hire_us'))
 
-    # 16 Detailed Service Packages (Low/Cheap Price focused descriptions)
+    # 16 Detailed Service Packages
     services = [
-        {'icon': 'fa-youtube', 'color': 'text-red-500', 'bg': 'bg-red-50', 'title': 'YouTube Views & Watch Time', 'desc': '100% Organic, Non-drop views at cheapest rate.'},
-        {'icon': 'fa-youtube', 'color': 'text-red-600', 'bg': 'bg-red-100', 'title': 'YouTube Subscribers', 'desc': 'Real active Bangladeshi subscribers. Fast delivery.'},
-        {'icon': 'fa-facebook', 'color': 'text-blue-600', 'bg': 'bg-blue-50', 'title': 'FB Page Organic Boost', 'desc': 'Boost your page reach and engagement naturally.'},
-        {'icon': 'fa-facebook', 'color': 'text-blue-500', 'bg': 'bg-blue-100', 'title': 'Facebook Followers', 'desc': 'Real profile/page followers at a very cheap price.'},
-        {'icon': 'fa-share-nodes', 'color': 'text-indigo-500', 'bg': 'bg-indigo-50', 'title': 'Video Share & Comments', 'desc': 'Get real comments and shares to make video viral.'},
-        {'icon': 'fa-users', 'color': 'text-purple-600', 'bg': 'bg-purple-50', 'title': 'Targeted Referrals', 'desc': 'Need active referrals for your App/Bot? We got you.'},
-        {'icon': 'fa-google-play', 'color': 'text-emerald-500', 'bg': 'bg-emerald-50', 'title': 'App Installs (CPI)', 'desc': 'Real user installs to rank your app in PlayStore.'},
-        {'icon': 'fa-star', 'color': 'text-yellow-600', 'bg': 'bg-yellow-50', 'title': 'App 5-Star Reviews', 'desc': 'Positive reviews and 5-star ratings by real users.'},
-        {'icon': 'fa-telegram', 'color': 'text-sky-500', 'bg': 'bg-sky-50', 'title': 'Telegram Members', 'desc': 'Active members for your Telegram Group/Channel.'},
-        {'icon': 'fa-globe', 'color': 'text-teal-500', 'bg': 'bg-teal-50', 'title': 'Website Traffic', 'desc': 'Organic visitors for AdSense safe revenue & sales.'},
-        {'icon': 'fa-tiktok', 'color': 'text-slate-800', 'bg': 'bg-slate-100', 'title': 'TikTok Engagement', 'desc': 'Real TikTok followers, views and hearts (Likes).'},
-        {'icon': 'fa-instagram', 'color': 'text-pink-500', 'bg': 'bg-pink-50', 'title': 'Instagram Growth', 'desc': 'Organic Instagram followers and post engagement.'},
-        {'icon': 'fa-user-check', 'color': 'text-amber-500', 'bg': 'bg-amber-50', 'title': 'CPA / Lead Generation', 'desc': 'Targeted sign-ups and leads for your CPA offers.'},
-        {'icon': 'fa-twitter', 'color': 'text-sky-400', 'bg': 'bg-sky-100', 'title': 'Twitter (X) Growth', 'desc': 'Twitter followers, retweets and organic reach.'},
-        {'icon': 'fa-briefcase', 'color': 'text-slate-600', 'bg': 'bg-slate-200', 'title': 'LinkedIn Services', 'desc': 'Professional connections and company page followers.'},
-        {'icon': 'fa-list-check', 'color': 'text-orange-500', 'bg': 'bg-orange-50', 'title': 'Custom Micro Tasks', 'desc': 'Any specific custom task you want at the cheapest rate.'}
+        {'icon': 'fa-youtube', 'color': 'text-red-500', 'bg': 'bg-red-50', 'title': 'YouTube Video Views', 'desc': 'অর্গানিক ওয়াচ টাইম এবং ১০০% রিয়েল ভিউ।'},
+        {'icon': 'fa-youtube', 'color': 'text-red-600', 'bg': 'bg-red-100', 'title': 'YouTube Subscribers', 'desc': 'রিয়েল এবং এক্টিভ বাংলাদেশী সাবস্ক্রাইবার।'},
+        {'icon': 'fa-facebook', 'color': 'text-blue-600', 'bg': 'bg-blue-50', 'title': 'FB Page Organic Boost', 'desc': 'পেজের অর্গানিক রিচ, এঙ্গেজমেন্ট এবং লাইক বৃদ্ধি।'},
+        {'icon': 'fa-facebook', 'color': 'text-blue-500', 'bg': 'bg-blue-100', 'title': 'Facebook Followers', 'desc': 'রিয়েল ইউজার দ্বারা প্রোফাইল বা পেজ ফলোয়ার।'},
+        {'icon': 'fa-share-nodes', 'color': 'text-indigo-500', 'bg': 'bg-indigo-50', 'title': 'Video Share & Comments', 'desc': 'ফেসবুক/ইউটিউব ভিডিওতে রিয়েল শেয়ার ও কমেন্ট।'},
+        {'icon': 'fa-users', 'color': 'text-purple-600', 'bg': 'bg-purple-50', 'title': 'Targeted Referrals', 'desc': 'যেকোনো অ্যাপ বা ওয়েবসাইটের জন্য এক্টিভ রেফারেল।'},
+        {'icon': 'fa-google-play', 'color': 'text-emerald-500', 'bg': 'bg-emerald-50', 'title': 'App Installs (CPI)', 'desc': 'রিয়েল ইউজার দিয়ে অ্যাপ ইন্সটল ও রেজিস্ট্রেশন।'},
+        {'icon': 'fa-star', 'color': 'text-yellow-600', 'bg': 'bg-yellow-50', 'title': 'App 5-Star Reviews', 'desc': 'প্লে-স্টোরে পজিটিভ রিভিউ দিয়ে রেটিং বৃদ্ধি।'},
+        {'icon': 'fa-telegram', 'color': 'text-sky-500', 'bg': 'bg-sky-50', 'title': 'Telegram Members', 'desc': 'চ্যানেল বা গ্রুপের জন্য এক্টিভ মেম্বার।'},
+        {'icon': 'fa-globe', 'color': 'text-teal-500', 'bg': 'bg-teal-50', 'title': 'Website Traffic', 'desc': 'AdSense বা সেলসের জন্য অর্গানিক ভিজিটর।'},
+        {'icon': 'fa-tiktok', 'color': 'text-slate-800', 'bg': 'bg-slate-100', 'title': 'TikTok Engagement', 'desc': 'রিয়েল টিকটক ফলোয়ার, ভিউ এবং হার্টস।'},
+        {'icon': 'fa-instagram', 'color': 'text-pink-500', 'bg': 'bg-pink-50', 'title': 'Instagram Growth', 'desc': 'ইন্সটাগ্রাম ফলোয়ার এবং পোস্টে রিয়েল এঙ্গেজমেন্ট।'},
+        {'icon': 'fa-user-check', 'color': 'text-amber-500', 'bg': 'bg-amber-50', 'title': 'CPA / Lead Generation', 'desc': 'CPA অফার প্রমোশন ও সাইন-আপ গ্যারান্টি।'},
+        {'icon': 'fa-twitter', 'color': 'text-sky-400', 'bg': 'bg-sky-100', 'title': 'Twitter (X) Growth', 'desc': 'টুইটার ফলোয়ার, রিটুইট এবং অর্গানিক রিচ।'},
+        {'icon': 'fa-briefcase', 'color': 'text-slate-600', 'bg': 'bg-slate-200', 'title': 'LinkedIn Services', 'desc': 'প্রফেশনাল কানেকশন এবং কোম্পানি পেজ ফলোয়ার।'},
+        {'icon': 'fa-list-check', 'color': 'text-orange-500', 'bg': 'bg-orange-50', 'title': 'Custom Micro Tasks', 'desc': 'আপনার চাহিদা অনুযায়ী কাস্টমাইজড যেকোনো কাজ।'}
     ]
 
     return render_template('hire_us.html', services=services)
-
-
+    
 # ==========================================
 # ADMIN: CLIENT REQUESTS PANEL
 # ==========================================
