@@ -2,43 +2,58 @@
 {% block content %}
 
 <style>
-    /* Entry Animation */
+    /* Premium Entry Animations */
     .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
     @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    
+    /* Timeline Glow Dot */
+    .timeline-dot { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .notice-card:hover .timeline-dot {
+        border-color: #2563EB; /* Blue 600 */
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+    }
 
-    /* Instagram Style Card */
-    .insta-card {
-        background: #ffffff;
-        border: 1px solid #E2E8F0;
-        border-radius: 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    /* Advanced Read More CSS */
+    .notice-content-wrapper {
+        position: relative;
         overflow: hidden;
-        transition: transform 0.3s ease;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    /* Heart Bounce Animation */
-    .heart-bounce { animation: heartBounce 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-    @keyframes heartBounce {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.3); color: #EF4444; font-weight: 900; }
-        100% { transform: scale(1); color: #EF4444; font-weight: 900; }
+    /* Clamped state (Collapsed) */
+    .notice-clamped {
+        max-height: 80px; /* Show approx 3 lines */
+    }
+    
+    /* Gradient Fading Effect for hidden text */
+    .fade-overlay {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 40px;
+        background: linear-gradient(transparent, #F8FAFC);
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    
+    /* Hide fade overlay when expanded */
+    .notice-expanded .fade-overlay {
+        opacity: 0;
     }
 
-    /* Text Truncation */
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .notice-text-content { white-space: pre-wrap; line-height: 1.6; }
+    /* Notice Text Formatting */
+    .notice-text { white-space: pre-wrap; line-height: 1.6; }
+    
+    /* Image Lightbox Hover */
+    .notice-img-wrap { overflow: hidden; border-radius: 16px; margin-bottom: 16px; border: 1px solid #E2E8F0; }
+    .notice-img-wrap img { width: 100%; max-height: 300px; object-fit: cover; transition: transform 0.5s ease; }
+    .notice-img-wrap:hover img { transform: scale(1.05); }
 </style>
 
-<div class="max-w-xl mx-auto space-y-6 fade-in-up pb-8 px-1">
+<div class="max-w-2xl mx-auto space-y-8 fade-in-up pb-8 px-1">
 
     <!-- ==========================================
-         1. PREMIUM HEADER (Top Dashboard)
+         1. PREMIUM HEADER SECTION
     ========================================== -->
     <div class="bg-gradient-to-br from-slate-900 to-[#1E293B] rounded-[32px] p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
         <div class="absolute top-0 right-0 w-40 h-40 bg-blue-500/20 rounded-full blur-[50px] -mr-10 -mt-10 pointer-events-none"></div>
@@ -52,12 +67,12 @@
                     </span>
                     Live Feed
                 </div>
-                <h2 class="text-3xl font-black tracking-tight mb-1">Notice Board</h2>
-                <p class="text-slate-400 text-xs font-medium">অফিসিয়াল আপডেট এবং পেমেন্ট খবর।</p>
+                <h2 class="text-3xl font-black tracking-tight mb-2">Notice Board</h2>
+                <p class="text-slate-400 text-xs font-medium leading-relaxed max-w-sm">সিস্টেম আপডেট এবং পেমেন্ট সংক্রান্ত যাবতীয় খবর।</p>
             </div>
             
             <div class="flex flex-col items-center justify-center bg-white/10 p-4 rounded-[20px] backdrop-blur-md border border-white/10 shadow-inner flex-shrink-0 text-center min-w-[110px]">
-                <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1">Feed Traffic</p>
+                <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1">Page Traffic</p>
                 <h3 class="text-2xl font-black text-emerald-400 font-mono flex items-center gap-1.5"><i class="fa-solid fa-users text-sm"></i> {{ views }}</h3>
                 <p class="text-[8px] text-slate-500 mt-1">Last 72 Hours</p>
             </div>
@@ -65,35 +80,38 @@
     </div>
 
     <!-- ==========================================
-         2. ADMIN CREATE POST (Insta Style Compose)
+         2. ADMIN POST FORM
     ========================================== -->
     {% if user and user.role == 'admin' %}
-    <div class="bg-white p-5 rounded-[24px] shadow-sm border border-slate-200 mb-6">
-        <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
-            <div class="h-8 w-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-plus"></i></div>
-            Create New Post
+    <div class="bg-white p-6 sm:p-8 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-100 border-l-[6px] border-l-blue-600 relative overflow-hidden">
+        <h3 class="font-bold text-slate-800 text-sm mb-5 flex items-center justify-between uppercase tracking-widest">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib text-blue-600"></i> Compose Notice</span>
+            <span class="text-[9px] bg-sky-50 text-sky-600 px-2 py-1 rounded-md border border-sky-100"><i class="fa-brands fa-telegram"></i> Auto Sync</span>
         </h3>
 
         <!-- Image Preview Box -->
-        <div id="imagePreviewBox" class="hidden mb-4 bg-slate-50 p-2 rounded-xl border border-slate-200 flex items-center justify-between shadow-sm">
+        <div id="imagePreviewBox" class="hidden mb-4 bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-3">
-                <img id="previewImg" src="" class="h-10 w-10 object-cover rounded-lg shadow-sm">
-                <span class="text-[10px] font-bold text-emerald-600"><i class="fa-solid fa-check"></i> Image Ready</span>
+                <img id="previewImg" src="" class="h-12 w-12 object-cover rounded-xl border border-slate-200 shadow-sm">
+                <span class="text-xs font-bold text-emerald-600"><i class="fa-solid fa-check"></i> Image Attached</span>
             </div>
-            <button type="button" onclick="removeImage()" class="h-8 w-8 text-red-500 hover:bg-red-50 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="removeImage()" class="h-8 w-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <form method="POST" action="/notice" enctype="multipart/form-data" onsubmit="showPublishLoader()">
-            <input type="text" name="title" required placeholder="Post Title..." class="w-full px-4 py-3 mb-3 border-none bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 text-sm font-bold text-slate-800">
-            <textarea name="content" required rows="3" placeholder="Write your caption here..." class="w-full px-4 py-3 mb-3 border-none bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 text-sm font-medium text-slate-700 resize-none"></textarea>
-            
-            <div class="flex items-center justify-between border-t border-slate-100 pt-3">
-                <label class="text-blue-600 text-xl cursor-pointer hover:bg-blue-50 h-10 w-10 rounded-full flex items-center justify-center transition">
-                    <i class="fa-regular fa-image"></i>
+        <form method="POST" action="/notice" enctype="multipart/form-data" class="space-y-4" onsubmit="showPublishLoader()">
+            <div>
+                <input type="text" name="title" required placeholder="Notice Title..." class="w-full p-4 border border-slate-200 rounded-[16px] focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-800 shadow-sm">
+            </div>
+            <div>
+                <textarea name="content" required rows="4" placeholder="Write full details..." class="w-full p-4 border border-slate-200 rounded-[16px] focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-slate-50 focus:bg-white transition text-sm font-medium text-slate-700 shadow-sm resize-y"></textarea>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+                <label class="bg-slate-100 text-slate-600 px-5 py-3.5 rounded-[14px] text-xs font-bold cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition flex items-center gap-2 border border-slate-200">
+                    <i class="fa-solid fa-image"></i> Attach Image
                     <input type="file" name="image" id="imageInput" class="hidden" accept="image/*" onchange="previewImage(this)">
                 </label>
-                <button type="submit" id="publishBtn" class="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md hover:bg-blue-700 active:scale-95 transition-all">
-                    Share Post
+                <button type="submit" id="publishBtn" class="bg-blue-600 text-white px-8 py-3.5 rounded-[14px] text-xs font-black uppercase tracking-widest shadow-[0_8px_20px_rgba(37,99,235,0.25)] hover:bg-blue-700 active:scale-95 transition-all flex items-center gap-2">
+                    Publish <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
         </form>
@@ -101,84 +119,83 @@
     {% endif %}
 
     <!-- ==========================================
-         3. INSTAGRAM STYLE FEED
+         3. TIMELINE NOTICE LIST
     ========================================== -->
-    <div class="space-y-6">
-        
+    <div class="relative pl-4 sm:pl-6 space-y-6 mt-8">
+        <!-- Vertical Timeline Line -->
+        <div class="absolute left-4 sm:left-6 top-3 bottom-0 w-0.5 bg-slate-200 rounded-full"></div>
+
         {% for notice in notices %}
-        <div class="insta-card">
+        <div class="relative pl-6 sm:pl-8 notice-card">
             
-            <!-- A. Post Header -->
-            <div class="p-3.5 flex justify-between items-center bg-white">
-                <div class="flex items-center gap-3">
-                    <!-- Profile Picture (Logo) -->
-                    <div class="h-9 w-9 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center text-sm shadow-sm ring-2 ring-blue-100 ring-offset-1">
-                        <i class="fa-solid fa-briefcase text-[10px]"></i>
+            <div class="timeline-dot absolute left-[-6.5px] top-6 h-4 w-4 bg-white border-[4px] border-slate-300 rounded-full z-10 shadow-sm"></div>
+
+            <div class="bg-white p-5 sm:p-6 rounded-[24px] shadow-[0_2px_15px_rgba(0,0,0,0.02)] border border-slate-100 hover:border-blue-200 transition-colors">
+                
+                <!-- Post Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg shadow-sm border border-blue-100">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.1em]">Posted On</p>
+                            <p class="text-xs font-bold text-slate-700 font-mono flex items-center gap-1.5 mt-0.5"><i class="fa-regular fa-clock text-blue-500"></i> {{ notice.created_at[:10] }}</p>
+                        </div>
                     </div>
-                    <div class="leading-tight">
-                        <p class="text-xs font-black text-slate-900 flex items-center gap-1">
-                            earndaily_official <i class="fa-solid fa-certificate text-blue-500 text-[10px]"></i>
-                        </p>
-                        <!-- Random location tag style -->
-                        <p class="text-[9px] text-slate-500 font-medium">System Updates</p>
-                    </div>
+
+                    {% if user and user.role == 'admin' %}
+                    <a href="/notice/delete/{{ notice.id }}" onclick="return confirm('ডিলিট করবেন?')" class="h-8 w-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </a>
+                    {% endif %}
                 </div>
 
-                {% if user and user.role == 'admin' %}
-                <a href="/notice/delete/{{ notice.id }}" onclick="return confirm('ডিলিট করবেন?')" class="text-slate-400 hover:text-red-500 p-2 transition" title="Delete">
-                    <i class="fa-solid fa-ellipsis"></i>
-                </a>
+                <h3 class="text-lg font-black text-slate-900 mb-3 leading-snug tracking-tight">{{ notice.title }}</h3>
+                
+                {% if notice.image_url %}
+                <div class="notice-img-wrap cursor-pointer" onclick="openImageModal('{{ notice.image_url }}')">
+                    <img src="{{ notice.image_url }}" alt="Notice Image">
+                </div>
                 {% endif %}
-            </div>
 
-            <!-- B. Post Image (Full Width) -->
-            {% if notice.image_url %}
-            <div class="w-full bg-slate-100 aspect-square sm:aspect-video relative cursor-pointer" onclick="openImageModal('{{ notice.image_url }}')">
-                <img src="{{ notice.image_url }}" alt="Notice Image" class="w-full h-full object-cover">
-            </div>
-            {% endif %}
-
-            <!-- C. Action Bar (Like, Comment, Share, Save) -->
-            <div class="px-4 pt-3 pb-1">
-                <div class="flex justify-between items-center mb-2.5">
-                    <div class="flex gap-4 text-[22px] text-slate-700">
-                        <i class="fa-regular fa-heart cursor-pointer hover:text-slate-400 transition" onclick="likePost(this)"></i>
-                        <i class="fa-regular fa-comment cursor-pointer hover:text-slate-400 transition" onclick="document.getElementById('btn-{{ notice.id }}').click()"></i>
-                        <a href="whatsapp://send?text=*{{ notice.title }}*%0A{{ notice.content }}"><i class="fa-regular fa-paper-plane hover:text-slate-400 transition"></i></a>
-                    </div>
-                    <!-- Save acts as Copy Button -->
-                    <i class="fa-regular fa-bookmark text-[22px] text-slate-700 cursor-pointer hover:text-slate-400 transition" onclick="copyInstaNotice('{{ notice.title }}', 'text-{{ notice.id }}', this)" title="Copy Text"></i>
-                </div>
-                <!-- Views Counter -->
-                <p class="text-xs font-bold text-slate-800">{{ views * 12 + loop.index * 7 }} views</p>
-            </div>
-
-            <!-- D. Caption & Content (Read More Logic) -->
-            <div class="px-4 pb-4">
-                <div class="text-sm text-slate-800 leading-snug">
-                    <span class="font-bold mr-1">earndaily_official</span>
-                    <span class="font-bold">{{ notice.title }}</span>
+                <!-- Notice Text (With Pro Read More Logic) -->
+                <div class="bg-slate-50 p-4 rounded-[16px] border border-slate-100 relative">
                     
-                    <div class="mt-1">
-                        <div id="text-{{ notice.id }}" class="line-clamp-2 text-slate-600 font-medium notice-text-content transition-all duration-300">{{ notice.content }}</div>
-                        
-                        <!-- Read More Button -->
-                        {% if notice.content|length > 100 %}
-                        <button id="btn-{{ notice.id }}" onclick="toggleInstaText('{{ notice.id }}')" class="text-slate-400 font-medium text-xs mt-1 hover:text-slate-600 focus:outline-none">more</button>
+                    <div id="wrapper-{{ notice.id }}" class="notice-content-wrapper {% if notice.content|length > 150 %}notice-clamped{% endif %}">
+                        <div class="text-[13px] text-slate-600 notice-text font-medium" id="text-{{ notice.id }}">
+{{ notice.content }}
+                        </div>
+                        <!-- Fading Gradient Overlay -->
+                        {% if notice.content|length > 150 %}
+                        <div class="fade-overlay"></div>
                         {% endif %}
                     </div>
+                    
+                    <!-- Read More Toggle Button -->
+                    {% if notice.content|length > 150 %}
+                    <div class="mt-2 text-center border-t border-slate-200/60 pt-2">
+                        <button id="btn-{{ notice.id }}" onclick="toggleNoticeContent('{{ notice.id }}')" class="text-[11px] font-black text-blue-600 uppercase tracking-widest hover:text-blue-800 transition-colors flex items-center justify-center gap-1 w-full outline-none">
+                            Read Full Post <i id="icon-{{ notice.id }}" class="fa-solid fa-chevron-down text-[9px]"></i>
+                        </button>
+                    </div>
+                    {% endif %}
                 </div>
-                
-                <p class="text-[9px] text-slate-400 mt-2 uppercase tracking-widest font-medium">{{ notice.created_at[:10] }}</p>
-            </div>
 
+                <!-- Footer Social Actions -->
+                <div class="mt-4 flex gap-3">
+                    <a href="https://t.me/earndailysite" target="_blank" class="text-[10px] font-bold text-sky-600 bg-sky-50 border border-sky-100 px-4 py-2 rounded-xl hover:bg-sky-100 transition shadow-sm flex items-center gap-1.5 active:scale-95">
+                        <i class="fa-brands fa-telegram text-sm"></i> Telegram View
+                    </a>
+                </div>
+
+            </div>
         </div>
         {% else %}
-        <!-- Empty Feed State -->
-        <div class="text-center py-20 bg-white rounded-[32px] border border-slate-100 shadow-sm mt-8">
-            <div class="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl text-slate-300 border border-slate-100"><i class="fa-solid fa-camera"></i></div>
-            <h3 class="text-sm font-bold text-slate-800">No Posts Yet</h3>
-            <p class="text-[10px] text-slate-400 mt-1 font-medium">When the admin posts updates, they will appear here.</p>
+        <!-- Empty State -->
+        <div class="text-center py-20 bg-white rounded-[32px] border border-slate-100 shadow-sm ml-6 sm:ml-8">
+            <div class="h-16 w-16 bg-slate-50 rounded-[16px] flex items-center justify-center mx-auto mb-4 text-3xl text-slate-300 border border-slate-100"><i class="fa-regular fa-bell-slash"></i></div>
+            <h3 class="text-sm font-bold text-slate-800">কোনো নোটিশ নেই</h3>
         </div>
         {% endfor %}
 
@@ -194,52 +211,34 @@
 </div>
 
 <!-- ==========================================
-     SCRIPTS (Insta Logic)
+     SCRIPTS
 ========================================== -->
 <script>
-    // 1. Read More Toggle Logic
-    function toggleInstaText(id) {
-        const content = document.getElementById('text-' + id);
+    // Advanced Read More Logic (Smooth Height Transition)
+    function toggleNoticeContent(id) {
+        const wrapper = document.getElementById('wrapper-' + id);
         const btn = document.getElementById('btn-' + id);
+        const icon = document.getElementById('icon-' + id);
         
-        if (content.classList.contains('line-clamp-2')) {
-            content.classList.remove('line-clamp-2');
-            btn.innerText = 'less';
-        } else {
-            content.classList.add('line-clamp-2');
-            btn.innerText = 'more';
-        }
-    }
-
-    // 2. Micro-interaction: Like Button Bounce
-    function likePost(icon) {
-        if(icon.classList.contains('fa-regular')) {
-            icon.classList.remove('fa-regular');
-            icon.classList.add('fa-solid', 'heart-bounce');
-        } else {
-            icon.classList.add('fa-regular');
-            icon.classList.remove('fa-solid', 'heart-bounce');
-            icon.style.color = '';
-        }
-    }
-
-    // 3. Save to Clipboard (Using Bookmark icon)
-    function copyInstaNotice(title, elementId, icon) {
-        const text = document.getElementById(elementId).innerText;
-        const fullText = title + "\n\n" + text;
-        
-        navigator.clipboard.writeText(fullText).then(() => {
-            icon.classList.remove('fa-regular');
-            icon.classList.add('fa-solid', 'text-slate-800');
+        if (wrapper.classList.contains('notice-clamped')) {
+            // Expanding
+            wrapper.classList.remove('notice-clamped');
+            wrapper.classList.add('notice-expanded');
+            // Set max-height to a large value to allow smooth transition
+            wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
             
-            setTimeout(() => {
-                icon.classList.add('fa-regular');
-                icon.classList.remove('fa-solid', 'text-slate-800');
-            }, 1000);
-        });
+            btn.innerHTML = `Show Less <i class="fa-solid fa-chevron-up text-[9px] ml-1"></i>`;
+        } else {
+            // Collapsing
+            wrapper.classList.add('notice-clamped');
+            wrapper.classList.remove('notice-expanded');
+            wrapper.style.maxHeight = '80px'; // Same as CSS
+            
+            btn.innerHTML = `Read Full Post <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>`;
+        }
     }
 
-    // 4. Image Lightbox Logic
+    // Image Modal Logic
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
     
@@ -253,7 +252,7 @@
         setTimeout(() => { modal.classList.add('hidden'); modalImg.src = ''; }, 300);
     }
 
-    // 5. Admin Form Logic
+    // Admin Image Preview Logic
     function previewImage(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -271,7 +270,7 @@
     function showPublishLoader() {
         const btn = document.getElementById('publishBtn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sharing...';
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Broadcasting...';
         btn.classList.add('opacity-90', 'cursor-not-allowed');
     }
 </script>
